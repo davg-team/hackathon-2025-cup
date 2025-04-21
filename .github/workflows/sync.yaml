@@ -1,45 +1,45 @@
-# name: Sync Repository Content
+name: Sync Repository Content
 
-# on:
-#   workflow_dispatch: # Запуск вручную через интерфейс GitHub
+on:
+  workflow_dispatch: # Запуск вручную через интерфейс GitHub
 
-# jobs:
-#   sync:
-#     runs-on: ubuntu-latest
+jobs:
+  sync:
+    runs-on: ubuntu-latest
 
-#     steps:
-#     - name: Checkout source repository
-#       uses: actions/checkout@v3
-#       with:
-#         repository: ${{ github.repository }}
-#         token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+    steps:
+    - name: Checkout source repository
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ github.repository }}
+        token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
-#     - name: Sync files to target repository
-#       run: |
-#         # Получаем параметры из переменных окружения
-#         USERNAME="${{ vars.USERNAME }}"
-#         TARGET_OWNER="${{ vars.TARGET_OWNER }}"
-#         TARGET_REPO="${{ vars.TARGET_REPO }}"
+    - name: Sync files to target repository
+      run: |
+        # Получаем параметры из переменных окружения
+        USERNAME="${{ vars.USERNAME }}"
+        TARGET_OWNER="${{ vars.TARGET_OWNER }}"
+        TARGET_REPO="${{ vars.TARGET_REPO }}"
 
-#         # Настройки пользователя Git
-#         git config --global user.name "github-actions[bot]"
-#         git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        # Настройки пользователя Git
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-#         # Клонируем целевой репозиторий в папку `target`
-#         git clone https://${USERNAME}:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${TARGET_OWNER}/${TARGET_REPO}.git target
+        # Клонируем целевой репозиторий в папку `target`
+        git clone https://${USERNAME}:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${TARGET_OWNER}/${TARGET_REPO}.git target
 
-#         # Удаляем все файлы в целевом репозитории
-#         rm -rf target/*
+        # Удаляем все файлы в целевом репозитории
+        rm -rf target/*
 
-#         # Копируем все файлы из текущего репозитория в целевой, кроме скрытых папок GitHub Actions
-#         rsync -a --exclude='.git' --exclude='.github' ./ target/
+        # Копируем все файлы из текущего репозитория в целевой, кроме скрытых папок GitHub Actions
+        rsync -a --exclude='.git' --exclude='.github' ./ target/
 
-#         # Переходим в папку целевого репозитория
-#         cd target
+        # Переходим в папку целевого репозитория
+        cd target
 
-#         # Принудительно добавляем и коммитим изменения
-#         git add --all
-#         git commit -m "Sync files" || echo "Nothing to commit, changes may be identical."
+        # Принудительно добавляем и коммитим изменения
+        git add --all
+        git commit -m "Sync files" || echo "Nothing to commit, changes may be identical."
 
-#         # Принудительно отправляем изменения в целевой репозиторий
-#         git push --force
+        # Принудительно отправляем изменения в целевой репозиторий
+        git push --force

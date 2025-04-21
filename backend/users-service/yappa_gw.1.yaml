@@ -1,0 +1,253 @@
+info:
+  title: fsp-users-service
+  version: 0.1
+servers:
+  - url: https://d5dob40laqda2u923cqv.apigw.yandexcloud.net
+  - url: https://*.life-course.online
+  - url: https://*.fsp-platform.ru
+openapi: 3.0.0
+x-yc-apigateway:
+  variables:
+    bucket:
+      default: "davg2"
+      description: "бакет проекта"
+    frontenddirectory:
+      default: "frontend"
+      description: "папка с фронтендом"
+  rateLimit:
+    allRequests:
+      rps: 30
+paths:
+  /features/promo.mp4:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: Render.mp4
+        error_object: error.html
+  /features/screencast.mp4:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: Скринкаст.mov
+        error_object: error.html
+  /features/screencast:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: Скринкаст.mov
+        error_object: error.html
+  /features/presentation.mp4:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: pr.mov
+        error_object: error.html
+  /features/presentation.pdf:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: pr.mov
+        error_object: error.html
+
+  /api/aws_sign_s3:
+    x-yc-apigateway-any-method:
+      x-yc-apigateway-integration:
+        function_id: d4ej37oesv9vrfjbsrs7
+        tag: $latest
+        type: cloud_functions
+  /api/teams/{url+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+      x-yc-apigateway-integration:
+        function_id: d4eqfmm5vp5n5h6g8s9t
+        tag: $latest
+        type: cloud_functions
+  /api/reports/{url+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+      x-yc-apigateway-integration:
+        function_id: d4essq07gb4caphsgjqm
+        tag: $latest
+        type: cloud_functions
+  /api/events/{url+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+      x-yc-apigateway-integration:
+        function_id: d4e5lbk9nq4pn3esmdh0
+        tag: $latest
+        type: cloud_functions
+  /api/users/{url+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+      x-yc-apigateway-integration:
+        function_id: d4ek1s3osoqm72k8vmof
+        tag: $latest
+        type: cloud_functions
+  /api/organizations/{url+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+      x-yc-apigateway-integration:
+        function_id: d4ejkiukm8dsnh54fgrg
+        tag: $latest
+        type: cloud_functions
+
+  /api/{url+}:
+    x-yc-apigateway-any-method:
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+      x-yc-apigateway-integration:
+        function_id: d4ef5ud83cp139iu2mqk
+        tag: $latest
+        type: cloud_functions
+  /openapi.json:
+    x-yc-apigateway-any-method:
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+      x-yc-apigateway-integration:
+        function_id: d4ef5ud83cp139iu2mqk
+        tag: $latest
+        type: cloud_functions
+  /docs:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: docs/index.html
+        error_object: error.html
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+  /docs/{url+}:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: docs/{url}
+        error_object: docs/{url}.html
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+  /assets/{url+}:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: ${var.frontenddirectory}/assets/{url}
+        error_object: error.html
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+
+  /img/{url+}:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: ${var.frontenddirectory}/img/{url}
+        error_object: error.html
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+  /svg/{url+}:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: ${var.frontenddirectory}/svg/{url}
+        error_object: error.html
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+  /files_front/{url+}:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: ${var.frontenddirectory}/files_front/{url}
+        error_object: error.html
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+  /fonts/{url+}:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: ${var.frontenddirectory}/fonts/{url}
+        error_object: error.html
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple
+
+  /{url+}:
+    get:
+      x-yc-apigateway-integration:
+        type: object_storage
+        bucket: ${var.bucket}
+        object: ${var.frontenddirectory}/index.html
+        error_object: error.html
+      parameters:
+        - explode: false
+          in: path
+          name: url
+          required: false
+          style: simple

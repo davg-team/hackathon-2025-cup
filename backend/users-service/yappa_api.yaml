@@ -1,0 +1,28 @@
+project_name: fsp-users-service
+project_slug: fsp-users-service
+description: null
+requirements_file: requirements.txt
+bucket: null
+application_type: asgi
+entrypoint: app.app
+django_settings_module: null
+folder_id: b1gp5ssdelthl4svbunb
+gw_config: yappa_gw.yaml
+manage_function_name: null
+runtime: python312
+memory_limit: 128MB
+timeout: 30
+service_account_names:
+  creator: yappa-creator-account-davg
+  function_actor: null
+excluded_paths:
+  - venv
+  - .git
+  - .idea
+  - .DS_Store
+  - .yc
+environment: {}
+named_service_accounts: {}
+service_account_id: ajedf16kbgn8gt8f527f
+is_public: true
+bucket_name: users-service-33149c60

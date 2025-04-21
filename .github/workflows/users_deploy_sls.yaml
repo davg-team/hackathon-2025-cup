@@ -1,0 +1,43 @@
+name: Deploy Serverless Service - users
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/users-service/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SERVICE_PATH: backend/users-service # Вынесли путь в переменную
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Write credentials
+      working-directory: ${{ env.SERVICE_PATH }}
+      run: |
+        # Записываем данные в файл, используя printf для сохранения пустых строк
+        printf "%s" '${{ secrets.YC_SA_JSON_CREDENTIALS }}' > .yc
+        printf "%s" '${{ secrets.SA_JSON_CREDENTIALS }}' > authorized_key.json
+        printf "%s" '${{ secrets.USERS_CONFIG }}' > config.yaml
+        printf "%s" '${{ secrets.USERS_CONFIG }}' > app/notifications/conf.py
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+
+    - name: Install Yappa
+      working-directory: ./backend/users-service
+      run: |
+        python -m pip install --upgrade pip
+        pip install yappa
+
+    - name: Yappa Deploy
+      working-directory: ${{ env.SERVICE_PATH }}
+      run: |
+        yappa deploy direct yappa_api.yaml
