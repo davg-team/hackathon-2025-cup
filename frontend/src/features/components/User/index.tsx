@@ -30,7 +30,7 @@ type PayloadType = {
 
 const User = () => {
   const token = localStorage.getItem("token");
-  const {add} = useToaster()
+  const { add } = useToaster();
   const payload: PayloadType | null = token ? getPayload(token) : null;
   const [loading, setLoading] = useState<boolean>(false);
   const [state, setState] = useState({
@@ -93,23 +93,21 @@ const User = () => {
       setLoading(false);
       add({
         name: "success",
-        theme: 'success',
+        theme: "success",
         title: "Данные успешно обновлены",
       });
     } else {
       setLoading(false);
       add({
         name: "error",
-        theme: 'danger',
+        theme: "danger",
         title: "Произошла ошибка при обновлении данных",
-      })
+      });
     }
   }
 
-  if (payload?.region_id === null && isLoggined) {
-    return null;
-  } else {
-    return payload?.region_id ? (
+  if (isLoggined) {
+    return (
       <>
         <Flex
           direction="column"
@@ -208,7 +206,7 @@ const User = () => {
                     ...prev,
                     notification_ways: prev.notification_ways.includes("email")
                       ? prev.notification_ways.filter(
-                          (item) => item !== "email"
+                          (item) => item !== "email",
                         )
                       : [...prev.notification_ways, "email"],
                   }));
@@ -218,7 +216,7 @@ const User = () => {
               />
               <Button
                 onClick={() => {
-                  setIsSnow(prev => !prev);
+                  setIsSnow((prev) => !prev);
                 }}
               >
                 {isSnow ? "Выключить" : "Включить"} снег
@@ -226,21 +224,24 @@ const User = () => {
               <Button>Подключить Telegram</Button>
               <Button
                 loading={loading}
-                disabled={loading || (
-                  state.first_name === payload.first_name &&
-                  state.last_name === payload.last_name &&
-                  state.second_name === payload.second_name &&
-                  state.email === payload.email &&
-                  state.snils === payload.snils &&
-                  state.notification_ways === payload.notification_ways
-                )}
+                disabled={
+                  loading ||
+                  (state.first_name === payload?.first_name &&
+                    state.last_name === payload?.last_name &&
+                    state.second_name === payload?.second_name &&
+                    state.email === payload?.email &&
+                    state.snils === payload?.snils &&
+                    state.notification_ways === payload?.notification_ways)
+                }
                 onClick={save}
-              >Сохранить</Button>
+              >
+                Сохранить
+              </Button>
             </Flex>
           </Flex>
         </Modal>
       </>
-    ) : null;
+    );
   }
 };
 

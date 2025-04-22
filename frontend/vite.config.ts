@@ -31,11 +31,40 @@ export default defineConfig({
         changeOrigin: true,
       },
       "/api/auth": {
-        target: "https://fsp-platform.online/",
-        // target: "https://fsp-platform.ru/",
+        // target: "https://fsp-platform.online/",
+        target: "https://fsp-platform.ru/",
         secure: false,
         changeOrigin: true,
-        // rewrite: (path) => path.replace(/^\/api\/auth/, ''),
+      },
+      "/api/organizations": {
+        target: "https://fsp-platform.online/",
+        secure: false,
+        changeOrigin: true,
+      },
+      "/api/analytics": {
+        target: "https://fsp-platform.online/",
+        secure: false,
+        changeOrigin: true,
+      },
+      "/api/reports": {
+        target: "https://fsp-platform.online/",
+        secure: false,
+        changeOrigin: true,
+      },
+      "/api/aws_sign_s3": {
+        target: "https://fsp-platform.online/",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/api/teams": {
+        target: "https://fsp-platform.online/",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/api/team-events": {
+        target: "https://fsp-platform.online/",
+        changeOrigin: true,
+        secure: false,
       },
     },
   },

@@ -11,8 +11,8 @@ import {
   NavigationItemType,
 } from "@gravity-ui/page-constructor";
 import InsideAPopup from "../NitificationsInsidePopup";
-import { getPayload, isExpired } from "shared/jwt-tools";
-import { useContext, useState } from "react";
+import { getPayload, isExpired, JWTPayload } from "shared/jwt-tools";
+import { useContext } from "react";
 import { Context } from "app/Context";
 import User from "../User";
 
@@ -46,7 +46,7 @@ const General = () => {
   return (
     <Link
       className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
-      to="/"
+      to="/region/0"
     >
       Федерация
     </Link>
@@ -57,7 +57,7 @@ const Regional = () => {
   return (
     <Link
       className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
-      to="/"
+      to="/regions"
     >
       Регионы
     </Link>
@@ -75,13 +75,10 @@ const Calendar = () => {
   );
 };
 
-type PayloadType = {
-  region_id?: string;
-};
-
 const FSPRegion = () => {
   const token = localStorage.getItem("token");
-  const payload: PayloadType | null = token ? getPayload(token) : null;
+  const payload: JWTPayload | null =
+    token && !isExpired(token) ? getPayload(token) : null;
   const { isLoggined } = useContext(Context);
 
   return (
@@ -134,8 +131,12 @@ const HeaderHelpLinks: NavigationDropdownItem = {
 };
 
 function useProps(theme: string, setTheme: () => void): NavigationData {
-  const [token] = useState(localStorage.getItem("token"));
+  const token = localStorage.getItem("token");
   const { isLoggined } = useContext(Context);
+
+  console.log("token expired:", isExpired(token as string));
+  console.log("payload:", getPayload(token as string));
+  console.log("isLoggined:", isLoggined);
 
   return {
     header: {
@@ -155,9 +156,8 @@ function useProps(theme: string, setTheme: () => void): NavigationData {
       ],
       //@ts-ignore
       rightItems:
-        (!token || isExpired(token)) && !isLoggined
-          ? // Не залогинен
-            [
+        (!token || isExpired(token)) && !isLoggined // Не залогинен
+          ? [
               HeaderHelpLinks,
               { type: "custom-item" },
               {

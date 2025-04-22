@@ -1,19 +1,20 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-type JWTPayload = {
+export type Role = "fsp_staff" | "fsp_region_head" | "root" | "user";
+type Required = "registration";
+export type JWTPayload = {
   region_id: string;
   aud?: string;
   exp?: number;
   iat?: number;
   iss?: string;
-  // roles?: "" | "" | "" | "";
-  roles?: string[];
+  roles: Role[];
   sub?: string;
+  required: Required[];
 };
 
 function isTemproary(token: string) {
   const payload = getPayload(token);
-  // @ts-ignore
-  if (payload.iss.startsWith("social")) {
+  if (payload && payload.iss?.startsWith("social")) {
     return true;
   }
 
@@ -51,7 +52,7 @@ function getPayload(token: string) {
 
 function deleteToken() {
   localStorage.removeItem("token");
-  document.cookie = `token=; path=/; domain=.${location.hostname
+  document.cookie = `token=; path=/; domain=.${window.location.hostname
     .split(".")
     .slice(-2)
     .join(".")}; max-age=-1; samesite=strict`;
@@ -59,7 +60,7 @@ function deleteToken() {
 
 function setToken(token: string) {
   localStorage.setItem("token", token);
-  document.cookie = `token=${token}; path=/; domain=.${location.hostname
+  document.cookie = `token=${token}; path=/; domain=.${window.location.hostname
     .split(".")
     .slice(-2)
     .join(".")}; max-age=31536000; samesite=strict`;
