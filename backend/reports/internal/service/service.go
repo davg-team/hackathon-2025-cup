@@ -9,200 +9,200 @@ import (
 	"github.com/google/uuid"
 )
 
-type VictoriesStorage interface {
-	Victories(ctx context.Context) ([]domain.Victory, error)
-	UsersVictories(ctx context.Context, userID string) ([]domain.Victory, error)
-	TeamsVictories(ctx context.Context, teamID string) ([]domain.Victory, error)
-	EventsVictories(ctx context.Context, eventID string) ([]domain.Victory, error)
-	Victory(ctx context.Context, id string) (*domain.Victory, error)
-	CreateVictory(ctx context.Context, victory *domain.Victory) error
-	UpdateVictory(ctx context.Context, victory *domain.Victory) error
-	DeleteVictory(ctx context.Context, id string) error
+type ResultsStorage interface {
+	Results(ctx context.Context) ([]domain.Result, error)
+	Result(ctx context.Context, id string) (*domain.Result, error)
+	CreateResult(ctx context.Context, result *domain.Result) error
+	UpdateResult(ctx context.Context, result *domain.Result) error
+	DeleteResult(ctx context.Context, id string) error
+	UsersResults(ctx context.Context, userID string) ([]domain.Result, error)
+	TeamsResults(ctx context.Context, teamID string) ([]domain.Result, error)
+	EventsResults(ctx context.Context, eventID string) ([]domain.Result, error)
 }
 
 type Service struct {
-	storage VictoriesStorage
+	storage ResultsStorage
 	log     *slog.Logger
 }
 
-func New(storage VictoriesStorage, log *slog.Logger) *Service {
-	log = log.With("service", "victories")
+func New(storage ResultsStorage, log *slog.Logger) *Service {
+	log = log.With("service", "results")
 
 	return &Service{storage: storage, log: log}
 }
 
-func (s *Service) Victories(ctx context.Context) ([]domain.Victory, error) {
-	const op = "Victories"
+func (s *Service) Results(ctx context.Context) ([]domain.Result, error) {
+	const op = "Results"
 
 	log := s.log.With("op", op)
-	log.Info("getting victories")
+	log.Info("getting results")
 
-	victories, err := s.storage.Victories(ctx)
+	results, err := s.storage.Results(ctx)
 	if err != nil {
-		log.Error("failed to get victories", err)
+		log.Error("failed to get results", err)
 		return nil, err
 	}
 
-	log.Info("victories got", "count", len(victories))
+	log.Info("results got", "count", len(results))
 
-	return victories, nil
+	return results, nil
 }
 
-func (s *Service) Victory(ctx context.Context, id string) (*domain.Victory, error) {
-	const op = "Victory"
+func (s *Service) Result(ctx context.Context, id string) (*domain.Result, error) {
+	const op = "Result"
 
 	log := s.log.With("op", op)
-	log.Info("getting victory", "id", id)
+	log.Info("getting result", "id", id)
 
-	victory, err := s.storage.Victory(ctx, id)
+	result, err := s.storage.Result(ctx, id)
 	if err != nil {
-		log.Error("failed to get victory", "id", id, err)
+		log.Error("failed to get result", "id", id, err)
 		return nil, err
 	}
 
-	log.Info("victory got", "id", id)
+	log.Info("result got", "id", id)
 
-	return victory, nil
+	return result, nil
 }
 
-func (s *Service) CreateVictory(ctx context.Context, victoryToCreate *requests.VictoryPost) error {
-	const op = "CreateVictory"
+func (s *Service) CreateResult(ctx context.Context, resultToCreate *requests.ResultPost) error {
+	const op = "CreateResult"
 
 	id := uuid.New().String()
 
-	victory := &domain.Victory{
+	result := &domain.Result{
 		ID:      id,
-		EventID: victoryToCreate.EventID,
-		UserID:  victoryToCreate.UserID,
-		TeamID:  victoryToCreate.TeamID,
-		Place:   victoryToCreate.Place,
+		EventID: resultToCreate.EventID,
+		UserID:  resultToCreate.UserID,
+		TeamID:  resultToCreate.TeamID,
+		Place:   resultToCreate.Place,
 	}
 
 	log := s.log.With("op", op)
-	log.Info("creating victory", "id", victory.ID)
+	log.Info("creating result", "id", result.ID)
 
-	if err := s.storage.CreateVictory(ctx, victory); err != nil {
-		log.Error("failed to create victory", "id", victory.ID, err)
+	if err := s.storage.CreateResult(ctx, result); err != nil {
+		log.Error("failed to create result", "id", result.ID, err)
 		return err
 	}
 
-	log.Info("victory created", "id", victory.ID)
+	log.Info("result created", "id", result.ID)
 
 	return nil
 }
 
-func (s *Service) UpdateVictory(ctx context.Context, id string, victoryToUpdate *requests.VictoryPost) error {
-	const op = "UpdateVictory"
+func (s *Service) UpdateResult(ctx context.Context, id string, resultToUpdate *requests.ResultPost) error {
+	const op = "UpdateResult"
 
 	log := s.log.With("op", op)
-	log.Info("updating victory", "id", id)
+	log.Info("updating result", "id", id)
 
-	victoryFound, err := s.storage.Victory(ctx, id)
+	resultFound, err := s.storage.Result(ctx, id)
 	if err != nil {
-		log.Error("failed to get victory", "id", id, err)
+		log.Error("failed to get result", "id", id, err)
 		return err
 	}
 
-	if victoryFound == nil {
-		log.Error("victory not found", "id", id)
+	if resultFound == nil {
+		log.Error("result not found", "id", id)
 		return nil
 	}
 
-	log.Info("victory found", "id", id)
+	log.Info("result found", "id", id)
 
-	victory := &domain.Victory{
+	result := &domain.Result{
 		ID:      id,
-		EventID: victoryToUpdate.EventID,
-		UserID:  victoryToUpdate.UserID,
-		TeamID:  victoryToUpdate.TeamID,
-		Place:   victoryToUpdate.Place,
+		EventID: resultToUpdate.EventID,
+		UserID:  resultToUpdate.UserID,
+		TeamID:  resultToUpdate.TeamID,
+		Place:   resultToUpdate.Place,
 	}
 
-	if err := s.storage.UpdateVictory(ctx, victory); err != nil {
-		log.Error("failed to update victory", "id", victory.ID, err)
+	if err := s.storage.UpdateResult(ctx, result); err != nil {
+		log.Error("failed to update result", "id", result.ID, err)
 		return err
 	}
 
-	log.Info("victory updated", "id", victory.ID)
+	log.Info("result updated", "id", result.ID)
 
 	return nil
 }
 
-func (s *Service) DeleteVictory(ctx context.Context, id string) error {
-	const op = "DeleteVictory"
+func (s *Service) DeleteResult(ctx context.Context, id string) error {
+	const op = "DeleteResult"
 
 	log := s.log.With("op", op)
-	log.Info("deleting victory", "id", id)
+	log.Info("deleting result", "id", id)
 
-	victory, err := s.storage.Victory(ctx, id)
+	result, err := s.storage.Result(ctx, id)
 	if err != nil {
-		log.Error("failed to get victory", "id", id, err)
+		log.Error("failed to get result", "id", id, err)
 		return err
 	}
 
-	if victory == nil {
-		log.Error("victory not found", "id", id)
+	if result == nil {
+		log.Error("result not found", "id", id)
 		return nil
 	}
 
-	if err := s.storage.DeleteVictory(ctx, id); err != nil {
-		log.Error("failed to delete victory", "id", id, err)
+	if err := s.storage.DeleteResult(ctx, id); err != nil {
+		log.Error("failed to delete result", "id", id, err)
 		return err
 	}
 
-	log.Info("victory deleted", "id", id)
+	log.Info("result deleted", "id", id)
 
 	return nil
 }
 
-func (s *Service) UsersVictories(ctx context.Context, userID string) ([]domain.Victory, error) {
-	const op = "UsersVictories"
+func (s *Service) UsersResults(ctx context.Context, userID string) ([]domain.Result, error) {
+	const op = "UsersResults"
 
 	log := s.log.With("op", op)
-	log.Info("getting user victories", "user_id", userID)
+	log.Info("getting user results", "user_id", userID)
 
-	victories, err := s.storage.UsersVictories(ctx, userID)
+	results, err := s.storage.UsersResults(ctx, userID)
 	if err != nil {
-		log.Error("failed to get user victories", "user_id", userID, err)
+		log.Error("failed to get user results", "user_id", userID, err)
 		return nil, err
 	}
 
-	log.Info("user victories got", "user_id", userID, "count", len(victories))
+	log.Info("user results got", "user_id", userID, "count", len(results))
 
-	return victories, nil
+	return results, nil
 
 }
 
-func (s *Service) TeamsVictories(ctx context.Context, teamID string) ([]domain.Victory, error) {
-	const op = "TeamsVictories"
+func (s *Service) TeamsResults(ctx context.Context, teamID string) ([]domain.Result, error) {
+	const op = "TeamsResults"
 
 	log := s.log.With("op", op)
-	log.Info("getting team victories", "team_id", teamID)
+	log.Info("getting team results", "team_id", teamID)
 
-	victories, err := s.storage.TeamsVictories(ctx, teamID)
+	results, err := s.storage.TeamsResults(ctx, teamID)
 	if err != nil {
-		log.Error("failed to get team victories", "team_id", teamID, err)
+		log.Error("failed to get team results", "team_id", teamID, err)
 		return nil, err
 	}
 
-	log.Info("team victories got", "team_id", teamID, "count", len(victories))
+	log.Info("team results got", "team_id", teamID, "count", len(results))
 
-	return victories, nil
+	return results, nil
 }
 
-func (s *Service) EventsVictories(ctx context.Context, eventID string) ([]domain.Victory, error) {
-	const op = "EventsVictories"
+func (s *Service) EventsResults(ctx context.Context, eventID string) ([]domain.Result, error) {
+	const op = "EventsResults"
 
 	log := s.log.With("op", op)
-	log.Info("getting event victories", "event_id", eventID)
+	log.Info("getting event results", "event_id", eventID)
 
-	victories, err := s.storage.EventsVictories(ctx, eventID)
+	results, err := s.storage.EventsResults(ctx, eventID)
 	if err != nil {
-		log.Error("failed to get event victories", "event_id", eventID, err)
+		log.Error("failed to get event results", "event_id", eventID, err)
 		return nil, err
 	}
 
-	log.Info("event victories got", "event_id", eventID, "count", len(victories))
+	log.Info("event results got", "event_id", eventID, "count", len(results))
 
-	return victories, nil
+	return results, nil
 }
