@@ -24,3 +24,6 @@ class UserService:
         return await self.repository.get_users_notification_settings(
             region_id=fsp, roles=roles
         )
+
+    async def get_users_by_ids(self, ids):
+        return await self.repository.get_users_by_ids(ids)

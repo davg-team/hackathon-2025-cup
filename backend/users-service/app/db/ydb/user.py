@@ -298,3 +298,46 @@ class UserRepository(BaseRepository, BaseUserRepository):
             settings.append(user_settings)
 
         return settings
+
+    async def get_users_by_ids(self, ids: list[str]) -> list[User]:
+        if not ids:
+            return []
+
+        QUERY = f"""
+        DECLARE $user_ids AS List<Utf8>;
+        SELECT * FROM {self.users_table}
+        WHERE user_id IN $user_ids;
+        """
+
+        async with self:
+            (r,) = await self.execute(QUERY, {"$user_ids": ids})
+
+        users = []
+        for row in r.rows:
+            user = User()
+            user.id = row.user_id
+            user.first_name = row.first_name
+            user.last_name = row.last_name
+            user.second_name = row.second_name
+            user.email = row.email
+            # user.phone = row.phone
+            user.avatar = row.avatar
+            user.region_id = row.region_id
+            # user.tg_id = row.tg_id
+            # user.snils = row.snils
+            user.roles = (
+                [Role(role) for role in json.loads(row.roles)] if row.roles else []
+            )
+            # user.status = Status(row.status) if row.status else None
+            # user.required = json.loads(row.required) if row.required else []
+            # user.notification_ways = (
+            #     json.loads(row.notification_ways) if row.notification_ways else []
+            # )
+            # user.created_at = datetime.fromtimestamp(row.created_at)
+            # user.last_login_at = (
+            #     datetime.fromtimestamp(row.last_login_at) if row.last_login_at else None
+            # )
+            # user.other_data = json.loads(row.other_data) if row.other_data else {}
+            users.append(user)
+
+        return users

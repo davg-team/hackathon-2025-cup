@@ -5,7 +5,10 @@ from email.mime.text import MIMEText
 
 from jinja2 import Environment, FileSystemLoader
 
-from .conf import SMTP_PASSWORD, SMTP_PORT, SMTP_SERVER, SMTP_USERNAME
+try:
+    from .conf import SMTP_PASSWORD, SMTP_PORT, SMTP_SERVER, SMTP_USERNAME
+except:
+    pass
 
 # Настройка Jinja2
 env = Environment(loader=FileSystemLoader("app/notifications/templates"))
