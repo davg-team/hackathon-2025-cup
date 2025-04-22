@@ -117,15 +117,12 @@ const User = () => {
         >
           <UserLabel
             size="l"
-            // @ts-ignore
-            avatar={payload.avatar}
+            text={payload?.first_name + " " + payload?.last_name}
+            avatar={payload?.avatar}
             onClick={() => {
               setOpen(true);
             }}
-          >
-            {/* @ts-ignore */}
-            {payload.first_name} {payload.last_name}
-          </UserLabel>
+          />
         </Flex>
         <Modal open={open}>
           <Flex direction="column" spacing={{ p: 3 }}>

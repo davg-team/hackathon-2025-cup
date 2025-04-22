@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-export type Role = "fsp_staff" | "fsp_region_head" | "root" | "user";
+export type Role =
+  | "fsp_staff"
+  | "fsp_region_head"
+  | "fsp_region_staff"
+  | "root"
+  | "user"
+  | "sportsman";
 type Required = "registration";
 export type JWTPayload = {
   region_id: string;

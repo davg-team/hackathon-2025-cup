@@ -13,6 +13,7 @@ import {
   Flex,
   Loader,
   ThemeProvider,
+  Toaster,
   ToasterComponent,
   ToasterProvider,
 } from "@gravity-ui/uikit";
@@ -37,6 +38,7 @@ const App = () => {
   // @ts-ignore
   const { setIsLoggined, isLoggined } = useContext(Context);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const toaster = new Toaster();
 
   useEffect(() => {
     try {
@@ -133,7 +135,7 @@ const App = () => {
               <PageConstructorProvider
                 theme={theme === "light" ? Theme.Light : Theme.Dark}
               >
-                <ToasterProvider>
+                <ToasterProvider toaster={toaster}>
                   <AppContextProvider>
                     <ToasterComponent />
                     <Router theme={theme} setTheme={toggleTheme} />
@@ -154,23 +156,17 @@ const App = () => {
         >
           <ThemeContext.Provider value={{ theme, toggleTheme }}>
             <ThemeProvider theme={theme}>
-              <PageConstructorProvider
-                theme={theme === "light" ? Theme.Light : Theme.Dark}
-              >
-                <ToasterProvider>
-                  <AppContextProvider>
-                    <Container style={{ height: "100vh" }}>
-                      <Flex
-                        alignItems={"center"}
-                        height={"100%"}
-                        justifyContent={"center"}
-                      >
-                        <Loader size="l" />
-                      </Flex>
-                    </Container>
-                  </AppContextProvider>
-                </ToasterProvider>
-              </PageConstructorProvider>
+              <AppContextProvider>
+                <Container style={{ height: "100vh" }}>
+                  <Flex
+                    alignItems={"center"}
+                    height={"100%"}
+                    justifyContent={"center"}
+                  >
+                    <Loader size="l" />
+                  </Flex>
+                </Container>
+              </AppContextProvider>
             </ThemeProvider>
           </ThemeContext.Provider>
         </ErrorBoundary>

@@ -4,17 +4,13 @@ import { Link } from "react-router-dom";
 import LoginButton from "features/components/LoginButton";
 import { Button, Icon } from "@gravity-ui/uikit";
 import { Moon, Sun } from "@gravity-ui/icons";
-import {
-  CustomItems,
-  NavigationData,
-  NavigationDropdownItem,
-  NavigationItemType,
-} from "@gravity-ui/page-constructor";
+import { CustomItems, NavigationData } from "@gravity-ui/page-constructor";
 import InsideAPopup from "../NitificationsInsidePopup";
-import { getPayload, isExpired, JWTPayload } from "shared/jwt-tools";
+import { getPayload, isExpired } from "shared/jwt-tools";
 import { useContext } from "react";
 import { Context } from "app/Context";
 import User from "../User";
+import { getRoleFromToken } from "shared/tools";
 
 const ThemeButton = ({
   theme,
@@ -46,9 +42,9 @@ const General = () => {
   return (
     <Link
       className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
-      to="/region/0"
+      to="/"
     >
-      Федерация
+      Главная
     </Link>
   );
 };
@@ -64,79 +60,133 @@ const Regional = () => {
   );
 };
 
-const Calendar = () => {
+function Competitions() {
   return (
     <Link
       className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
-      to="/calendar"
+      to="/faq"
     >
-      Календарь
+      Соревнования
     </Link>
   );
-};
+}
 
-const FSPRegion = () => {
-  const token = localStorage.getItem("token");
-  const payload: JWTPayload | null =
-    token && !isExpired(token) ? getPayload(token) : null;
-  const { isLoggined } = useContext(Context);
-
+function FAQ() {
   return (
-    <>
-      {(payload?.region_id === "0" || payload?.region_id === null) &&
-      isLoggined ? null : payload?.region_id ? (
-        <Link
-          className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
-          to={`/region/${payload.region_id}`}
-        >
-          ФСП: {payload.region_id}
-        </Link>
-      ) : null}
-    </>
+    <Link
+      className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
+      to="/faq"
+    >
+      FAQ
+    </Link>
   );
-};
+}
 
-const HeaderHelpLinks: NavigationDropdownItem = {
-  items: [
-    {
-      text: "Репозиторий",
-      type: NavigationItemType.Link,
-      url: "/features/repository/",
-    },
-    {
-      text: "Документация",
-      type: NavigationItemType.Link,
-      url: "/docs/",
-    },
-    {
-      text: "Скринкаст",
-      type: NavigationItemType.Link,
-      url: "/features/screencast/",
-    },
-    {
-      text: "Презентация",
-      type: NavigationItemType.Link,
-      url: "/features/presentation/",
-    },
-    {
-      text: "Команда",
-      type: NavigationItemType.Link,
-      url: "/features/team/",
-    },
-  ],
-  text: "О нас",
-  hidePopup: () => false,
-  isActive: false,
-  type: NavigationItemType.Dropdown,
-};
+function Profile() {
+  return (
+    <Link
+      className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
+      to="/lk/profile"
+    >
+      Мой профиль
+    </Link>
+  );
+}
+
+function MyCompetitions() {
+  return (
+    <Link
+      className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
+      to="/lk/competitions"
+    >
+      Мои соревнования
+    </Link>
+  );
+}
+
+function Federation() {
+  const token = localStorage.getItem("token");
+  const payload = getPayload(token as string);
+  return (
+    <Link
+      className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
+      to={`/region/${payload?.region_id}`}
+    >
+      Моя федерация
+    </Link>
+  );
+}
+
+function Applications() {
+  return (
+    <Link
+      className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
+      to="/lk/applications"
+    >
+      Заявки
+    </Link>
+  );
+}
+
+// const FSPRegion = () => {
+//   const token = localStorage.getItem("token");
+//   const payload: JWTPayload | null =
+//     token && !isExpired(token) ? getPayload(token) : null;
+//   const { isLoggined } = useContext(Context);
+//
+//   return (
+//     <>
+//       {(payload?.region_id === "0" || payload?.region_id === null) &&
+//       isLoggined ? null : payload?.region_id ? (
+//         <Link
+//           className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
+//           to={`/region/${payload.region_id}`}
+//         >
+//           ФСП: {payload.region_id}
+//         </Link>
+//       ) : null}
+//     </>
+//   );
+// };
+
+// const HeaderHelpLinks: NavigationDropdownItem = {
+//   items: [
+//     {
+//       text: "Репозиторий",
+//       type: NavigationItemType.Link,
+//       url: "/features/repository/",
+//     },
+//     {
+//       text: "Документация",
+//       type: NavigationItemType.Link,
+//       url: "/docs/",
+//     },
+//     {
+//       text: "Скринкаст",
+//       type: NavigationItemType.Link,
+//       url: "/features/screencast/",
+//     },
+//     {
+//       text: "Презентация",
+//       type: NavigationItemType.Link,
+//       url: "/features/presentation/",
+//     },
+//     {
+//       text: "Команда",
+//       type: NavigationItemType.Link,
+//       url: "/features/team/",
+//     },
+//   ],
+//   text: "О нас",
+//   hidePopup: () => false,
+//   isActive: false,
+//   type: NavigationItemType.Dropdown,
+// };
 
 function useProps(theme: string, setTheme: () => void): NavigationData {
   const token = localStorage.getItem("token");
+  const roles = getRoleFromToken();
   const { isLoggined } = useContext(Context);
-
-  console.log("token expired:", isExpired(token as string));
-  console.log("payload:", getPayload(token as string));
-  console.log("isLoggined:", isLoggined);
 
   return {
     header: {
@@ -147,19 +197,22 @@ function useProps(theme: string, setTheme: () => void): NavigationData {
         },
         {
           //@ts-ignore
+          type: "competitions",
+        },
+        {
+          //@ts-ignore
           type: "regional",
         },
         {
           //@ts-ignore
-          type: "calendar",
+          type: "faq",
         },
       ],
       //@ts-ignore
       rightItems:
         (!token || isExpired(token)) && !isLoggined // Не залогинен
           ? [
-              HeaderHelpLinks,
-              { type: "custom-item" },
+              { type: "login-button" },
               {
                 type: "theme-switcher",
                 theme: theme,
@@ -168,9 +221,14 @@ function useProps(theme: string, setTheme: () => void): NavigationData {
             ]
           : // Залогинен
             [
-              HeaderHelpLinks,
-              { type: "fsp-regional" },
-              { type: "custom-item" },
+              ...(roles?.includes("fsp_staff") ||
+              roles?.includes("fsp_region_head") ||
+              roles?.includes("fsp_region_staff") ||
+              roles?.includes("root")
+                ? [{ type: "my-federation" }, { type: "applications" }]
+                : roles?.includes("sportsman")
+                  ? [{ type: "my-competitions" }, { type: "my-profile" }]
+                  : []),
               { type: "notify" },
               {
                 type: "theme-switcher",
@@ -200,12 +258,16 @@ function getNavigationCustoms(): CustomItems {
   return {
     general: General,
     regional: Regional,
-    "custom-item": LoginButton,
+    "login-button": LoginButton,
     notify: InsideAPopup,
     "theme-switcher": ThemeButton,
-    "fsp-regional": FSPRegion,
     user: User,
-    calendar: Calendar,
+    faq: FAQ,
+    competitions: Competitions,
+    "my-profile": Profile,
+    "my-competitions": MyCompetitions,
+    "my-federation": Federation,
+    applications: Applications,
   };
 }
 
