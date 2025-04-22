@@ -7,6 +7,7 @@ on:
         # - "Build and Deploy docs"
         - "Sync Repository Content"
         - "Deploy Serverless Service - users"
+        - "Deploy Serverless Service - organizations"
     types:
       - completed
 

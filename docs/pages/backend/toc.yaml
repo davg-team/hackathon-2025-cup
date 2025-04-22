@@ -6,66 +6,66 @@ items:
     href: backend_index_.md
   - name: Структура данных
     href: data.md
-  - name: События
-    href: events/index.md
-    items:
-      - name: Описание
-        href: events/description.md
-      - name: openapi
-        include:
-          path: openapi_events
-          includers:
-            - name: openapi
-              input: openapi_events.yaml
-          mode: link
-  - name: Организации
-    href: organizations/index.md
-    items:
-      - name: Описание
-        href: organizations/description.md
-      - name: openapi
-        include:
-          path: openapi_organizations
-          includers:
-            - name: openapi
-              input: openapi_organizations.yaml
-          mode: link
-  - name: Отчеты
-    href: reports/index.md
-    items:
-      - name: Описание
-        href: reports/description.md
-      - name: openapi
-        include:
-          path: openapi_reports
-          includers:
-            - name: openapi
-              input: openapi_reports.yaml
-          mode: link
-  - name: Команды
-    href: teams/index.md
-    items:
-      - name: Описание
-        href: teams/description.md
-      - name: openapi
-        include:
-          path: openapi_teams
-          includers:
-            - name: openapi
-              input: openapi_teams.yaml
-          mode: link
-  - name: Аналитика
-    href: analytics/index.md
-    items:
-      - name: Описание
-        href: analytics/description.md
-      - name: openapi
-        include:
-          path: openapi_analytics
-          includers:
-            - name: openapi
-              input: openapi_analytics.yaml
-          mode: link
+  # - name: События
+  #   href: events/index.md
+  #   items:
+  #     - name: Описание
+  #       href: events/description.md
+  #     - name: openapi
+  #       include:
+  #         path: openapi_events
+  #         includers:
+  #           - name: openapi
+  #             input: openapi_events.yaml
+  #         mode: link
+  # - name: Организации
+  #   href: organizations/index.md
+  #   items:
+  #     - name: Описание
+  #       href: organizations/description.md
+  #     - name: openapi
+  #       include:
+  #         path: openapi_organizations
+  #         includers:
+  #           - name: openapi
+  #             input: openapi_organizations.yaml
+  #         mode: link
+  # - name: Отчеты
+  #   href: reports/index.md
+  #   items:
+  #     - name: Описание
+  #       href: reports/description.md
+  #     - name: openapi
+  #       include:
+  #         path: openapi_reports
+  #         includers:
+  #           - name: openapi
+  #             input: openapi_reports.yaml
+  #         mode: link
+  # - name: Команды
+  #   href: teams/index.md
+  #   items:
+  #     - name: Описание
+  #       href: teams/description.md
+  #     - name: openapi
+  #       include:
+  #         path: openapi_teams
+  #         includers:
+  #           - name: openapi
+  #             input: openapi_teams.yaml
+  #         mode: link
+  # - name: Аналитика
+  #   href: analytics/index.md
+  #   items:
+  #     - name: Описание
+  #       href: analytics/description.md
+  #     - name: openapi
+  #       include:
+  #         path: openapi_analytics
+  #         includers:
+  #           - name: openapi
+  #             input: openapi_analytics.yaml
+  #         mode: link
   - name: Сервис пользователей
     href: user-service/index.md
     # href: user-service/user-service_index.yaml
