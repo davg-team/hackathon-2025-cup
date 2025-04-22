@@ -28,6 +28,6 @@ export async function updateToken(token: string) {
 }
 
 // TODO
-export function create(token: string) {}
+// export function create(token: string) {}
 // TODO
-export function sendOAuthCode(service: string, code: string) {}
+// export function sendOAuthCode(service: string, code: string) {}
