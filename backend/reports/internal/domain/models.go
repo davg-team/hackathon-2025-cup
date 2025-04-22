@@ -1,6 +1,6 @@
 package domain
 
-type Victory struct {
+type Result struct {
 	ID      string `json:"id" gorm:"primary_key"`
 	EventID string `json:"event_id"`
 	UserID  string `json:"user_id"`

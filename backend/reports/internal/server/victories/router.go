@@ -10,24 +10,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type VictoriesService interface {
-	Victories(ctx context.Context) ([]domain.Victory, error)
-	UsersVictories(ctx context.Context, userID string) ([]domain.Victory, error)
-	TeamsVictories(ctx context.Context, teamID string) ([]domain.Victory, error)
-	EventsVictories(ctx context.Context, eventID string) ([]domain.Victory, error)
-	Victory(ctx context.Context, id string) (*domain.Victory, error)
-	CreateVictory(ctx context.Context, victory *requests.VictoryPost) error
-	UpdateVictory(ctx context.Context, id string, victory *requests.VictoryPost) error
-	DeleteVictory(ctx context.Context, id string) error
+type ResultsService interface {
+	Results(ctx context.Context) ([]domain.Result, error)
+	UsersResults(ctx context.Context, userID string) ([]domain.Result, error)
+	TeamsResults(ctx context.Context, teamID string) ([]domain.Result, error)
+	EventsResults(ctx context.Context, eventID string) ([]domain.Result, error)
+	Result(ctx context.Context, id string) (*domain.Result, error)
+	CreateResult(ctx context.Context, result *requests.ResultPost) error
+	UpdateResult(ctx context.Context, id string, result *requests.ResultPost) error
+	DeleteResult(ctx context.Context, id string) error
 }
 
-type VictoriesRouter struct {
+type ResultsRouter struct {
 	router  *gin.RouterGroup
-	service VictoriesService
+	service ResultsService
 }
 
-func Register(RouterGroup *gin.RouterGroup, service VictoriesService) *VictoriesRouter {
-	router := VictoriesRouter{
+func Register(RouterGroup *gin.RouterGroup, service ResultsService) *ResultsRouter {
+	router := ResultsRouter{
 		router:  RouterGroup,
 		service: service,
 	}
@@ -37,112 +37,112 @@ func Register(RouterGroup *gin.RouterGroup, service VictoriesService) *Victories
 	return &router
 }
 
-func (r *VictoriesRouter) Victories(ctx *gin.Context) {
-	victories, err := r.service.Victories(ctx)
+func (r *ResultsRouter) Results(ctx *gin.Context) {
+	results, err := r.service.Results(ctx)
 	if err != nil {
 		utils.HandleError(err, ctx)
 		return
 	}
 
-	ctx.JSON(200, victories)
+	ctx.JSON(200, results)
 }
 
-func (r *VictoriesRouter) UsersVictories(ctx *gin.Context) {
+func (r *ResultsRouter) UsersResults(ctx *gin.Context) {
 	userID := ctx.Param("id")
-	victories, err := r.service.UsersVictories(ctx, userID)
+	results, err := r.service.UsersResults(ctx, userID)
 	if err != nil {
 		utils.HandleError(err, ctx)
 		return
 	}
 
-	ctx.JSON(200, victories)
+	ctx.JSON(200, results)
 }
 
-func (r *VictoriesRouter) TeamsVictories(ctx *gin.Context) {
+func (r *ResultsRouter) TeamsResults(ctx *gin.Context) {
 	teamID := ctx.Param("id")
-	victories, err := r.service.TeamsVictories(ctx, teamID)
+	results, err := r.service.TeamsResults(ctx, teamID)
 	if err != nil {
 		utils.HandleError(err, ctx)
 		return
 	}
 
-	ctx.JSON(200, victories)
+	ctx.JSON(200, results)
 }
 
-func (r *VictoriesRouter) EventsVictories(ctx *gin.Context) {
+func (r *ResultsRouter) EventsResults(ctx *gin.Context) {
 	eventID := ctx.Param("id")
-	victories, err := r.service.EventsVictories(ctx, eventID)
+	results, err := r.service.EventsResults(ctx, eventID)
 	if err != nil {
 		utils.HandleError(err, ctx)
 		return
 	}
 
-	ctx.JSON(200, victories)
+	ctx.JSON(200, results)
 }
 
-func (r *VictoriesRouter) Victory(ctx *gin.Context) {
+func (r *ResultsRouter) Result(ctx *gin.Context) {
 	id := ctx.Param("id")
-	victory, err := r.service.Victory(ctx, id)
+	result, err := r.service.Result(ctx, id)
 	if err != nil {
 		utils.HandleError(err, ctx)
 		return
 	}
 
-	ctx.JSON(200, victory)
+	ctx.JSON(200, result)
 }
 
-func (r *VictoriesRouter) CreateVictory(ctx *gin.Context) {
-	var victory requests.VictoryPost
-	if err := ctx.ShouldBindJSON(&victory); err != nil {
+func (r *ResultsRouter) CreateResult(ctx *gin.Context) {
+	var result requests.ResultPost
+	if err := ctx.ShouldBindJSON(&result); err != nil {
 		ctx.JSON(400, err)
 		return
 	}
 
-	if err := r.service.CreateVictory(ctx, &victory); err != nil {
+	if err := r.service.CreateResult(ctx, &result); err != nil {
 		utils.HandleError(err, ctx)
 		return
 	}
 
-	ctx.JSON(200, "victory created")
+	ctx.JSON(200, "result created")
 }
 
-func (r *VictoriesRouter) UpdateVictory(ctx *gin.Context) {
+func (r *ResultsRouter) UpdateResult(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	var victory requests.VictoryPost
-	if err := ctx.ShouldBindJSON(&victory); err != nil {
+	var result requests.ResultPost
+	if err := ctx.ShouldBindJSON(&result); err != nil {
 		ctx.JSON(400, err)
 		return
 	}
 
-	if err := r.service.UpdateVictory(ctx, id, &victory); err != nil {
+	if err := r.service.UpdateResult(ctx, id, &result); err != nil {
 		utils.HandleError(err, ctx)
 		return
 	}
 
-	ctx.JSON(200, "victory updated")
+	ctx.JSON(200, "result updated")
 }
 
-func (r *VictoriesRouter) DeleteVictory(ctx *gin.Context) {
+func (r *ResultsRouter) DeleteResult(ctx *gin.Context) {
 	id := ctx.Param("id")
 
-	if err := r.service.DeleteVictory(ctx, id); err != nil {
+	if err := r.service.DeleteResult(ctx, id); err != nil {
 		utils.HandleError(err, ctx)
 		return
 	}
 
-	ctx.JSON(200, "victory deleted")
+	ctx.JSON(200, "result deleted")
 }
 
-func (r *VictoriesRouter) init() {
-	group := r.router.Group("/victories")
+func (r *ResultsRouter) init() {
+	group := r.router.Group("/results")
 
-	group.GET("/", r.Victories)
-	group.GET("/users/:id", r.UsersVictories)
-	group.GET("/teams/:id", r.TeamsVictories)
-	group.GET("/events/:id", r.EventsVictories)
-	group.GET("/:id", r.Victory)
-	group.POST("/", r.CreateVictory)
-	group.PUT("/:id", r.UpdateVictory)
-	group.DELETE("/:id", r.DeleteVictory)
+	group.GET("/", r.Results)
+	group.GET("/users/:id", r.UsersResults)
+	group.GET("/teams/:id", r.TeamsResults)
+	group.GET("/events/:id", r.EventsResults)
+	group.GET("/:id", r.Result)
+	group.POST("/", r.CreateResult)
+	group.PUT("/:id", r.UpdateResult)
+	group.DELETE("/:id", r.DeleteResult)
 }
