@@ -1,11 +1,14 @@
 import json
 import logging
-import requests
 import time
+
+import requests
 from bs4 import BeautifulSoup
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 # Create a logger
 logger = logging.getLogger(__name__)
@@ -104,52 +107,68 @@ regions = {
 
 
 logger.info("parsing data")
-r = requests.get('https://fsp-russia.com/region/regions')
-soup = BeautifulSoup(r.text, 'html.parser')
+r = requests.get("https://fsp-russia.ru/region/regions/")
+soup = BeautifulSoup(r.text, "html.parser")
 
 html_content = r.text
 
-soup = BeautifulSoup(html_content, 'html.parser')
+soup = BeautifulSoup(html_content, "html.parser")
 
 regions_with_district_name = []
 
-for item in soup.find_all(class_='accordion-item'):
-    header = item.find('h4')
+for item in soup.find_all(class_="accordion-item"):
+    header = item.find("h4")
     if header:
         district_name = header.text.strip()
-        region = item.find('div', class_='cont sub').find(
-            'p', class_='white_region').text.strip()
-        leader = item.find('div', class_='cont ruk').find(
-            'p', class_='white_region').text.strip()
-        contacts = item.find('div', class_='cont con').find(
-            'p', class_='white_region').text.strip()
-        regions_with_district_name.append({
-            'district': district_name,
-            'region': region,
-            'manager': leader,
-            'email': contacts
-        })
+        region = (
+            item.find("div", class_="cont sub")
+            .find("p", class_="white_region")
+            .text.strip()
+        )
+        leader = (
+            item.find("div", class_="cont ruk")
+            .find("p", class_="white_region")
+            .text.strip()
+        )
+        contacts = (
+            item.find("div", class_="cont con")
+            .find("p", class_="white_region")
+            .text.strip()
+        )
+        regions_with_district_name.append(
+            {
+                "district": district_name,
+                "region": region,
+                "manager": leader,
+                "email": contacts,
+            }
+        )
 
 
 regions_full = []
 
-for contact in soup.find_all(class_='contact_td'):
-    region_elem = contact.find(class_='cont sub')
-    leader_elem = contact.find(class_='cont ruk')
-    contact_elem = contact.find(class_='cont con')
+for contact in soup.find_all(class_="contact_td"):
+    region_elem = contact.find(class_="cont sub")
+    leader_elem = contact.find(class_="cont ruk")
+    contact_elem = contact.find(class_="cont con")
 
-    region = region_elem.find(
-        'p', class_='white_region').text.strip() if region_elem else 'Не указано'
-    leader = leader_elem.find(
-        'p', class_='white_region').text.strip() if leader_elem else 'Не указано'
-    contact_info = contact_elem.find(
-        'p', class_='white_region').text.strip() if contact_elem else 'Не указано'
+    region = (
+        region_elem.find("p", class_="white_region").text.strip()
+        if region_elem
+        else "Не указано"
+    )
+    leader = (
+        leader_elem.find("p", class_="white_region").text.strip()
+        if leader_elem
+        else "Не указано"
+    )
+    contact_info = (
+        contact_elem.find("p", class_="white_region").text.strip()
+        if contact_elem
+        else "Не указано"
+    )
 
-    regions_full.append({
-        'region': region,
-        'manager': leader,
-        'email': contact_info
-    })
+    regions_full.append({"region": region, "manager": leader, "email": contact_info})
 regions_full = regions_full[1:]
 
 
@@ -158,8 +177,12 @@ districts = []
 for i in range(len(regions_with_district_name)):
     z = i + 1
     if z != len(regions_with_district_name):
-        districts += [(regions_with_district_name[i]["district"],
-                       regions_with_district_name[z]["region"])]
+        districts += [
+            (
+                regions_with_district_name[i]["district"],
+                regions_with_district_name[z]["region"],
+            )
+        ]
     else:
         z -= 1
         districts += [(regions_with_district_name[i]["district"], "")]
@@ -170,18 +193,20 @@ ready = []
 for district in districts:
     for region in regions_full:
         if region["region"] != district[1] and region.get("district") == None:
-            ready += [{
-                "district": district[0],
-                "region": region["region"],
-                "managers": [region["manager"]],
-                "email": region["email"]
-            }]
+            ready += [
+                {
+                    "district": district[0],
+                    "region": region["region"],
+                    "managers": [region["manager"]],
+                    "email": region["email"],
+                }
+            ]
         else:
-            regions_full = regions_full[regions_full.index(region):]
+            regions_full = regions_full[regions_full.index(region) :]
             break
 
 
-URL = "https://calendar.life-course.online/api/organizations"
+URL = "https://fsp-platform.ru/api/organizations/?"
 
 logger.info("start updating organizations")
 for region in ready:
@@ -190,6 +215,8 @@ for region in ready:
     response = requests.post(URL, data=json.dumps(region), verify=False)
     time.sleep(0.5)
     if response.status_code != 200:
-        logger.error(f"Error creating/updating organization {region["region"]}: {response.text}")
+        logger.error(
+            f"Error creating/updating organization {region['region']}: {response.text}"
+        )
 
 logger.info("finished updating organizations")

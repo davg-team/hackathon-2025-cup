@@ -8,6 +8,7 @@ on:
         - "Sync Repository Content"
         - "Deploy Serverless Service - users"
         - "Deploy Serverless Service - organizations"
+        - "Deploy Serverless Service - files"
     types:
       - completed
 
