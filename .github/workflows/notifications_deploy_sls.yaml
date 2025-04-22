@@ -1,4 +1,4 @@
-name: Deploy Serverless Service - users
+name: Deploy Serverless Service - notifications
 
 on:
   push:
@@ -40,4 +40,4 @@ jobs:
     - name: Yappa Deploy
       working-directory: ${{ env.SERVICE_PATH }}
       run: |
-        yappa deploy direct yappa_api.yaml
+        yappa deploy direct yappa_notifications.yaml

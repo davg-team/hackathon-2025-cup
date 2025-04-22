@@ -4,11 +4,12 @@ on:
   workflow_run:
     workflows:
         - "Build and Deploy Frontend"
-        # - "Build and Deploy docs"
+        - "Build and Deploy docs"
         - "Sync Repository Content"
         - "Deploy Serverless Service - users"
         - "Deploy Serverless Service - organizations"
         - "Deploy Serverless Service - files"
+        - "Deploy Serverless Service - notifications"
     types:
       - completed
 
