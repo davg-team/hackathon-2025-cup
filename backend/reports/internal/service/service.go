@@ -6,6 +6,7 @@ import (
 
 	"github.com/davg/internal/domain"
 	"github.com/davg/internal/domain/requests"
+	customerrors "github.com/davg/pkg/errors"
 	"github.com/google/uuid"
 )
 
@@ -70,6 +71,9 @@ func (s *Service) CreateResult(ctx context.Context, resultToCreate *requests.Res
 
 	id := uuid.New().String()
 
+	log := s.log.With("op", op)
+	log.Info("creating result", "id", id)
+
 	result := &domain.Result{
 		ID:      id,
 		EventID: resultToCreate.EventID,
@@ -78,15 +82,38 @@ func (s *Service) CreateResult(ctx context.Context, resultToCreate *requests.Res
 		Place:   resultToCreate.Place,
 	}
 
-	log := s.log.With("op", op)
-	log.Info("creating result", "id", result.ID)
-
 	if err := s.storage.CreateResult(ctx, result); err != nil {
 		log.Error("failed to create result", "id", result.ID, err)
 		return err
 	}
 
 	log.Info("result created", "id", result.ID)
+
+	return nil
+}
+
+func (s *Service) CreateResults(ctx context.Context, resultsToCreate *requests.ComplexResultPost) error {
+	const op = "CreateResults"
+
+	log := s.log.With("op", op)
+	log.Info("creating results", "count", len(resultsToCreate.Teams))
+
+	for _, teamResult := range resultsToCreate.Teams {
+		for _, userID := range teamResult.MembersIDs {
+			result := &requests.ResultPost{
+				EventID: resultsToCreate.EventID,
+				UserID:  userID,
+				TeamID:  teamResult.TeamID,
+				Place:   teamResult.Place,
+			}
+
+			if err := s.CreateResult(ctx, result); err != nil {
+				log.Error("failed to create result", "id", userID, err)
+				return err
+			}
+		}
+
+	}
 
 	return nil
 }
@@ -105,7 +132,7 @@ func (s *Service) UpdateResult(ctx context.Context, id string, resultToUpdate *r
 
 	if resultFound == nil {
 		log.Error("result not found", "id", id)
-		return nil
+		return customerrors.ErrNotFound
 	}
 
 	log.Info("result found", "id", id)
@@ -142,7 +169,7 @@ func (s *Service) DeleteResult(ctx context.Context, id string) error {
 
 	if result == nil {
 		log.Error("result not found", "id", id)
-		return nil
+		return customerrors.ErrNotFound
 	}
 
 	if err := s.storage.DeleteResult(ctx, id); err != nil {

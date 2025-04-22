@@ -7,7 +7,8 @@ import (
 	"time"
 
 	"github.com/davg/internal/config"
-	"github.com/davg/internal/server/victories"
+	"github.com/davg/internal/server/results"
+
 	"github.com/davg/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -29,7 +30,7 @@ func New(VictoriesService *service.Service) *Server {
 
 	group := r.Group("/api")
 
-	victories.Register(group, VictoriesService)
+	results.Register(group, VictoriesService)
 
 	return &Server{server: httpServer, engine: r}
 }

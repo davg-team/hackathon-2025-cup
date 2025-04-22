@@ -1,4 +1,4 @@
-package victories
+package results
 
 import (
 	"context"
@@ -17,6 +17,7 @@ type ResultsService interface {
 	EventsResults(ctx context.Context, eventID string) ([]domain.Result, error)
 	Result(ctx context.Context, id string) (*domain.Result, error)
 	CreateResult(ctx context.Context, result *requests.ResultPost) error
+	CreateResults(ctx context.Context, results *requests.ComplexResultPost) error
 	UpdateResult(ctx context.Context, id string, result *requests.ResultPost) error
 	DeleteResult(ctx context.Context, id string) error
 }
@@ -106,6 +107,21 @@ func (r *ResultsRouter) CreateResult(ctx *gin.Context) {
 	ctx.JSON(200, "result created")
 }
 
+func (r *ResultsRouter) CreateResults(ctx *gin.Context) {
+	var results requests.ComplexResultPost
+	if err := ctx.ShouldBindJSON(&results); err != nil {
+		ctx.JSON(400, err)
+		return
+	}
+
+	if err := r.service.CreateResults(ctx, &results); err != nil {
+		utils.HandleError(err, ctx)
+		return
+	}
+
+	ctx.JSON(200, "results created")
+}
+
 func (r *ResultsRouter) UpdateResult(ctx *gin.Context) {
 	id := ctx.Param("id")
 
@@ -143,6 +159,7 @@ func (r *ResultsRouter) init() {
 	group.GET("/events/:id", r.EventsResults)
 	group.GET("/:id", r.Result)
 	group.POST("/", r.CreateResult)
+	group.POST("/banch", r.CreateResults)
 	group.PUT("/:id", r.UpdateResult)
 	group.DELETE("/:id", r.DeleteResult)
 }

@@ -6,3 +6,14 @@ type ResultPost struct {
 	TeamID  string `json:"team_id"`
 	Place   string `json:"place"`
 }
+
+type ComplexResultPost struct {
+	EventID string       `json:"event_id"`
+	Teams   []TeamResult `json:"teams"`
+}
+
+type TeamResult struct {
+	TeamID     string   `json:"team_id"`
+	MembersIDs []string `json:"members_ids"`
+	Place      string   `json:"place"`
+}
