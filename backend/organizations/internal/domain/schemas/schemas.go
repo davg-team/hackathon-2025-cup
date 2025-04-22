@@ -17,7 +17,7 @@ type OrganizationPreUpdateSchema struct {
 }
 
 type OrganizationPreCreateSchema struct {
-	ID       string `json:"id"`
+	ID       string `json:"id" gorm:"primary_key"`
 	District string `json:"district"`
 	Region   string `json:"region"`
 	Managers string `json:"managers"`
