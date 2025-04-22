@@ -1,33 +1,35 @@
-# name: Build and Deploy docs
+name: Build and Deploy docs
 
-# on:
-#   push:
-#     branches:
-#       - main
-#     paths:
-#       - 'docs/**'
-#   workflow_dispatch:
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+  workflow_dispatch:
 
-# jobs:
-#   build-and-deploy:
-#     runs-on: ubuntu-latest
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v3
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-#     - name: Set up Node.js
-#       uses: actions/setup-node@v3
-#       with:
-#         node-version: 20
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
 
-#     - name: Install yfm
-#       run: |
-#         npm i @diplodoc/cli -g
+    - name: Install yfm
+      run: |
+        npm i @diplodoc/cli -g
 
-#     - name: Build docs
-#       run: |
-#         yfm -i ./docs -o ./docs-out --output-format html
+    - name: Build docs
+      run: |
+        yfm -i ./docs -o ./docs-out --output-format html
 
-#     - name: Deploy to S3
-#       run: |
-#         yfm publish -i ./docs-out --endpoint https://storage.yandexcloud.net --bucket ${{ secrets.AWS_S3_BUCKET }} --access-key-id ${{ secrets.AWS_ACCESS_KEY_ID }} --secret-access-key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --prefix docs --region ru-central1
+    - name: Deploy to S3
+      run: |
+        yfm publish -i ./docs-out --endpoint https://storage.yandexcloud.net --bucket ${{ secrets.AWS_S3_BUCKET }} --access-key-id ${{ secrets.AWS_ACCESS_KEY_ID }} --secret-access-key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --prefix docs --region ru-central1
+
+        
