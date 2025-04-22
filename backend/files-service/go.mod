@@ -1,6 +1,6 @@
 module github.com/davg/files-service
 
-go 1.22.0
+go 1.21.9
 
 require github.com/ilyakaznacheev/cleanenv v1.5.0
 
