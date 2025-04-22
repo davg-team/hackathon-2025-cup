@@ -4,5 +4,5 @@ server:
   port: 8080
 
 storage:
-  dsn: grpcs://ydb.serverless.yandexcloud.net:2135/ru-central1/b1gpldpf3veopdl8oo4c/etnui3k90esnlqrq6ll0
+  dsn: grpcs://ydb.serverless.yandexcloud.net:2135/ru-central1/b1gpldpf3veopdl8oo4c/etn2h1b8dp465keqs07u
   path_to_key: ./keys/authorized_key.json
