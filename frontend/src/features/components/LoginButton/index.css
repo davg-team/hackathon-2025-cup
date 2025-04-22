@@ -1,0 +1,46 @@
+.modal-container {
+  width: 500px;
+  padding: 1rem;
+}
+
+
+.full-width {
+  width: 100%;
+}
+
+.popup__item {
+  min-height: 55px;
+  max-height: 55px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 3px solid var(--g-color-text-link);
+  padding: .3rem;
+  border-radius: 1rem;
+  transition: all .3s;
+}
+
+@media (hover: hover) {
+  .popup__item:hover {
+    border: 3px solid var(--g-color-text-link);
+    transform: scale(1.01);
+  }
+}
+
+.popup__item img {
+  width: 40px;
+  height: 100%;
+}
+
+.popup__item .text {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+ .spinner {
+  
+ }
+
+ .col-margin {
+  margin-bottom: 1rem;
+ }

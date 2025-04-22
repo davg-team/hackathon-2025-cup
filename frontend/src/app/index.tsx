@@ -1,0 +1,140 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import {
+  useState,
+  useEffect,
+  createContext,
+  useLayoutEffect,
+  useContext,
+} from "react";
+import AppContextProvider, { Context } from "app/Context";
+import Router from "app/Router";
+import {
+  ThemeProvider,
+  ToasterComponent,
+  ToasterProvider,
+} from "@gravity-ui/uikit";
+import "app/styles/index.css";
+import "@gravity-ui/uikit/styles/fonts.css";
+import "@gravity-ui/uikit/styles/styles.css";
+import "app/styles/styles.css";
+import { PageConstructorProvider, Theme } from "@gravity-ui/page-constructor";
+import { ErrorBoundary } from "react-error-boundary";
+import { getPayload, isExpired, deleteToken, setToken } from "shared/jwt-tools";
+import { getCookie } from "shared/tools";
+import { updateToken } from "api/auth";
+
+// Создаем контекст темы
+export const ThemeContext = createContext({
+  theme: "light",
+  toggleTheme: () => {},
+});
+
+const App = () => {
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+  // @ts-ignore
+  const { setIsLoggined } = useContext(Context);
+
+  useEffect(() => {
+    try {
+      const storedTheme = localStorage.getItem("theme");
+      if (storedTheme === "light" || storedTheme === "dark") {
+        setTheme(storedTheme);
+      }
+    } catch (error) {
+      console.error("can't get theme from localstorage", error);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    try {
+      localStorage.setItem("theme", newTheme);
+    } catch (error) {
+      console.error("can't save them in localstorage", error);
+    }
+  };
+
+  useLayoutEffect(() => {
+    const tokenFromCookie = getCookie("token");
+    const tokenFromLocalStorage = localStorage.getItem("token");
+    let token = null;
+
+    if (!tokenFromCookie || !tokenFromLocalStorage) {
+      deleteToken();
+    }
+
+    if (tokenFromCookie && tokenFromLocalStorage) {
+      const tokenFromCookiePayload = getPayload(tokenFromCookie);
+      const tokenFromLocalStoragePayload = getPayload(tokenFromLocalStorage);
+
+      if (!tokenFromCookiePayload || !tokenFromLocalStoragePayload) {
+        deleteToken();
+      }
+
+      // @ts-ignore
+      if (tokenFromCookiePayload.iat > tokenFromLocalStoragePayload.iat) {
+        token = tokenFromCookie;
+      } else {
+        token = tokenFromLocalStorage;
+      }
+    } else if (tokenFromCookie) {
+      token = tokenFromCookie;
+    } else if (tokenFromLocalStorage) {
+      token = tokenFromLocalStorage;
+    } else {
+      deleteToken();
+      return;
+    }
+
+    if (token) {
+      try {
+        if (isExpired(token)) {
+          deleteToken();
+          return;
+        }
+        setToken(token);
+      } catch {
+        console.log("can't set token");
+        deleteToken();
+        return;
+      }
+    }
+
+    updateToken(token).then((res) => {
+      if (res) {
+        setIsLoggined(true);
+      } else {
+        setIsLoggined(false);
+      }
+    });
+  }, []);
+
+  return (
+    <ErrorBoundary
+      fallbackRender={({ error }) => (
+        <div role="alert">
+          <p>Произошла ошибка:</p>
+          <pre style={{ color: "red" }}>{error.message}</pre>
+        </div>
+      )}
+    >
+      <ThemeContext.Provider value={{ theme, toggleTheme }}>
+        <ThemeProvider theme={theme}>
+          <PageConstructorProvider
+            theme={theme === "light" ? Theme.Light : Theme.Dark}
+          >
+            <ToasterProvider>
+              <AppContextProvider>
+                <ToasterComponent />
+                <Router theme={theme} setTheme={toggleTheme} />
+              </AppContextProvider>
+            </ToasterProvider>
+          </PageConstructorProvider>
+        </ThemeProvider>
+      </ThemeContext.Provider>
+    </ErrorBoundary>
+  );
+};
+
+export default App;
