@@ -1,6 +1,6 @@
 module github.com/davg/files-service
 
-go 1.21
+go 1.21.9
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.36.1
