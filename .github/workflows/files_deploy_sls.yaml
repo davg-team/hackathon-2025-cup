@@ -19,7 +19,6 @@ jobs:
       working-directory: ./backend/files-service
       run: |
         # Записываем данные в файл, используя printf для сохранения пустых строк
-        # printf "%s" '${{ secrets.SA_JSON_CREDENTIALS }}' > keys/authorized_key.json
         printf "%s" '${{ secrets.ENV }}' > ".ENV"
     - name: Prepare deployment package in root
       run: |
