@@ -76,10 +76,11 @@ items:
         href: applications/description.md
       - name: openapi
         include:
-          path: openapi_applications
+          path: openapi_teams
           includers:
             - name: openapi
               input: openapi_applications.yaml
+          mode: link
 
   - name: Сервис пользователей
     href: user-service/index.md
