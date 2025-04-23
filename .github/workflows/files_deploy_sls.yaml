@@ -47,3 +47,4 @@ jobs:
           ENV_TYPE=prod
         include: |
           ./
+          .ENV
