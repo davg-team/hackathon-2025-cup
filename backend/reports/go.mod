@@ -41,11 +41,10 @@ require (
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
-	github.com/google/uuid v1.6.0 // indirect
+	github.com/google/uuid v1.6.0
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jonboulle/clockwork v0.4.0 // indirect
-	github.com/pkg/errors v0.9.1
 	github.com/ydb-platform/ydb-go-genproto v0.0.0-20241002120727-5acc94bcb119 // indirect
 	github.com/ydb-platform/ydb-go-sdk/v3 v3.81.4 // indirect
 	github.com/ydb-platform/ydb-go-yc v0.12.3
