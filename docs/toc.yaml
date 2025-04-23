@@ -26,19 +26,19 @@ navigation:
 
 items:
   - name: Введение
-    href: pages/description.md
-  - name: Описание
     href: pages/introduction.md
+  - name: Описание
+    href: pages/description.md
   - name: Архитектура
     href: pages/architecture.md
   - name: Фронтенд
-    expanded: false
+    expanded: true
     href: pages/frontend/frontend_index_.md
     include:
       mode: link
       path: pages/frontend/toc.yaml
   - name: Бэкенд
-    expanded: false
+    expanded: true
     href: pages/backend/backend_index_.md
     include:
       mode: root_merge
