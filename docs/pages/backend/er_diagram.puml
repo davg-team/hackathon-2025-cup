@@ -1,0 +1,95 @@
+@startuml ERD
+
+entity users {
+  * user_id : Utf8
+  --
+  first_name : Utf8
+  last_name : Utf8
+  second_name : Utf8
+  email : Utf8
+  phone : Utf8
+  avatar : Utf8
+  region_id : Utf8
+  roles : Json
+  notification_ways : Json
+  status : Utf8
+  created_at : Datetime
+}
+
+entity regions {
+  * id : Utf8
+  --
+  name : Utf8
+}
+
+entity organizations {
+  * id : Utf8
+  --
+  district : Utf8
+  region : Utf8
+  manager : Utf8
+  email : Utf8
+}
+
+entity events {
+  * id : Utf8
+  --
+  organization_id : Utf8
+  title : Utf8
+  type : Utf8
+  discipline : Utf8
+  start_date : Timestamp
+  end_date : Timestamp
+  is_open : Bool
+  status : Utf8
+}
+
+entity teams {
+  * id : Utf8
+  --
+  name : Utf8
+  fsp_id : Utf8
+  captain_id : Utf8
+}
+
+entity applications {
+  * id : Utf8
+  --
+  event_id : Utf8
+  team_id : Utf8
+  captain_id : Utf8
+  application_status : Utf8
+  created_at : Timestamp
+}
+
+entity team_applications {
+  * id : Utf8
+  --
+  team_id : Utf8
+  applicant_id : Utf8
+  application_state : Utf8
+  created_at : Timestamp
+}
+
+entity results {
+  * id : String
+  --
+  event_id : String
+  user_id : String
+  team_id : String
+  place : String
+}
+
+' Связи
+users }|..|{ regions : "region_id"
+organizations }|..|{ events : "organization_id"
+events }|..|{ applications : "event_id"
+teams }|..|{ applications : "team_id"
+teams }|..|{ team_applications : "team_id"
+users }|..|{ applications : "captain_id"
+users }|..|{ team_applications : "applicant_id"
+applications }|..|{ team_applications : "id"
+results }|--|| events : "event_id"
+results }|--|| users : "user_id"
+results }|--|| teams : "team_id"
+@enduml

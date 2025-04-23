@@ -1,189 +1,161 @@
 # Структура базы данных
 
-В данном документе описана структура базы данных проекта. База данных состоит из нескольких таблиц, каждая из которых отвечает за хранение определённых данных, используемых в системе.
+В этой секции описана детальная структура СУБД проекта на YDB — ключевые таблицы, их поля, связи, индексы и принципы хранения данных.
 
 ---
 
-## Таблица `auth_provider_relations`
+## Общее обоснование выбора YDB
 
-**Назначение**: Хранение информации о связях пользователей с провайдерами аутентификации.
-
-**Поля**:  
-- `provider_slug` (`Utf8`): Уникальный идентификатор провайдера аутентификации.  
-- `provider_service` (`Utf8`): Название сервиса провайдера.  
-- `provider_user_id` (`Utf8`): Идентификатор пользователя у провайдера.  
-- `user_id` (`Utf8`): Уникальный идентификатор пользователя в системе.  
-- `linked_at` (`Datetime`): Дата и время связывания учетной записи.  
-- `used_at` (`Datetime`): Дата и время последнего использования связи.  
-
-**Первичный ключ**: `provider_slug`, `provider_user_id`.
+- **Масштабируемость и распределённость**: YDB автоматически шардирует данные, обеспечивая линейный рост производительности при увеличении нагрузки.
+- **Высокая доступность**: репликация и синхронный журнал транзакций обеспечивают устойчивость к сбоям.
+- **Автоматическое партиционирование**: встроенные политики AUTO_PARTITIONING позволяют оптимизировать хранение по объёму и нагрузке.
+- **Поддержка ACID**: гарантированная целостность транзакций даже в распределённом окружении.
+- **Интеграция JSON**: удобное хранение гибких структур (например, `members`, `roles`, `notification_ways`).
 
 ---
 
-## Таблица `events`
+## Принципы хранения и обработки данных
 
-**Назначение**: Хранение информации о событиях (мероприятиях).
-
-**Поля**:  
-- `id` (`Utf8`): Уникальный идентификатор события.  
-- `organization_id` (`Utf8`, `NOT NULL`): Идентификатор организации, проводящей событие.  
-- `title` (`Utf8`, `NOT NULL`): Название события.  
-- `description` (`Utf8`): Описание события.  
-- `type` (`Utf8`, `NOT NULL`): Тип события.  
-- `discipline` (`Utf8`, `NOT NULL`): Дисциплина события.  
-- `start_date` (`Timestamp`, `NOT NULL`): Дата и время начала события.  
-- `end_date` (`Timestamp`): Дата и время окончания события.  
-- `status` (`Utf8`, `NOT NULL`): Статус события.  
-- `age_group` (`Utf8`): Возрастная группа участников.  
-- `protocol_s3_key` (`Utf8`): Ключ протокола события в хранилище S3.  
-
-**Первичный ключ**: `id`.
+- **Партиционирование**: все таблицы имеют включённые опции AUTO_PARTITIONING_BY_SIZE, что позволяет YDB автоматически управлять числом шардов.
+- **Ключи Bloom Filter**: по умолчанию отключены; при необходимости можно включить для ускорения точечных запросов.
+- **Индексы**: первичные ключи по полям `id` или составным ключам; для часто фильтруемых полей (например, `event_id`, `user_id`, `team_id`) рекомендуется создавать вторичные индексы.
+- **JSON-поля**: для гибких настроек и вложенных структур используются поля типа `Json`.
+<!-- - **Типы времени**: `Timestamp` для отметок создания, `Datetime` для логов аудита и чтения. -->
+- **Soft‑delete (при необходимости)**: через поле status или дополнительный deleted_at.
 
 ---
 
-## Таблица `notifications`
+## Таблицы и их описание
 
-**Назначение**: Хранение уведомлений для пользователей.
+[![](https://img.plantuml.biz/plantuml/svg/bLLBRjim4DqBq1s8R0eKSDP5La6HRhfCsxKmaCOk0Oeao74AD_8PUePUePls6EwDElh46bAAasuCSVY6yzwR8NqR2GBjMwC-tD-LHLcW9Kq7jOyOedei2wNU3ejAD-f6VQ7jkpwssVI_MnqYLHPQ55i6bh68jRDD7iKMj15h_zLPkGyFmEH48E1EEvio2SvWvFN7w6o_jexqLjT0FV8R7EGUQwLz5CbrG21iAY0Etl4dwHRBuYYC66kUhLXn8L4bKrtOWTNV1ogN3cXqfA1hMYWLWHOix30ywvwiYm_ySQcW99QwoVb6je0ENYwPQQszqKcRXWcg6dQFWv_PG0wqVg38FL-BwrWvZxsyzywPbSv8DOJGljf-dideKqarU0ATw9J7WsSzzOiz6ZpDl69YBvPIia1rUG25Hxa1rIjfBZbDYJdvd1N-9wc0SM-o8Vl4KsntgvxDM_DRCiTcrdFC6wXHH8RYRzJfv-dNtn-dtwS_PJ6-KSVk-hfxFD_J6tLrVYQkoYAzWnDskY0CpMu29qnx4pAndV5FaXWupkKpk4bH3bksCi4cWdBOF5mvSlLKsNTEUEhNiTjikauu81HbcB46GwQMBH6ZjaJ2BTzv_ZVv1m00)](https://editor.plantuml.com/uml/bLLBRjim4DqBq1s8R0eKSDP5La6HRhfCsxKmaCOk0Oeao74AD_8PUePUePls6EwDElh46bAAasuCSVY6yzwR8NqR2GBjMwC-tD-LHLcW9Kq7jOyOedei2wNU3ejAD-f6VQ7jkpwssVI_MnqYLHPQ55i6bh68jRDD7iKMj15h_zLPkGyFmEH48E1EEvio2SvWvFN7w6o_jexqLjT0FV8R7EGUQwLz5CbrG21iAY0Etl4dwHRBuYYC66kUhLXn8L4bKrtOWTNV1ogN3cXqfA1hMYWLWHOix30ywvwiYm_ySQcW99QwoVb6je0ENYwPQQszqKcRXWcg6dQFWv_PG0wqVg38FL-BwrWvZxsyzywPbSv8DOJGljf-dideKqarU0ATw9J7WsSzzOiz6ZpDl69YBvPIia1rUG25Hxa1rIjfBZbDYJdvd1N-9wc0SM-o8Vl4KsntgvxDM_DRCiTcrdFC6wXHH8RYRzJfv-dNtn-dtwS_PJ6-KSVk-hfxFD_J6tLrVYQkoYAzWnDskY0CpMu29qnx4pAndV5FaXWupkKpk4bH3bksCi4cWdBOF5mvSlLKsNTEUEhNiTjikauu81HbcB46GwQMBH6ZjaJ2BTzv_ZVv1m00)
 
-**Поля**:  
-- `id` (`Utf8`): Уникальный идентификатор уведомления.  
-- `type` (`Utf8`): Тип уведомления.  
-- `text` (`Utf8`): Текст уведомления.  
-- `sender_id` (`Utf8`): Идентификатор отправителя.  
-- `receiver_id` (`Utf8`): Идентификатор получателя.  
-- `sent_at` (`Datetime`): Дата и время отправки.  
-- `read_at` (`Datetime`): Дата и время прочтения.  
+### 1. `applications`
+- **Назначение**: хранение заявок (индивидуальных и командных) на участие в соревнованиях.
+- **Поля**:
+  - `id` (Utf8) – PK
+  - `event_id` (Utf8) – FK → `events.id` (индекс)
+  - `application_status` (Utf8) – enum: \"team\", \"approved\", \"denied\", \"pending\"
+  - `team_id` (Utf8, nullable) – FK → `teams.id`
+  - `team_type` (Utf8) – \"solo\", \"temporary\" или \"permanent\"
+  - `members` (Utf8) – JSON-строка с массивом идентификаторов участников
+  - `captain_id` (Utf8, nullable) – FK → `users.user_id`
+  - `team_name` (Utf8) – отображаемое имя команды
+  - `created_at` (Timestamp) – время создания заявки
+- **PK**: `id`
+- **Индексы**: по `event_id`, `captain_id`, `application_status`
 
-**Первичный ключ**: `id`.
+### 2. `auth_provider_relations`
+- **Назначение**: связи учётных записей с внешними провайдерами (OAuth).
+- **Поля**:
+  - `provider_slug` (Utf8) – PK часть
+  - `provider_service` (Utf8)
+  - `provider_user_id` (Utf8) – PK часть
+  - `user_id` (Utf8) – FK → `users.user_id`
+  - `linked_at` (Datetime)
+  - `used_at` (Datetime)
+- **PK**: (`provider_slug`, `provider_user_id`)
+- **Индексы**: по `user_id`
 
----
+### 3. `events`
+- **Назначение**: описание соревнований.
+- **Поля**:
+  - `id` (Utf8) – PK
+  - `organization_id` (Utf8) – FK → `organizations.id`
+  - `title` (Utf8)
+  - `type` (Utf8) – \"open\", \"regional\", \"federal\"
+  - `discipline` (Utf8)
+  - `start_date` (Timestamp)
+  - `end_date` (Timestamp)
+  - `is_open` (Bool)
+  - `status` (Utf8) – \"draft\", \"published\", \"archived\"
+  - `regions` (Utf8) – JSON-массив кодов регионов
+  - `min_people`/`max_people` (Uint32)
+  - `description` (Utf8)
+  - `protocol_s3_key` (Utf8)
+  - `event_image_s3_key` (Utf8)
+  - `min_age`/`max_age` (Uint32)
+- **PK**: `id`
+- **Индексы**: по `organization_id`, `type`, `discipline`, `status`
 
-## Таблица `organizations`
+### 4. `notifications`
+- **Назначение**: хранение уведомлений пользователей.
+- **Поля**:
+  - `id` (Utf8) – PK
+  - `type` (Utf8)
+  - `text` (Utf8)
+  - `sender_id` (Utf8) – FK → `users.user_id`
+  - `receiver_id` (Utf8) – FK → `users.user_id`
+  - `sent_at` (Datetime)
+  - `read_at` (Datetime, nullable)
+- **PK**: `id`
+- **Индексы**: по `receiver_id`, `sender_id`, `sent_at`
 
-**Назначение**: Хранение информации об организациях (ФСП).
+### 5. `organizations`
+- **Назначение**: справочник региональных и центральной ФСП.
+- **Поля**:
+  - `id` (Utf8) – PK
+  - `district` (Utf8)
+  - `region` (Utf8)
+  - `manager` (Utf8) – FK → `users.user_id`
+  - `email` (Utf8)
+  - `description` (Utf8)
+- **PK**: `id`
+- **Индексы**: по `region`
 
-**Поля**:  
-- `id` (`Utf8`, `NOT NULL`): Уникальный идентификатор организации.  
-- `district` (`Utf8`, `NOT NULL`): Округ организации.  
-- `region` (`Utf8`, `NOT NULL`): Регион организации.  
-- `manager` (`Utf8`): Менеджер организации.  
-- `email` (`Utf8`): Электронная почта.  
-- `description` (`Utf8`): Описание организации.  
+### 6. `requests`
+- **Назначение**: хранение запросов на изменение ролей, прав и пр.
+- **Поля**:
+  - `id` (Utf8) – PK
+  - `type` (Utf8)
+  - `subject` (Utf8)
+  - `status` (Utf8)
+  - `requester_id` (Utf8) – FK → `users.user_id`
+  - `requester_type` (Utf8)
+  - `requested_id` (Utf8)
+  - `requested_type` (Utf8)
+  - `comment` (Utf8)
+  - `other_data` (Json)
+  - `created_at`/`updated_at` (Datetime)
+- **PK**: `id`
+- **Индексы**: по `requester_id`, `status`
 
-**Первичный ключ**: `id`.
+### 7. `results`
+- **Назначение**: итоговые результаты соревнований.
+- **Поля**:
+  - `id` (String) – PK
+  - `event_id` (String) – FK → `events.id`
+  - `user_id` (String, nullable) – FK → `users.user_id`
+  - `team_id` (String, nullable) – FK → `teams.id`
+  - `place` (String)
+- **PK**: `id`
+- **Индексы**: по `event_id`, `user_id`, `team_id`
 
----
+### 8. `team_applications`
+- **Назначение**: запросы спортсменов на вступление в формирующуюся команду.
+- **Поля**:
+  - `id` (Utf8) – PK
+  - `team_id` (Utf8) – FK → `teams.id`
+  - `applicant_id` (Utf8) – FK → `users.user_id`
+  - `application_state` (Utf8)
+  - `created_at` (Timestamp)
+- **PK**: `id`
+- **Индексы**: по `team_id`, `applicant_id`, `application_state`
 
-## Таблица `regions`
+### 9. `users`
+- **Назначение**: учётные записи и профили пользователей.
+- **Поля**:
+  - `user_id` (Utf8) – PK
+  - `first_name`, `last_name`, `second_name` (Utf8)
+  - `email` (Utf8)
+  - `phone` (Utf8)
+  - `avatar` (Utf8)
+  - `region_id` (Utf8) – FK → `organizations.region`
+  - `tg_id`, `snils` (Utf8)
+  - `roles` (Json)
+  - `status` (Utf8)
+  - `required`, `notification_ways` (Json)
+  - `created_at`, `last_login_at` (Datetime)
+  - `other_data` (Json)
+- **PK**: `user_id`
+- **Индексы**: по `email`, `region_id`, `status`
 
-**Назначение**: Хранение статистических данных по регионам.
-
-**Поля**:  
-- `id` (`Utf8`): Уникальный идентификатор региона.  
-- `name` (`Utf8`): Название региона.  
-- `algorithm_count` (`Int16`): Количество мероприятий по алгоритмам.  
-- `hackathon_count` (`Int16`): Количество хакатонов.  
-- `cyber_security_count` (`Int16`): Количество мероприятий по кибербезопасности.  
-- `russian_events_count` (`Int16`): Количество российских мероприятий.  
-- `foreign_events_count` (`Int16`): Количество зарубежных мероприятий.  
-- `algorithm_winners_count` (`Int16`): Количество победителей в алгоритмических соревнованиях.  
-- `hackathon_winners_count` (`Int16`): Количество победителей в хакатонах.  
-- `cyber_security_winners_count` (`Int16`): Количество победителей в соревнованиях по кибербезопасности.  
-
-**Первичный ключ**: `id`.
-
----
-
-## Таблица `requests`
-
-**Назначение**: Хранение запросов пользователей.
-
-**Поля**:  
-- `id` (`Utf8`): Уникальный идентификатор запроса.  
-- `created_at` (`Datetime`): Дата и время создания запроса.  
-- `type` (`Utf8`): Тип запроса.  
-- `status` (`Utf8`): Статус запроса.  
-- `requester_id` (`Utf8`): Идентификатор инициатора запроса.  
-- `requester_type` (`Utf8`): Тип инициатора.  
-- `requested_id` (`Utf8`): Идентификатор запрашиваемого объекта.  
-- `requested_type` (`Utf8`): Тип запрашиваемого объекта.  
-- `comment` (`Utf8`): Комментарий к запросу.  
-- `updated_at` (`Datetime`): Дата и время последнего обновления.  
-- `other_data` (`Json`): Дополнительные данные.  
-- `subject` (`Utf8`): Тема запроса.  
-
-**Первичный ключ**: `id`.
-
----
-
-## Таблица `team_events`
-
-**Назначение**: Связь команд с мероприятиями, в которых они участвовали.
-
-**Поля**:  
-- `id` (`Utf8`): Уникальный идентификатор записи.  
-- `event_id` (`Utf8`): Идентификатор события.  
-- `team_id` (`Utf8`): Идентификатор команды.  
-- `placement` (`Uint8`): Занятое место.  
-- `event_title` (`Utf8`): Название события.  
-- `event_type` (`Utf8`): Тип события.  
-- `event_discipline` (`Utf8`): Дисциплина события.  
-
-**Первичный ключ**: `id`.
-
----
-
-## Таблица `teams`
-
-**Назначение**: Хранение информации о командах.
-
-**Поля**:  
-- `id` (`Utf8`): Уникальный идентификатор команды.  
-- `name` (`Utf8`): Название команды.  
-- `fsp_id` (`Utf8`): Идентификатор организации (ФСП).  
-- `description` (`Utf8`): Описание команды.  
-- `captain` (`Utf8`): Идентификатор капитана команды.  
-- `participants` (`Utf8`): Участники команды.  
-
-**Первичный ключ**: `id`.
-
----
-
-## Таблица `users`
-
-**Назначение**: Хранение информации о пользователях системы.
-
-**Поля**:  
-- `user_id` (`Utf8`): Уникальный идентификатор пользователя.  
-- `first_name` (`Utf8`): Имя пользователя.  
-- `last_name` (`Utf8`): Фамилия пользователя.  
-- `second_name` (`Utf8`): Отчество пользователя.  
-- `email` (`Utf8`): Электронная почта.  
-- `phone` (`Utf8`): Телефон пользователя.  
-- `avatar` (`Utf8`): URL аватара пользователя.  
-- `region_id` (`Utf8`): Идентификатор региона.  
-- `tg_id` (`Utf8`): Идентификатор Telegram.  
-- `snils` (`Utf8`): СНИЛС пользователя.  
-- `roles` (`Json`): Роли пользователя в системе.  
-- `status` (`Utf8`): Статус пользователя.  
-- `required` (`Json`): Требуемые действия от пользователя.  
-- `notification_ways` (`Json`): Предпочтительные способы уведомления.  
-- `created_at` (`Datetime`): Дата и время регистрации.  
-- `last_login_at` (`Datetime`): Дата и время последнего входа.  
-- `other_data` (`Json`): Дополнительные данные.  
-
-**Первичный ключ**: `user_id`.
-
----
-
-## Примечания
-
-1. **Типы данных**: Используются типы данных YDB, такие как `Utf8`, `Json`, `Datetime`, `Timestamp`, `Int16`, `Uint8`.  
-2. **Связи между таблицами**: Поля, содержащие идентификаторы (`id`), используются для установления связей между таблицами.  
-3. **Первичные ключи**: Обеспечивают уникальность записей и оптимизируют поиск данных.
-
----
-
-## Заключение
-
-Представленная структура базы данных обеспечивает эффективное хранение и управление данными, необходимыми для функционирования системы. Таблицы спроектированы таким образом, чтобы поддерживать целостность данных и обеспечивать быстрый доступ к информации.
