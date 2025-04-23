@@ -1,11 +1,15 @@
 package teams
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"log/slog"
+	"net/http"
 	"slices"
 
+	"github.com/davg/teams/internal/config"
 	"github.com/davg/teams/internal/domain/models"
 	"github.com/davg/teams/internal/domain/schemas"
 )
@@ -28,7 +32,7 @@ func New(storage TeamsStorage, log *slog.Logger) *TeamsService {
 	return &TeamsService{storage: storage, log: log}
 }
 
-func (s *TeamsService) Teams(ctx context.Context, fspID, user_id string) ([]models.Team, error) {
+func (s *TeamsService) Teams(ctx context.Context, fspID, user_id string) ([]schemas.TeamsAnswer, error) {
 	const op = "Teams"
 
 	log := s.log.With(slog.String("op", op))
@@ -56,8 +60,27 @@ func (s *TeamsService) Teams(ctx context.Context, fspID, user_id string) ([]mode
 		teams = teamsWithUser
 	}
 
+	teamsAns := []schemas.TeamsAnswer{}
+	for _, team := range teams {
+		members, err := GetUsersData(ctx, team.Participants)
+
+		if err != nil {
+			log.Error("failed to get users data", err)
+			return nil, err
+		}
+
+		teamsAns = append(teamsAns, schemas.TeamsAnswer{
+			ID:                   team.ID,
+			Name:                 team.Name,
+			Description:          team.Description,
+			Captain:              team.Captain,
+			Participants:         team.Participants,
+			ParticipantsMetainfo: members,
+		})
+	}
+
 	log.Info("got teams")
-	return teams, nil
+	return teamsAns, nil
 }
 
 func (s *TeamsService) Team(ctx context.Context, id string) (models.Team, error) {
@@ -124,4 +147,32 @@ func (s *TeamsService) DeleteTeam(ctx context.Context, id string) error {
 	}
 	log.Info("deleted team")
 	return nil
+}
+
+func GetUsersData(ctx context.Context, userIDS []byte) ([]schemas.Member, error) {
+	cfg := config.Config().UsersService
+
+	req, err := http.NewRequestWithContext(ctx, "POST", cfg.URL+"/get", bytes.NewBuffer(userIDS))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to get users data, status code: %d", resp.StatusCode)
+	}
+
+	var users []schemas.Member
+	err = json.NewDecoder(resp.Body).Decode(&users)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
