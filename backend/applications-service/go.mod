@@ -4,7 +4,11 @@ go 1.23.0
 
 toolchain go1.23.8
 
-require github.com/ilyakaznacheev/cleanenv v1.5.0
+require (
+	github.com/google/uuid v1.6.0
+	github.com/ilyakaznacheev/cleanenv v1.5.0
+	gorm.io/gorm v1.25.12
+)
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
@@ -20,7 +24,6 @@ require (
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jonboulle/clockwork v0.4.0 // indirect
@@ -48,7 +51,6 @@ require (
 	google.golang.org/grpc v1.71.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gorm.io/driver/mysql v1.5.6 // indirect
-	gorm.io/gorm v1.25.12 // indirect
 )
 
 require (
