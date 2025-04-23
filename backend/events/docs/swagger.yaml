@@ -137,10 +137,13 @@ components:
       properties:
         title:
           type: string
+          description: Title
         description:
           type: string
+          description: Description
         type:
           type: string
+          description: Type
           enum:
             - school
             - city
@@ -150,27 +153,63 @@ components:
             - international
         discipline:
           type: string
-        age_group:
-          type: string
+          description: Discipline
         start_date:
           type: string
           format: date
+          description: Start date
         end_date:
           type: string
           format: date
+          description: End date
+        is_open:
+          type: boolean
+          description: Is open
+        status:
+          type: string
+          description: Status
+        regions:
+          type: array
+          items:
+            type: string
+          description: Regions
+        min_age:
+          type: integer
+          description: Min age
+        max_age:
+          type: integer
+          description: Max age
+        max_people:
+          type: integer
+          description: Max people
+        min_people:
+          type: integer
+          description: Min people
         protocol_s3_key:
           type: string
+          description: Protocol S3 key
+        event_image_s3_key:
+          type: string
+          description: Event image S3 key
+        
     Event:
       type: object
       properties:
         id:
           type: string
+          description: ID of the event
+        organization_id:
+          type: string
+          description: ID of the organization
         title:
           type: string
+          description: Title
         description:
           type: string
+          description: Description
         type:
           type: string
+          description: Type
           enum:
             - school
             - city
@@ -178,26 +217,53 @@ components:
             - interregional
             - russian
             - international
+        discipline:
+          type: string
+          description: Discipline
+        start_date:
+          type: string
+          format: date-time
+          description: Start date
+        end_date:
+          type: string
+          format: date-time
+          description: End date
+        is_open:
+          type: boolean
+          description: Is open
         status:
           type: string
+          description: Status
           enum:
             - draft
             - published
             - on_verification
             - verified
             - declined
-        discipline:
-          type: string
-        age_group:
-          type: string
-        start_date:
-          type: string
-          format: date-time
-        end_date:
-          type: string
-          format: date-time
+        regions:
+          type: array
+          items:
+            type: string
+          description: Regions
+        min_age:
+          type: integer
+          description: Min age
+        max_age:
+          type: integer
+          description: Max age
+        max_people:
+          type: integer
+          description: Max people
+        min_people:
+          type: integer
+          description: Min people
         protocol_s3_key:
           type: string
+          description: Protocol S3 key
+        event_image_s3_key:
+          type: string
+          description: Event image S3 key
+
     UpdateEventStatus:
       type: object
       required:
