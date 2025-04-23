@@ -18,11 +18,12 @@ const (
 var cfg config
 
 type config struct {
-	EnvType      string             `yaml:"env_type"`
-	Server       serverConfig       `yaml:"server"`
-	Storage      storageConfig      `yaml:"storage"`
-	UsersService usersServiceConfig `yaml:"users_service"`
-	TeamsService teamsServiceConfig `yaml:"teams_service"`
+	EnvType       string              `yaml:"env_type"`
+	Server        serverConfig        `yaml:"server"`
+	Storage       storageConfig       `yaml:"storage"`
+	UsersService  usersServiceConfig  `yaml:"users_service"`
+	TeamsService  teamsServiceConfig  `yaml:"teams_service"`
+	EventsService eventsServiceConfig `yaml:"events_service"`
 }
 
 type usersServiceConfig struct {
@@ -30,6 +31,10 @@ type usersServiceConfig struct {
 }
 
 type teamsServiceConfig struct {
+	URL string `yaml:"url"`
+}
+
+type eventsServiceConfig struct {
 	URL string `yaml:"url"`
 }
 

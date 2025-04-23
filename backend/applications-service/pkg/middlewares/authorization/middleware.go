@@ -16,9 +16,10 @@ type ContextKey string
 const Key = ContextKey("user")
 
 type TokenPayload struct {
-	ID    string
-	Roles []string
-	Exp   int64 // Unix timestamp
+	ID     string
+	Roles  []string
+	Region string
+	Exp    int64 // Unix timestamp
 }
 
 func MiddlwareJWT(publicKey *rsa.PublicKey) gin.HandlerFunc {
@@ -44,9 +45,10 @@ func MiddlwareJWT(publicKey *rsa.PublicKey) gin.HandlerFunc {
 		}
 
 		user := TokenPayload{
-			ID:    claims["sub"].(string),
-			Roles: convertInterfaceSliceToStringSlice(claims["roles"]),
-			Exp:   int64(claims["exp"].(float64)),
+			ID:     claims["sub"].(string),
+			Roles:  convertInterfaceSliceToStringSlice(claims["roles"]),
+			Region: claims["region_id"].(string),
+			Exp:    int64(claims["exp"].(float64)),
 		}
 
 		// Set context

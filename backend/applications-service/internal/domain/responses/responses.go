@@ -34,3 +34,10 @@ type Team struct {
 	Participants []string `json:"participants"`
 	FSPID        string   `json:"fsp_id"`
 }
+
+type Event struct {
+	ID      string   `json:"id"`
+	Title   string   `json:"title"`
+	Regions []string `json:"regions"`
+	Type    string   `json:"type"`
+}

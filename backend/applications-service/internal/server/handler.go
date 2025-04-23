@@ -66,7 +66,7 @@ func (r *ApplicationRouter) CreateApplication(ctx *gin.Context) {
 		return
 	}
 
-	applicationID, err := r.service.CreateApplication(ctx, application, payload.ID)
+	applicationID, err := r.service.CreateApplication(ctx, application, payload.ID, payload.Region)
 	if err != nil {
 		HandleError(ctx, err)
 		return
