@@ -20,15 +20,13 @@ interface Event {
     | "interregional"
     | "russian"
     | "international";
-  status: "on_verification" | "verified" | "declined" | "published" | 'draft';
+  status: "on_verification" | "verified" | "declined" | "published" | "draft";
   discipline: "algorithms" | "hackathon" | "cybersecurity";
   start_date: string;
   end_date: string;
 }
 
-const CalendarView = ({events}: {
-  events: Event[]
-}) => {
+const CalendarView = ({ events }: { events: Event[] }) => {
   const [preparedEvents, setPreparedEvents] = useState<PreparedEvent[]>([]);
 
   useEffect(() => {
@@ -47,9 +45,9 @@ const CalendarView = ({events}: {
           end: end,
           allDay: true,
         };
-      })
+      }),
     );
-  }, [])
+  }, []);
 
   useEffect(() => {
     setPreparedEvents(
@@ -67,11 +65,12 @@ const CalendarView = ({events}: {
           end: end,
           allDay: true,
         };
-      })
+      }),
     );
   }, [events]);
 
-  return <Calendar events={preparedEvents} />
-}
+  return <Calendar events={preparedEvents} />;
+};
 
 export default CalendarView;
+

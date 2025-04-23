@@ -25,8 +25,8 @@ export default defineConfig({
     port: 3000,
     proxy: {
       "/api/events": {
-        target: "https://fsp-platform.online/",
-        // target: "https://fsp-platform.ru/",
+        // target: "https://fsp-platform.online/",
+        target: "https://fsp-platform.ru/",
         secure: false,
         changeOrigin: true,
       },
@@ -37,8 +37,8 @@ export default defineConfig({
         changeOrigin: true,
       },
       "/api/organizations": {
-        target: "https://fsp-platform.online/",
-        // target: "https://fsp-platform.ru/",
+        // target: "https://fsp-platform.online/",
+        target: "https://fsp-platform.ru/",
         secure: false,
         changeOrigin: true,
       },
