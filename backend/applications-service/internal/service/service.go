@@ -37,11 +37,23 @@ func New(storage ApplicationStorage, log *slog.Logger) *ApplicationService {
 	return &ApplicationService{storage: storage, log: log}
 }
 
+// TODO: check if user from region where event is held
 func (s *ApplicationService) CreateApplication(ctx context.Context, application requests.CreateApplicationRequest, captainID string) (string, error) {
 	const op = "ApplicationService.CreateApplication"
 	log := s.log.With("op", op)
 
 	log.Info("creating application")
+
+	// Preload Team Data logic
+	if application.TeamType == "permanent" {
+		teamData, err := GetTeamData(ctx, application.TeamID)
+		if err != nil {
+			return "", fmt.Errorf("failed to get team data: %w", err)
+		}
+
+		application.TeamName = teamData.Name
+		application.Members = teamData.Participants
+	}
 
 	var members datatypes.JSON
 

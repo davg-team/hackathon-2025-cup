@@ -9,3 +9,6 @@ storage:
 
 users_service:
   url: https://fsp-platform.ru/api/auth/accounts
+
+teams_service:
+  url: https://fsp-platform.ru/api/teams
