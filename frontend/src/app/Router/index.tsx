@@ -8,13 +8,14 @@ import FederalCalendar from "pages/FederalCalendar";
 import Region from "pages/Region";
 import Team from "pages/Team";
 import Regions from "pages/Regions";
-import EventsMainContent from "pages/EventsMainContent";
-import TeamsMainContent from "pages/Teams";
-import TrackEventsMainContent from "pages/TrackEventsMainContent";
-import AddEvent from "pages/AddEvent";
-import AddReportMainContent from "pages/AddReport";
-import PeoplePage from "pages/People";
 import AfterRegistration from "pages/AfterRegistration";
+import MainContent from "pages/MainContentLK";
+import ApplicationsPage from "pages/Applications";
+import Page403 from "pages/403";
+import Page404 from "pages/404";
+import MyCompetitionsPage from "pages/MyCompetitions";
+import ProfilePage from "pages/Profile";
+import CompetitionsPage from "pages/Competitions";
 
 interface RouterProps {
   theme: string;
@@ -44,9 +45,47 @@ const Router = ({ theme, setTheme }: RouterProps) => {
     <BrowserRouter>
       <Routes>
         <Route
+          path="/404"
+          element={
+            <FederalCalendar
+              navigation={navigation}
+              navigation_custom={navigation_custom}
+            />
+          }
+        />
+        <Route path="/403" element={<Page403 />} />
+        <Route path="/404" element={<Page404 />} />
+        <Route
           path="/calendar"
           element={
             <FederalCalendar
+              navigation={navigation}
+              navigation_custom={navigation_custom}
+            />
+          }
+        />
+        <Route
+          path="/lk/competitions"
+          element={
+            <MyCompetitionsPage
+              navigation={navigation}
+              navigation_custom={navigation_custom}
+            />
+          }
+        />
+        <Route
+          path="/competitions"
+          element={
+            <CompetitionsPage
+              navigation={navigation}
+              navigation_custom={navigation_custom}
+            />
+          }
+        />
+        <Route
+          path="/lk"
+          element={
+            <ProfilePage
               navigation={navigation}
               navigation_custom={navigation_custom}
             />
@@ -83,61 +122,17 @@ const Router = ({ theme, setTheme }: RouterProps) => {
         <Route
           path="/region/:id"
           element={
-            <Region
+            <MainContent
               navigation={navigation}
               navigation_custom={navigation_custom}
             />
           }
         />
+
         <Route
-          path="/region/:id/events"
+          path="/applications"
           element={
-            <EventsMainContent
-              navigation={navigation}
-              navigation_custom={navigation_custom}
-            />
-          }
-        />
-        <Route
-          path="/region/:id/teams"
-          element={
-            <TeamsMainContent
-              navigation={navigation}
-              navigation_custom={navigation_custom}
-            />
-          }
-        />
-        <Route
-          path="/region/:id/track-events"
-          element={
-            <TrackEventsMainContent
-              navigation={navigation}
-              navigation_custom={navigation_custom}
-            />
-          }
-        />
-        <Route
-          path="/region/:id/add-event"
-          element={
-            <AddEvent
-              navigation={navigation}
-              navigation_custom={navigation_custom}
-            />
-          }
-        />
-        <Route
-          path="/region/:id/add-report"
-          element={
-            <AddReportMainContent
-              navigation={navigation}
-              navigation_custom={navigation_custom}
-            />
-          }
-        />
-        <Route
-          path="/region/:id/presenters"
-          element={
-            <PeoplePage
+            <ApplicationsPage
               navigation={navigation}
               navigation_custom={navigation_custom}
             />

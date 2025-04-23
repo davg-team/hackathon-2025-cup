@@ -4,7 +4,6 @@ export type Role =
   | "fsp_region_head"
   | "fsp_region_staff"
   | "root"
-  | "user"
   | "sportsman";
 type Required = "registration";
 export type JWTPayload = {

@@ -64,7 +64,7 @@ function Competitions() {
   return (
     <Link
       className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
-      to="/faq"
+      to="/competitions"
     >
       Соревнования
     </Link>
@@ -86,7 +86,7 @@ function Profile() {
   return (
     <Link
       className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
-      to="/lk/profile"
+      to="/lk"
     >
       Мой профиль
     </Link>
@@ -121,7 +121,7 @@ function Applications() {
   return (
     <Link
       className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
-      to="/lk/applications"
+      to="/applications"
     >
       Заявки
     </Link>

@@ -8,7 +8,13 @@ interface Event {
   event_id: string;
   event_title: string;
   placement: number;
-  event_type: "school" | "city" | "regional" | "interregional" | "russian" | "international";
+  event_type:
+    | "school"
+    | "city"
+    | "regional"
+    | "interregional"
+    | "russian"
+    | "international";
   event_discipline: "algorithms" | "hackathon" | "cybersecurity";
 }
 
@@ -19,13 +25,13 @@ const types = {
   interregional: "Межрегиональное мероприятие",
   russian: "Всероссийское мероприятие",
   international: "Международное мероприятие",
-}
+};
 
 const disciplines = {
   algorithms: "Алгоритмическое программирование",
   hackathon: "Продуктовое программирование",
   cybersecurity: "Программирование систем компьютерной безопасности",
-}
+};
 
 const TeamEvents = () => {
   const params = useParams<{ id: string }>();
@@ -69,11 +75,13 @@ const TeamEvents = () => {
             <Card view="filled" width={"max"} className={spacing({ p: 3 })}>
               <Flex direction="column">
                 <Text variant="display-2">{event.event_title}</Text>
-                <Text variant="body-2">Тип мероприятия: {types[event?.event_type]}</Text>
-                <Text variant="body-2">Дисциплина: {disciplines[event?.event_discipline]}</Text>
                 <Text variant="body-2">
-                  Место: {event.placement}
+                  Тип мероприятия: {types[event?.event_type]}
                 </Text>
+                <Text variant="body-2">
+                  Дисциплина: {disciplines[event?.event_discipline]}
+                </Text>
+                <Text variant="body-2">Место: {event.placement}</Text>
               </Flex>
             </Card>
           </Flex>

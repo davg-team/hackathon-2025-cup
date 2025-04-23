@@ -18,8 +18,8 @@ function UserProfileMainContent() {
       roles.includes("fsp_region_head")
     ) {
       return <>fsp or root lk</>;
-    } else if (roles.includes("user")) {
-      return <>user lk</>;
+    } else if (roles.includes("sportsman")) {
+      return <>sportsman lk</>;
     }
   } else navigate("/");
 }

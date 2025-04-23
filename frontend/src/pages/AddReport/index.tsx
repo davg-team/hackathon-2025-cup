@@ -47,7 +47,7 @@ interface PreparedEvent {
   content: string;
 }
 
-const AddReportMainContent = () => {
+export const AddReportMainContent = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingTeams, setIsLoadingTeams] = useState<boolean>(false);

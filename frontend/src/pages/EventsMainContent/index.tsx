@@ -19,6 +19,7 @@ interface Event {
   id: string;
   title: string;
   description: string;
+  image: string;
   type:
     | "school"
     | "city"
@@ -30,6 +31,7 @@ interface Event {
   discipline: "algorithms" | "hackathon" | "cybersecurity";
   start_date: string;
   end_date: string;
+  age_group: string;
 }
 
 export const EventsMainContent = () => {

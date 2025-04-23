@@ -37,7 +37,7 @@ interface PreparedData {
   "побед в инфобез": number;
 }
 
-const Analitycs = () => {
+export const AnalitycsMainContent = () => {
   const [state, setState] = useState({
     filter: "winners",
   });
@@ -78,7 +78,7 @@ const Analitycs = () => {
           "побед в продуктовых": item.hackathon_winners_count,
           "побед в инфобез": item.cyber_security_winners_count,
         };
-      })
+      }),
     );
   }, [data]);
 
@@ -97,7 +97,6 @@ const Analitycs = () => {
             { value: "winners", content: "по победителям" },
             { value: "events", content: "по количеству соревнований" },
           ]}
-
         ></Select>
       </Flex>
       <Flex>
@@ -110,5 +109,3 @@ const Analitycs = () => {
     </Flex>
   );
 };
-
-export default Analitycs;

@@ -177,7 +177,7 @@ export const TeamsMainContent = () => {
   }
 
   return (
-    <Flex direction="column" spacing={{ m: 3 }} gap="1">
+    <Flex width={"100%"} direction="column" spacing={{ m: 3 }} gap="1">
       {/* edit create content */}
       <Modal open={openModal1}>
         <Card theme="normal">
@@ -359,7 +359,7 @@ export const TeamsMainContent = () => {
           </Flex>
         </Card>
       </Modal>
-      <Flex justifyContent="space-between" alignItems="center">
+      <Flex width={"100%"} justifyContent="space-between" alignItems="center">
         <Text variant="display-2">Команды</Text>
         {/* @ts-ignore */}
         {!payload?.roles ? null : payload?.roles.includes("fsp_staff") || // @ts-ignore
@@ -388,7 +388,7 @@ export const TeamsMainContent = () => {
         <Text variant="body-1">Нет команд</Text>
       ) : (
         teams.map((item: Team) => (
-          <Card theme="normal" key={item.id}>
+          <Card width={"100%"} theme="normal" key={item.id}>
             <Flex
               direction="row"
               alignItems="center"

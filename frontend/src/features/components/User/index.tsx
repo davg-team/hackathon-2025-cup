@@ -12,6 +12,7 @@ import {
 } from "@gravity-ui/uikit";
 import { Context } from "app/Context";
 import { useContext, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { getPayload } from "shared/jwt-tools";
 
 type PayloadType = {
@@ -234,6 +235,12 @@ const User = () => {
               >
                 Сохранить
               </Button>
+              <Link
+                className="g-button g-button_view_normal g-button_size_m g-button_pin_round-round"
+                to={"/logout"}
+              >
+                Выйти
+              </Link>
             </Flex>
           </Flex>
         </Modal>

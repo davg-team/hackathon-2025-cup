@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   Col,
-  Container,
   Flex,
   Loader,
   Row,
@@ -80,179 +79,176 @@ export const PeopleMainContent = () => {
   }, []);
 
   return (
-    <Container>
+    <Flex direction="column" width="100%">
       <br />
       <br />
-      <Flex direction="column">
-        <Text variant="display-2">Представители</Text>
-        {isLoading ? (
-          <Loader />
-        ) : error ? (
-          <Text>Произошла ошибка, попробуйте позже</Text>
-        ) : people.length === 0 ? (
-          <Text variant="display-1">Нет запросов</Text>
-        ) : (
-          <>
-            <Text variant="display-1">Заявки на добавление в систему</Text>
-            {people?.map((person) => (
-              <Card
-                theme="normal"
-                view="outlined"
-                style={{ padding: "1rem", marginBottom: "1rem" }}
-                key={person.id}
-              >
-                <Row space="0">
-                  <Col>
-                    <Flex direction="column" key={person.id}>
-                      <Text variant="display-1">{person.comment}</Text>
-                      <Text variant="body-3">
-                        {/* @ts-ignore */}
-                        Запрашиваемая роль: {roles[person.subject]}
-                      </Text>
-                    </Flex>
-                  </Col>
-                  <Flex justifyContent="flex-end" alignItems="center" gap="2">
-                    <Button
-                      view="action"
-                      size="l"
-                      disabled={person.loadingAccept || person.loadingReject}
-                      loading={person.loadingAccept}
-                      onClick={async () => {
-                        setPeople(
-                          people.map((p) => {
-                            if (p.id === person.id) {
-                              return { ...p, loadingAccept: true };
-                            }
-                            return p;
-                          }),
-                        );
-                        const response = await fetch(
-                          `/api/auth/requests/role/${person.id}/respond?action=accept`,
-                          {
-                            method: "POST",
-                            headers: {
-                              "Content-Type": "application/json",
-                              Authorization: `Bearer ${localStorage.getItem(
-                                "token",
-                              )}`,
-                            },
-                          },
-                        );
-                        setPeople(
-                          people.map((p) => {
-                            if (p.id === person.id) {
-                              return { ...p, loadingAccept: false };
-                            }
-                            return p;
-                          }),
-                        );
-
-                        if (response.ok) {
-                          setAcceptedPeople(
-                            people.filter((p) => p.id !== person.id),
-                          );
-                          setPeople(people.filter((p) => p.id !== person.id));
-                          add({
-                            title: "Добавление прошло успешно",
-                            name: "add-people-ok",
-                            theme: "success",
-                            autoHiding: 5000,
-                          });
-                        } else {
-                          add({
-                            title: "При добавлении произошла ошибка",
-                            name: "add-people-err",
-                            theme: "danger",
-                            autoHiding: 5000,
-                          });
-                        }
-                      }}
-                    >
-                      принять
-                    </Button>
-                    /
-                    <Button
-                      view="normal"
-                      size="l"
-                      loading={person.loadingReject}
-                      disabled={person.loadingAccept || person.loadingReject}
-                      onClick={async () => {
-                        setPeople(
-                          people.map((p) => {
-                            if (p.id === person.id) {
-                              return { ...p, loadingReject: true };
-                            }
-                            return p;
-                          }),
-                        );
-                        const response = await fetch(
-                          `/api/auth/requests/role/${person.id}/respond?action=reject`,
-                          {
-                            method: "POST",
-                            headers: {
-                              "Content-Type": "application/json",
-                              Authorization: `Bearer ${localStorage.getItem(
-                                "token",
-                              )}`,
-                            },
-                          },
-                        );
-                        setPeople(
-                          people.map((p) => {
-                            if (p.id === person.id) {
-                              return { ...p, loadingReject: false };
-                            }
-                            return p;
-                          }),
-                        );
-                        if (response.ok) {
-                          setPeople(people.filter((p) => p.id !== person.id));
-                          add({
-                            title: "Отлонение прошло успешно",
-                            name: "reject-people-ok",
-                            theme: "success",
-                            autoHiding: 5000,
-                          });
-                        } else {
-                          add({
-                            title: "При отклонении произошла ошибка",
-                            name: "reject-people-err",
-                            theme: "danger",
-                            autoHiding: 5000,
-                          });
-                        }
-                      }}
-                    >
-                      отклонить
-                    </Button>
+      {isLoading ? (
+        <Loader />
+      ) : error ? (
+        <Text>Произошла ошибка, попробуйте позже</Text>
+      ) : people.length === 0 ? (
+        <Text variant="display-1">Нет запросов</Text>
+      ) : (
+        <>
+          <Text variant="display-1">Заявки на добавление в систему</Text>
+          {people?.map((person) => (
+            <Card
+              theme="normal"
+              view="outlined"
+              style={{ padding: "1rem", marginBottom: "1rem" }}
+              key={person.id}
+            >
+              <Row space="0">
+                <Col>
+                  <Flex direction="column" key={person.id}>
+                    <Text variant="display-1">{person.comment}</Text>
+                    <Text variant="body-3">
+                      {/* @ts-ignore */}
+                      Запрашиваемая роль: {roles[person.subject]}
+                    </Text>
                   </Flex>
-                </Row>
-              </Card>
-            ))}
-            <Text variant="display-2">Принятые представители</Text>
-            {acceptedPeople?.map((person) => (
-              <Card
-                theme="normal"
-                view="outlined"
-                style={{ padding: "1rem", marginBottom: "1rem" }}
-              >
-                <Row space="0">
-                  <Col>
-                    <Flex direction="column" key={person.id}>
-                      <Text variant="display-1">{person.comment}</Text>
-                      <Text variant="body-3">
-                        {/* @ts-ignore */}
-                        Запрашиваемая роль: {roles[person.subject]}
-                      </Text>
-                    </Flex>
-                  </Col>
-                </Row>
-              </Card>
-            ))}
-          </>
-        )}
-      </Flex>
-    </Container>
+                </Col>
+                <Flex justifyContent="flex-end" alignItems="center" gap="2">
+                  <Button
+                    view="action"
+                    size="l"
+                    disabled={person.loadingAccept || person.loadingReject}
+                    loading={person.loadingAccept}
+                    onClick={async () => {
+                      setPeople(
+                        people.map((p) => {
+                          if (p.id === person.id) {
+                            return { ...p, loadingAccept: true };
+                          }
+                          return p;
+                        }),
+                      );
+                      const response = await fetch(
+                        `/api/auth/requests/role/${person.id}/respond?action=accept`,
+                        {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem(
+                              "token",
+                            )}`,
+                          },
+                        },
+                      );
+                      setPeople(
+                        people.map((p) => {
+                          if (p.id === person.id) {
+                            return { ...p, loadingAccept: false };
+                          }
+                          return p;
+                        }),
+                      );
+
+                      if (response.ok) {
+                        setAcceptedPeople(
+                          people.filter((p) => p.id !== person.id),
+                        );
+                        setPeople(people.filter((p) => p.id !== person.id));
+                        add({
+                          title: "Добавление прошло успешно",
+                          name: "add-people-ok",
+                          theme: "success",
+                          autoHiding: 5000,
+                        });
+                      } else {
+                        add({
+                          title: "При добавлении произошла ошибка",
+                          name: "add-people-err",
+                          theme: "danger",
+                          autoHiding: 5000,
+                        });
+                      }
+                    }}
+                  >
+                    принять
+                  </Button>
+                  /
+                  <Button
+                    view="normal"
+                    size="l"
+                    loading={person.loadingReject}
+                    disabled={person.loadingAccept || person.loadingReject}
+                    onClick={async () => {
+                      setPeople(
+                        people.map((p) => {
+                          if (p.id === person.id) {
+                            return { ...p, loadingReject: true };
+                          }
+                          return p;
+                        }),
+                      );
+                      const response = await fetch(
+                        `/api/auth/requests/role/${person.id}/respond?action=reject`,
+                        {
+                          method: "POST",
+                          headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${localStorage.getItem(
+                              "token",
+                            )}`,
+                          },
+                        },
+                      );
+                      setPeople(
+                        people.map((p) => {
+                          if (p.id === person.id) {
+                            return { ...p, loadingReject: false };
+                          }
+                          return p;
+                        }),
+                      );
+                      if (response.ok) {
+                        setPeople(people.filter((p) => p.id !== person.id));
+                        add({
+                          title: "Отлонение прошло успешно",
+                          name: "reject-people-ok",
+                          theme: "success",
+                          autoHiding: 5000,
+                        });
+                      } else {
+                        add({
+                          title: "При отклонении произошла ошибка",
+                          name: "reject-people-err",
+                          theme: "danger",
+                          autoHiding: 5000,
+                        });
+                      }
+                    }}
+                  >
+                    отклонить
+                  </Button>
+                </Flex>
+              </Row>
+            </Card>
+          ))}
+          <Text variant="display-2">Принятые представители</Text>
+          {acceptedPeople?.map((person) => (
+            <Card
+              theme="normal"
+              view="outlined"
+              style={{ padding: "1rem", marginBottom: "1rem" }}
+            >
+              <Row space="0">
+                <Col>
+                  <Flex direction="column" key={person.id}>
+                    <Text variant="display-1">{person.comment}</Text>
+                    <Text variant="body-3">
+                      {/* @ts-ignore */}
+                      Запрашиваемая роль: {roles[person.subject]}
+                    </Text>
+                  </Flex>
+                </Col>
+              </Row>
+            </Card>
+          ))}
+        </>
+      )}
+    </Flex>
   );
 };
 
