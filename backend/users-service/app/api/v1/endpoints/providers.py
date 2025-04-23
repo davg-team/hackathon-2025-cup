@@ -364,18 +364,21 @@ async def authorize_tg_auth_result(
     jwt_token = crypto_manager.create_signed_jwt(data)
 
     return JWTSchema(access_token=jwt_token)
-    return JWTSchema(access_token=jwt_token)
-    return JWTSchema(access_token=jwt_token)
-    return JWTSchema(access_token=jwt_token)
 
 
-@api_router.get("/get_root", include_in_schema=False)
-async def get_root(
-    crypto_manager: CryptoManager = Depends(get_crypto_manager),
-    user_service: UserService = Depends(get_user_service),
-):
-    user_id = "root"
-    user = await user_service.get_user_by_id(user_id)
+async def get_user_and_create_jwt(
+    role: str,
+    crypto_manager: CryptoManager,
+    user_service: UserService,
+) -> JWTSchema:
+    """Получает пользователя по ID и создает JWT токен."""
+
+    if role not in ["root", "fsp_region_head", "sportsman"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid role"
+        )
+
+    user = await user_service.get_user_by_id(role)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="User not found"
@@ -386,26 +389,29 @@ async def get_root(
     return JWTSchema(access_token=jwt_token)
 
 
-@api_router.get("/root", include_in_schema=False)
-async def as_root(
+@api_router.get("/get_token/{role}", include_in_schema=False)
+async def api_get_root(
+    role: str,
     crypto_manager: CryptoManager = Depends(get_crypto_manager),
     user_service: UserService = Depends(get_user_service),
 ):
-    """Устанавливает куку token для пользователя root и выполняет редирект на главную страницу"""
-    user_id = "root"
+    """Возвращает JWT токен для пользователя."""
+    return await get_user_and_create_jwt(role, crypto_manager, user_service)
 
-    user = await user_service.get_user_by_id(user_id)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="User not found"
-        )
 
-    data = user_to_token_claims(user)
-    jwt_token = crypto_manager.create_signed_jwt(data)
+@api_router.get("/get/{role}", include_in_schema=False)
+async def api_as_root(
+    role: str,
+    crypto_manager: CryptoManager = Depends(get_crypto_manager),
+    user_service: UserService = Depends(get_user_service),
+):
+    """Устанавливает куку token для пользователя с указанной ролью и выполняет редирект на главную страницу."""
+
+    jwt_schema = await get_user_and_create_jwt(role, crypto_manager, user_service)
     response = RedirectResponse(url="/")
     response.set_cookie(
         key="token",
-        value=jwt_token,
+        value=jwt_schema.access_token,
         httponly=False,
         samesite="strict",
         max_age=60 * 60 * 12,
