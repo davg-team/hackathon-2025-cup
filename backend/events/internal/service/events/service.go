@@ -108,7 +108,8 @@ func (s *EventsService) GetEventsWithFilters(ctx context.Context, organizationID
 	cfg := config.Config().Bucket
 	updatedEvents := []models.Event{}
 	for _, event := range events {
-		event.ProtocolS3Key = fmt.Sprintf("https://storage.yandexcloud.net/%s/protocols/%s", cfg.Name, event.ProtocolS3Key)
+		event.ProtocolS3Key = fmt.Sprintf("https://storage.yandexcloud.net/%s/files/%s", cfg.Name, event.ProtocolS3Key)
+		event.EventImageS3Key = fmt.Sprintf("https://storage.yandexcloud.net/%s/files/%s", cfg.Name, event.EventImageS3Key)
 		updatedEvents = append(updatedEvents, event)
 	}
 	return updatedEvents, nil
@@ -128,7 +129,9 @@ func (s *EventsService) GetEventByID(ctx context.Context, id string) (models.Eve
 		log.Error("failed to get event by id", "error", err)
 		return models.Event{}, fmt.Errorf("%w: %s", ErrNotFound, "event not found")
 	}
-	event.ProtocolS3Key = fmt.Sprintf("https://storage.yandexcloud.net/%s/protocols/%s", cfg.Name, event.ProtocolS3Key)
+	event.ProtocolS3Key = fmt.Sprintf("https://storage.yandexcloud.net/%s/files/%s", cfg.Name, event.ProtocolS3Key)
+	event.EventImageS3Key = fmt.Sprintf("https://storage.yandexcloud.net/%s/files/%s", cfg.Name, event.EventImageS3Key)
+
 	return event, nil
 }
 
