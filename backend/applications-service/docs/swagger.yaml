@@ -12,7 +12,7 @@ servers:
 paths:
   /:
     post:
-      summary: Отправка заявки на участие в соревновании
+      summary: Отправка заявки на участие в соревновании (Если команда уже зарегестрирована в системе (permanent), то поля captain_id, team_name и participants сами заполняются)
       tags: [Applications]
       security:
         - bearerAuth: []
@@ -341,6 +341,9 @@ components:
           type: string
           format: uuid
           example: new_team_id
+        team_name:
+          type: string
+          example: Dream Team
         team_type:
           type: string
           enum:

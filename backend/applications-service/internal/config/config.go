@@ -22,9 +22,14 @@ type config struct {
 	Server       serverConfig       `yaml:"server"`
 	Storage      storageConfig      `yaml:"storage"`
 	UsersService usersServiceConfig `yaml:"users_service"`
+	TeamsService teamsServiceConfig `yaml:"teams_service"`
 }
 
 type usersServiceConfig struct {
+	URL string `yaml:"url"`
+}
+
+type teamsServiceConfig struct {
 	URL string `yaml:"url"`
 }
 
