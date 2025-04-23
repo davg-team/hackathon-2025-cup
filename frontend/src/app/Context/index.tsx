@@ -4,12 +4,30 @@ import { Fragment, ReactNode, useState } from "react";
 
 const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [providers, setProviders] = useState<DataType[]>([]);
-  const [isLoggined, setIsLoggined] = useState<boolean>(localStorage.getItem("isLoggined") === "true" && isExpired(localStorage.getItem("token") as string) ? false : true);
-  const [isSnow, setIsSnow] = useState<boolean>(localStorage.getItem("isSnow") === "0");
+  const [isLoggined, setIsLoggined] = useState<boolean>(
+    localStorage.getItem("isLoggined") === "true" &&
+      !isExpired(localStorage.getItem("token") as string)
+      ? true
+      : false,
+  );
+  const [isSnow, setIsSnow] = useState<boolean>(
+    localStorage.getItem("isSnow") === "0",
+  );
+
+  console.log(isLoggined);
 
   return (
     <Fragment>
-      <Context.Provider value={{ providers, setProviders, isLoggined, setIsLoggined, isSnow, setIsSnow }}>
+      <Context.Provider
+        value={{
+          providers,
+          setProviders,
+          isLoggined,
+          setIsLoggined,
+          isSnow,
+          setIsSnow,
+        }}
+      >
         {children}
       </Context.Provider>
     </Fragment>
@@ -19,4 +37,4 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
 export default AppContextProvider;
 
 export { Context };
-export type {DataType}
+export type { DataType };

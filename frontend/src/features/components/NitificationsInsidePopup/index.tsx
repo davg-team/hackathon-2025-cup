@@ -7,8 +7,8 @@ import {
 } from "@gravity-ui/components";
 import { ArrowRotateLeft, CircleCheck } from "@gravity-ui/icons";
 import { Button, Icon, Popup, Text } from "@gravity-ui/uikit";
-import { Context } from "app/Context";
-import React, { useContext, useEffect, useState } from "react";
+import React, {useEffect, useState } from "react";
+import { isExpired } from "shared/jwt-tools";
 import { getTimeAsDayMonthYear, getTimeAsHoursMinutes } from "shared/tools";
 
 interface NotificationData {
@@ -71,12 +71,12 @@ const setNotificationStatus = async (
 };
 
 export const InsideAPopup = () => {
+  const token = localStorage.getItem("token");
   const [notifications, setNotifications] = useState<NotificationProps[]>([]);
   const [isOpen, setIsOpen] = React.useState(false);
   const ref = React.useRef(null);
   const [loading, setIsLoading] = useState<boolean>(false);
   const [, setError] = useState<unknown>("");
-  const { isLoggined } = useContext(Context);
 
   const toggleNotification = (id: string, is_unread: boolean) => {
     is_unread = !is_unread;
@@ -143,7 +143,7 @@ export const InsideAPopup = () => {
 
   return (
     <>
-      {isLoggined ? (
+      {token && !isExpired(token) ? (
         <>
           <Button size="l" onClick={() => setIsOpen(!isOpen)} ref={ref}>
             <Icon
