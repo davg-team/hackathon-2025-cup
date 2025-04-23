@@ -13,6 +13,8 @@ export interface Event {
   discipline: "algorithms" | "hackathon" | "cybersecurity";
   start_date: string;
   end_date: string;
+  event_image_s3_key: string;
+  age_group: string;
 }
 
 export async function fetchEvents(region: string): Promise<Event[] | null> {

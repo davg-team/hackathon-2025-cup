@@ -188,6 +188,8 @@ function useProps(theme: string, setTheme: () => void): NavigationData {
   const roles = getRoleFromToken();
   const { isLoggined } = useContext(Context);
 
+  console.log(isLoggined);
+
   return {
     header: {
       leftItems: [

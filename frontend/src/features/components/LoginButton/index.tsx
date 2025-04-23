@@ -37,7 +37,7 @@ const LoginButton = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<unknown>("");
   const { providers, setProviders } = useContext(Context);
-  const [token] = useState<string>(localStorage.getItem("token") as string);
+  const token = localStorage.getItem("token");
 
   const subdomain = window.location.hostname.split(".")[0];
   const isSubdomain =
