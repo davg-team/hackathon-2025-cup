@@ -69,6 +69,18 @@ items:
             - name: openapi
               input: openapi_analytics.yaml
           mode: link
+  - name: Сервис заявок
+    href: applications/index.md
+    items:
+      - name: Описание сервиса
+        href: applications/description.md
+      - name: openapi
+        include:
+          path: openapi_applications
+          includers:
+            - name: openapi
+              input: openapi_applications.yaml
+
   - name: Сервис пользователей
     href: user-service/index.md
     # href: user-service/user-service_index.yaml

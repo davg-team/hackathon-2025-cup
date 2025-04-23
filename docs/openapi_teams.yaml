@@ -20,15 +20,20 @@ paths:
           required: false
           schema:
             type: string
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
-        '200':
+        "200":
           description: A JSON array of team objects
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Team'
+                  $ref: "#/components/schemas/Team"
     post:
       summary: Create a new team
       operationId: createTeam
@@ -38,9 +43,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TeamPOSTSchema'
+              $ref: "#/components/schemas/TeamPOSTSchema"
       responses:
-        '201':
+        "201":
           description: Team created
   /teams/{id}:
     get:
@@ -53,13 +58,13 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Team object
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Team'
-        '404':
+                $ref: "#/components/schemas/TeamDetail"
+        "404":
           description: Team not found
     put:
       summary: Update an existing team
@@ -76,11 +81,11 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TeamPUTSchema'
+              $ref: "#/components/schemas/TeamPUTSchema"
       responses:
-        '200':
+        "200":
           description: Team updated
-        '404':
+        "404":
           description: Team not found
     delete:
       summary: Delete a team by ID
@@ -92,24 +97,24 @@ paths:
           schema:
             type: string
       responses:
-        '204':
+        "204":
           description: Team deleted
-        '404':
+        "404":
           description: Team not found
   /teams-events:
     get:
       summary: Get all team events
       operationId: listTeamEvents
       responses:
-        '200':
+        "200":
           description: A JSON array of team event objects
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/TeamEvent'
-    
+                  $ref: "#/components/schemas/TeamEvent"
+
     post:
       summary: Create Team Event
       operationId: createTeamEvent
@@ -119,11 +124,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TeamEventPOSTSchema'
+              $ref: "#/components/schemas/TeamEventPOSTSchema"
       responses:
-        '200':
+        "200":
           description: Team event created
-        
 
 components:
   schemas:
@@ -150,6 +154,48 @@ components:
           items:
             type: string
           description: List of team member IDs
+    TeamDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the team
+        name:
+          type: string
+          description: Name of the team
+        description:
+          type: string
+          description: Description of the team
+        fsp_id:
+          type: string
+          description: FSP ID of the team
+        captain:
+          type: string
+          description: Captain of the team
+        participants:
+          type: array
+          items:
+            type: string
+          description: List of team member IDs
+        participants_metainfo:
+          type: array
+          items:
+            type: object
+            properties:
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  first_name:
+                    type: string
+                  last_name:
+                    type: string
+                  email:
+                    type: string
+                  avatar:
+                    type: string
+          description: List of team member IDs
 
     TeamPOSTSchema:
       type: object
@@ -168,7 +214,7 @@ components:
           items:
             type: string
           description: List of team member IDs
-    
+
     TeamPUTSchema:
       type: object
       properties:
@@ -219,15 +265,15 @@ components:
         teams:
           type: array
           items:
-            $ref: '#/components/schemas/TeamEventPOST'
+            $ref: "#/components/schemas/TeamEventPOST"
           description: List of team IDs
 
     TeamEventPOST:
       type: object
       properties:
         team_id:
-            type: string
-            description: ID of the team
+          type: string
+          description: ID of the team
         placement:
-            type: integer
-            description: Placement of the team
+          type: integer
+          description: Placement of the team
