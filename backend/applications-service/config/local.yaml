@@ -1,0 +1,11 @@
+env_type: local
+
+server:
+  port: 8080
+
+storage:
+  dsn: grpcs://ydb.serverless.yandexcloud.net:2135/ru-central1/b1gpldpf3veopdl8oo4c/etn2h1b8dp465keqs07u
+  path_to_key: ./keys/authorized_key.json
+
+users_service:
+  url: https://fsp-platform.ru/api/auth/accounts
