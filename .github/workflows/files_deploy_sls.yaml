@@ -19,9 +19,8 @@ jobs:
       working-directory: ./backend/files-service
       run: |
         # Записываем данные в файл, используя printf для сохранения пустых строк
-        printf "%s" '${{ secrets.ENV }}' > ".ENV"
-        ls
-        cat .ENV
+        printf "%s" '${{ secrets.ENV }}' > keys/authorized_key.json
+        ls keys
     - name: Prepare deployment package in root
       run: |
         mkdir -p ./build
@@ -34,6 +33,12 @@ jobs:
         rm -rf ./build
         ls
         ls -la
+        ls keys
+        # Переименовываем файл keys/authorized_key.json в .ENV и кладём в корень
+        mv ./keys/authorized_key.json .ENV
+        ls keys
+        ls -la
+        ls
     - name: Deploy Function
       uses: yc-actions/yc-sls-function@v2.12.0
       with:
