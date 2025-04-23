@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  title: DAVG API
+  version: 1.0.0
+  description: API for DAVG
+
+servers:
+  - url: http://localhost:8080/api/reports
+
+paths:
+  /:
+    get:
+      summary: Get all reports
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportGET'
+    post:
+      summary: Create report
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportPOST'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad request
+        '403':
+          description: Forbidden
+        "401":
+          description: Unauthorized
+
+  /{id}:
+    get:
+      summary: Get report by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportGET'
+        '404':
+          description: Not found
+    delete:
+      summary: Delete report by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not found
+
+components:
+  schemas:
+    ReportGET:
+      type: object
+      properties:
+        id:
+          type: string
+        report_s3_key:
+          type: string
+          description: returns whole link to bucket
+        competition_id:
+          type: string
+        winners_count:
+          type: integer
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+    ReportPOST:
+      type: object
+      properties:
+        report_s3_key:
+          type: string
+          description: S3 key for report (only key!!)
+        competition_id:
+          type: string
+        winners_count:
+          type: integer
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/Team'
+    Team:
+      type: object
+      properties:
+        team_id:
+          type: string
+        placement:
+          type: integer
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  

@@ -1,0 +1,175 @@
+openapi: 3.0.0
+info:
+  title: Organization API
+  version: 1.0.0
+  description: API for managing FSP Organizations
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+    variables:
+      port:
+        default: "8080"
+
+paths:
+  /api/organizations:
+    get:
+      summary: Get all organizations
+      tags:
+        - Organizations
+      responses:
+        '200':
+          description: A list of organizations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Organization'
+    post:
+      summary: Create a new organization
+      tags:
+        - Organizations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationCreate'
+      responses:
+        '200':
+          description: The created organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+
+  /api/organizations/{id}:
+    get:
+      summary: Get an organization by ID
+      tags:
+        - Organizations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+    put:
+      summary: Update an organization by ID
+      tags:
+        - Organizations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationUpdate'
+      responses:
+        '200':
+          description: The updated organization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+
+  /api/organizations/{id}/description:
+    put:
+      summary: Update an organization description by ID
+      tags:
+        - Organizations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationDescriptionUpdate'
+      responses:
+        '200':
+          description: The updated organization
+
+components:
+  schemas:
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The organization's ID
+        district:
+          type: string
+          description: The organization's district
+        region:
+          type: string
+          description: The organization's region
+        managers:
+          type: array
+          items:
+            type: string
+          description: The organization's manager
+        email:
+          type: string
+          description: The organization's email
+    
+    OrganizationCreate:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The organization's ID
+        district:
+          type: string
+          description: The organization's district
+        region:
+          type: string
+          description: The organization's region
+        managers:
+          type: array
+          items:
+            type: string
+        email:
+          type: string
+          description: The organization's email
+
+    OrganizationUpdate:
+      type: object
+      properties:
+        district:
+          type: string
+          description: The organization's district
+        region:
+          type: string
+          description: The organization's region
+        managers:
+          type: array
+          items:
+            type: string
+        email:
+          type: string
+          description: The organization's email
+
+    OrganizationDescriptionUpdate:
+      type: object
+      properties:
+        description:
+          type: string
+          description: The organization's description

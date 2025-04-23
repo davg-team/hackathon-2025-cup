@@ -1,0 +1,249 @@
+openapi: 3.0.0
+info:
+  title: DAVG API
+  version: 1.0.0
+  description: API for DAVG
+
+servers:
+  - url: http://localhost:8080/api/analytics
+
+paths:
+  /regions:
+      get:
+        summary: Get all regions
+        parameters:
+          - in: query
+            name: filter
+            schema:
+              type: string
+              enum: [winners, events]
+            required: false
+            description: Filter (winners, events)
+
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RegionGET'
+  /regions/{id}:
+    get:
+      summary: Get region by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegionGET'
+        '404':
+          description: Not found
+    put:
+      summary: Update region by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegionPUT'
+      responses:
+        '200':
+          description: OK
+    
+  /stats/{team_id}:
+    get:
+      summary: Get team statistics
+      description: Get team statistics (This route has different responses based on query (check models for them))
+      parameters:
+        - in: path
+          name: team_id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: event_discipline
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: event_type
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: placement
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamStatistics'
+
+    
+
+components:
+  schemas:
+    RegionGET:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        events_count: 
+          type: integer
+        algorithm_count: 
+          type: integer
+        hackathon_count: 
+          type: integer
+        cyber_security_count: 
+          type: integer
+        russian_events_count: 
+          type: integer
+        foreign_events_count: 
+          type: integer
+        winners_count: 
+          type: integer
+        algorithm_winners_count: 
+          type: integer
+        hackathon_winners_count: 
+          type: integer
+        cyber_security_winners_count: 
+          type: integer
+    RegionPUT:
+      type: object
+      properties:
+        event_type: 
+          type: string
+        event_discipline:
+          type: string
+        winners_count:
+          type: integer
+    
+    Metadata:
+      type: object
+      properties:
+        team_id:
+          type: string
+        event_discipline:
+          type: string
+        event_type:
+          type: string
+        placement:
+          type: integer
+    
+    TeamStatistics:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        
+        algorithm_count:
+          type: integer
+        hackathon_count:
+          type: integer
+        cyber_security_count:
+          type: integer
+        russian_events_count:
+          type: integer
+        regional_events_count:
+          type: integer
+        city_events_count:
+          type: integer
+        first_place_count:
+          type: integer
+        second_place_count:
+          type: integer
+        third_place_count:
+          type: integer
+        participants_count:
+          type: integer
+    
+    TeamStatisticsByDiscipline:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        
+        first_place_count:
+          type: integer
+        second_place_count:
+          type: integer
+        third_place_count:
+          type: integer
+        participants_count:
+          type: integer
+        russian_events_count:
+          type: integer
+        regional_events_count:
+          type: integer
+        city_events_count:
+          type: integer
+    
+    TeamStatisticsByType:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        
+        first_place_count:
+          type: integer
+        second_place_count:
+          type: integer
+        third_place_count:
+          type: integer
+        participants_count:
+          type: integer
+        algorithm_count:
+          type: integer
+        hackathon_count:
+          type: integer
+        cyber_security_count:
+          type: integer
+    
+    TeamStatisticsByPlacement:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      
+        algorithm_count:
+          type: integer
+        hackathon_count:
+          type: integer
+        cyber_security_count:
+          type: integer
+        russian_events_count:
+          type: integer
+        regional_events_count:
+          type: integer
+        city_events_count:
+          type: integer
+
+
+
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  

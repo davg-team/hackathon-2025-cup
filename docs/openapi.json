@@ -1,0 +1,887 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Authorization Service",
+    "summary": "API for user authentication and authorization.",
+    "description": "A comprehensive API for managing user authentication and authorization, including OAuth2, JWT, and SSO support.",
+    "termsOfService": "https://www.example.com/terms/",
+    "contact": {
+      "name": "API Support Team",
+      "url": "http://www.example.com/support",
+      "email": "support@example.com"
+    },
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/auth/health": {
+      "get": {
+        "tags": ["observability"],
+        "summary": "Health",
+        "operationId": "health_api_auth_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        }
+      }
+    },
+    "/api/auth/providers": {
+      "get": {
+        "tags": ["providers"],
+        "summary": "List Providers",
+        "description": "Возвращает список доступных провайдеров",
+        "operationId": "list_providers_api_auth_providers_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "items": {
+                        "$ref": "#/components/schemas/ProviderSchema"
+                      },
+                      "type": "array"
+                    },
+                    { "type": "string" }
+                  ],
+                  "title": "Response List Providers Api Auth Providers Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/providers/{provider_slug}/authorize/oauth_code": {
+      "post": {
+        "tags": ["providers"],
+        "summary": "Authorize Code",
+        "description": "Авторизация по коду OAuth2 провайдера и получение JWT токена",
+        "operationId": "authorize_code_api_auth_providers__provider_slug__authorize_oauth_code_post",
+        "parameters": [
+          {
+            "name": "provider_slug",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Provider Slug" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/OauthByCodeSchema" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/JWTSchema" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/providers/{provider_slug}/authorize/tgAuthResult": {
+      "post": {
+        "tags": ["providers"],
+        "summary": "Authorize Tg Auth Result",
+        "description": "Авторизация по коду OAuth2 провайдера и получение JWT токена",
+        "operationId": "authorize_tg_auth_result_api_auth_providers__provider_slug__authorize_tgAuthResult_post",
+        "parameters": [
+          {
+            "name": "provider_slug",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Provider Slug" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AuthTelegramSchema" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/JWTSchema" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/.well-known/jwks.json": {
+      "get": {
+        "tags": ["public"],
+        "summary": "Get Jwks",
+        "operationId": "get_jwks_api_auth__well_known_jwks_json_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        }
+      }
+    },
+    "/api/auth/account/create": {
+      "post": {
+        "tags": ["account"],
+        "summary": "Create Account",
+        "operationId": "create_account_api_auth_account_create_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/auth/account/register": {
+      "post": {
+        "tags": ["account"],
+        "summary": "Register Account",
+        "operationId": "register_account_api_auth_account_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterAccountSchema" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/auth/account/update": {
+      "put": {
+        "tags": ["account"],
+        "summary": "Update Account",
+        "operationId": "update_account_api_auth_account_update_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateAccountSchema" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/auth/account/token": {
+      "get": {
+        "tags": ["account"],
+        "summary": "Update Token",
+        "operationId": "update_token_api_auth_account_token_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/auth/accounts/get": {
+      "post": {
+        "tags": ["account"],
+        "summary": "Accounts",
+        "operationId": "accounts_api_auth_accounts_get_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": { "type": "string" },
+                "type": "array",
+                "title": "Ids"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/requests/role/me": {
+      "get": {
+        "tags": ["requests"],
+        "summary": "Get User Role Requests",
+        "description": "Получение реквестов ролей, относящихся к текущему пользователю",
+        "operationId": "get_user_role_requests_api_auth_requests_role_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": { "type": "object" },
+                  "type": "array",
+                  "title": "Response Get User Role Requests Api Auth Requests Role Me Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/auth/requests/role/sent": {
+      "get": {
+        "tags": ["requests"],
+        "summary": "Get Sent Role Requests",
+        "description": "Получение реквестов ролей, отправленных текущим пользователем",
+        "operationId": "get_sent_role_requests_api_auth_requests_role_sent_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": { "type": "object" },
+                  "type": "array",
+                  "title": "Response Get Sent Role Requests Api Auth Requests Role Sent Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/auth/requests/role/{request_id}/respond": {
+      "post": {
+        "tags": ["requests"],
+        "summary": "Respond To Role Request",
+        "description": "Акцепт или реджект реквеста (action = accept/reject)",
+        "operationId": "respond_to_role_request_api_auth_requests_role__request_id__respond_post",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Request Id" }
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "title": "Action" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Respond To Role Request Api Auth Requests Role  Request Id  Respond Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/requests/role/{request_id}": {
+      "delete": {
+        "tags": ["requests"],
+        "summary": "Cancel Role Request",
+        "description": "Отмена реквеста",
+        "operationId": "cancel_role_request_api_auth_requests_role__request_id__delete",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Request Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Cancel Role Request Api Auth Requests Role  Request Id  Delete"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/notifications/send": {
+      "post": {
+        "tags": ["notifications"],
+        "summary": "Send Notification",
+        "description": "Отправка уведомления пользователю",
+        "operationId": "send_notification_api_auth_notifications_send_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "title": "Notification Data" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Send Notification Api Auth Notifications Send Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/auth/notifications": {
+      "get": {
+        "tags": ["notifications"],
+        "summary": "Get Notifications",
+        "description": "Получение уведомлений пользователя",
+        "operationId": "get_notifications_api_auth_notifications_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": { "type": "object" },
+                  "type": "array",
+                  "title": "Response Get Notifications Api Auth Notifications Get"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "HTTPBearer": [] }]
+      }
+    },
+    "/api/auth/notifications/{notification_id}": {
+      "put": {
+        "tags": ["notifications"],
+        "summary": "Mark Notification As Read",
+        "description": "Отметка уведомления прочитанным",
+        "operationId": "mark_notification_as_read_api_auth_notifications__notification_id__put",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "notification_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "title": "Notification Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/NotifUpdateModel" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Response Mark Notification As Read Api Auth Notifications  Notification Id  Put"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/generate-protocol/": {
+      "get": {
+        "tags": ["generator"],
+        "summary": "Create Protocol",
+        "operationId": "create_protocol_api_auth_generate_protocol__get",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProtocolRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/generate_certificate/": {
+      "get": {
+        "tags": ["generator"],
+        "summary": "Create Certificate",
+        "operationId": "create_certificate_api_auth_generate_certificate__get",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "title": "Name" }
+          },
+          {
+            "name": "place",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "title": "Place" }
+          },
+          {
+            "name": "event",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "title": "Event" }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "title": "Date" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuthTelegramSchema": {
+        "properties": {
+          "tgAuthResult": { "type": "string", "title": "Tgauthresult" }
+        },
+        "type": "object",
+        "required": ["tgAuthResult"],
+        "title": "AuthTelegramSchema"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": { "$ref": "#/components/schemas/ValidationError" },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "JWTSchema": {
+        "properties": {
+          "access_token": { "type": "string", "title": "Access Token" },
+          "token_type": {
+            "type": "string",
+            "title": "Token Type",
+            "default": "Bearer"
+          }
+        },
+        "type": "object",
+        "required": ["access_token"],
+        "title": "JWTSchema"
+      },
+      "NotifUpdateModel": {
+        "properties": { "is_read": { "type": "boolean", "title": "Is Read" } },
+        "type": "object",
+        "required": ["is_read"],
+        "title": "NotifUpdateModel"
+      },
+      "OAuth2AuthorizeParamsSchema": {
+        "properties": {
+          "client_id": { "type": "string", "title": "Client Id" },
+          "response_type": {
+            "type": "string",
+            "title": "Response Type",
+            "default": "code"
+          },
+          "scope": { "type": "string", "title": "Scope", "default": "" }
+        },
+        "type": "object",
+        "required": ["client_id"],
+        "title": "OAuth2AuthorizeParamsSchema"
+      },
+      "OAuth2AuthorizeShema": {
+        "properties": {
+          "url": { "type": "string", "title": "Url" },
+          "params": {
+            "$ref": "#/components/schemas/OAuth2AuthorizeParamsSchema"
+          },
+          "pkce": { "$ref": "#/components/schemas/OAuth2PKCESchema" }
+        },
+        "type": "object",
+        "required": ["url", "params"],
+        "title": "OAuth2AuthorizeShema"
+      },
+      "OAuth2PKCESchema": {
+        "properties": {
+          "required": {
+            "type": "boolean",
+            "title": "Required",
+            "default": false
+          },
+          "method": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Method",
+            "default": "S256"
+          }
+        },
+        "type": "object",
+        "title": "OAuth2PKCESchema"
+      },
+      "OAuth2Schema": {
+        "properties": {
+          "authorize": { "$ref": "#/components/schemas/OAuth2AuthorizeShema" },
+          "instant_authorization": {
+            "type": "boolean",
+            "title": "Instant Authorization",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": ["authorize"],
+        "title": "OAuth2Schema"
+      },
+      "OauthByCodeSchema": {
+        "properties": {
+          "code": { "type": "string", "title": "Code" },
+          "state": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "State"
+          },
+          "deviceid": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Deviceid"
+          },
+          "redirect_uri": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Redirect Uri"
+          }
+        },
+        "type": "object",
+        "required": ["code"],
+        "title": "OauthByCodeSchema"
+      },
+      "ProtocolRequest": {
+        "properties": {
+          "title": { "type": "string", "title": "Title" },
+          "data": {
+            "items": { "$ref": "#/components/schemas/TeamData" },
+            "type": "array",
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": ["title", "data"],
+        "title": "ProtocolRequest"
+      },
+      "ProviderSchema": {
+        "properties": {
+          "slug": { "type": "string", "title": "Slug" },
+          "name": { "type": "string", "title": "Name", "default": "Untitled" },
+          "type": { "$ref": "#/components/schemas/ProviderTypeEnum" },
+          "service": { "type": "string", "title": "Service" },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": ""
+          },
+          "icon": { "type": "string", "title": "Icon" },
+          "oauth2": {
+            "anyOf": [
+              { "$ref": "#/components/schemas/OAuth2Schema" },
+              { "type": "null" }
+            ]
+          },
+          "other_data": {
+            "anyOf": [{ "type": "object" }, { "type": "null" }],
+            "title": "Other Data"
+          }
+        },
+        "type": "object",
+        "required": ["slug", "type", "service"],
+        "title": "ProviderSchema"
+      },
+      "ProviderTypeEnum": {
+        "type": "string",
+        "enum": ["oauth2", "other"],
+        "title": "ProviderTypeEnum"
+      },
+      "RegisterAccountSchema": {
+        "properties": {
+          "role_request": { "$ref": "#/components/schemas/RoleRequest" },
+          "email": { "type": "string", "title": "Email" },
+          "first_name": { "type": "string", "title": "First Name" },
+          "last_name": { "type": "string", "title": "Last Name" },
+          "second_name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Second Name"
+          },
+          "region_id": { "type": "string", "title": "Region Id" }
+        },
+        "type": "object",
+        "required": [
+          "role_request",
+          "email",
+          "first_name",
+          "last_name",
+          "region_id"
+        ],
+        "title": "RegisterAccountSchema"
+      },
+      "RoleRequest": {
+        "type": "string",
+        "enum": [
+          "fsp_staff",
+          "fsp_region_staff",
+          "fsp_region_head",
+          "sportsman"
+        ],
+        "title": "RoleRequest"
+      },
+      "TeamData": {
+        "properties": {
+          "team": { "type": "string", "title": "Team" },
+          "participants": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Participants"
+          },
+          "scores": {
+            "items": { "$ref": "#/components/schemas/TeamScore" },
+            "type": "array",
+            "title": "Scores"
+          }
+        },
+        "type": "object",
+        "required": ["team", "participants", "scores"],
+        "title": "TeamData"
+      },
+      "TeamScore": {
+        "properties": {
+          "judge": { "type": "string", "title": "Judge" },
+          "scores": {
+            "items": { "type": "integer" },
+            "type": "array",
+            "title": "Scores"
+          }
+        },
+        "type": "object",
+        "required": ["judge", "scores"],
+        "title": "TeamScore"
+      },
+      "UpdateAccountSchema": {
+        "properties": {
+          "first_name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "First Name"
+          },
+          "last_name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Last Name"
+          },
+          "second_name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Second Name"
+          },
+          "snils": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Snils"
+          },
+          "phone": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Phone"
+          },
+          "tg_id": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Tg Id"
+          },
+          "notification_ways": {
+            "anyOf": [{ "items": {}, "type": "array" }, { "type": "null" }],
+            "title": "Notification Ways"
+          }
+        },
+        "type": "object",
+        "required": [
+          "first_name",
+          "last_name",
+          "second_name",
+          "snils",
+          "phone",
+          "tg_id",
+          "notification_ways"
+        ],
+        "title": "UpdateAccountSchema"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": { "type": "string", "title": "Message" },
+          "type": { "type": "string", "title": "Error Type" }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "description": "Bearer token",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "observability",
+      "description": "Observability endpoints for the API."
+    },
+    {
+      "name": "providers",
+      "description": "Endpoints for managing authentication providers."
+    }
+  ]
+}

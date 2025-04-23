@@ -1,0 +1,233 @@
+openapi: 3.0.0
+info:
+  title: Teams API
+  description: API for managing teams
+  version: 1.0.0
+servers:
+  - url: http://localhost:{port}/api
+    description: Local server
+    variables:
+      port:
+        default: "8080"
+paths:
+  /teams:
+    get:
+      summary: List all teams
+      operationId: listTeams
+      parameters:
+        - name: fsp_id
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A JSON array of team objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Team'
+    post:
+      summary: Create a new team
+      operationId: createTeam
+      requestBody:
+        description: Team object that needs to be added to the store
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamPOSTSchema'
+      responses:
+        '201':
+          description: Team created
+  /teams/{id}:
+    get:
+      summary: Get a team by ID
+      operationId: getTeamById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Team object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        '404':
+          description: Team not found
+    put:
+      summary: Update an existing team
+      operationId: updateTeam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Team object that needs to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamPUTSchema'
+      responses:
+        '200':
+          description: Team updated
+        '404':
+          description: Team not found
+    delete:
+      summary: Delete a team by ID
+      operationId: deleteTeam
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Team deleted
+        '404':
+          description: Team not found
+  /teams-events:
+    get:
+      summary: Get all team events
+      operationId: listTeamEvents
+      responses:
+        '200':
+          description: A JSON array of team event objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeamEvent'
+    
+    post:
+      summary: Create Team Event
+      operationId: createTeamEvent
+      requestBody:
+        description: Team event object that needs to be added to the store
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamEventPOSTSchema'
+      responses:
+        '200':
+          description: Team event created
+        
+
+components:
+  schemas:
+    Team:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the team
+        name:
+          type: string
+          description: Name of the team
+        description:
+          type: string
+          description: Description of the team
+        fsp_id:
+          type: string
+          description: FSP ID of the team
+        captain:
+          type: string
+          description: Captain of the team
+        participants:
+          type: array
+          items:
+            type: string
+          description: List of team member IDs
+
+    TeamPOSTSchema:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the team
+        description:
+          type: string
+          description: Description of the team
+        captain:
+          type: string
+          description: Captain of the team
+        participants:
+          type: array
+          items:
+            type: string
+          description: List of team member IDs
+    
+    TeamPUTSchema:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the team
+        description:
+          type: string
+          description: Description of the team
+        captain:
+          type: string
+          description: Captain of the team
+        participants:
+          type: array
+          items:
+            type: string
+          description: List of team member IDs
+    TeamEvent:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID
+        team_id:
+          type: string
+          description: ID of the team
+        event_id:
+          type: string
+          description: ID of the event
+        placement:
+          type: integer
+          description: Placement of the team
+        event_title:
+          type: string
+          description: Title of the event
+        event_type:
+          type: string
+          description: Type of the event
+        event_discipline:
+          type: string
+          description: Discipline of the event
+    TeamEventPOSTSchema:
+      type: object
+      properties:
+        event_id:
+          type: string
+          description: ID of the event
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamEventPOST'
+          description: List of team IDs
+
+    TeamEventPOST:
+      type: object
+      properties:
+        team_id:
+            type: string
+            description: ID of the team
+        placement:
+            type: integer
+            description: Placement of the team
