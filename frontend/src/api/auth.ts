@@ -14,9 +14,7 @@ export async function updateToken(token: string) {
     setToken(data.access_token);
 
     const payload = getPayload(data.access_token);
-    console.log(payload);
-    // @ts-ignore
-    if (payload.required.includes("registration")) {
+    if (payload?.required?.includes("registration")) {
       window.history.pushState({}, "", "/register");
     }
     return true;

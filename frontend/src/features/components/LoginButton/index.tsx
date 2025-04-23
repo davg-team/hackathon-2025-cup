@@ -13,7 +13,6 @@ import {
 import { useContext, useEffect, useState } from "react";
 import "./index.css";
 import { Context, DataType } from "app/Context";
-import { useNavigate } from "react-router-dom";
 import { isExpired } from "shared/jwt-tools";
 
 const Xmark = `
@@ -39,7 +38,6 @@ const LoginButton = () => {
   const [error, setError] = useState<unknown>("");
   const { providers, setProviders } = useContext(Context);
   const [token] = useState<string>(localStorage.getItem("token") as string);
-  const navigate = useNavigate();
 
   const subdomain = window.location.hostname.split(".")[0];
   const isSubdomain =
@@ -239,19 +237,17 @@ const LoginButton = () => {
           </Flex>
         </Container>
       </Modal>
-      <Button
-        view="action"
-        size="l"
-        onClick={() => {
-          if (!token || isExpired(token)) {
+      {!token || isExpired(token) ? (
+        <Button
+          view="action"
+          size="l"
+          onClick={() => {
             setOpen((prev: boolean) => !prev);
-          } else {
-            navigate("/logout");
-          }
-        }}
-      >
-        {!token || isExpired(token) ? "Войти" : "Выйти"}
-      </Button>
+          }}
+        >
+          Войти
+        </Button>
+      ) : null}
     </>
   );
 };

@@ -9,7 +9,11 @@ import {
 import AppContextProvider, { Context } from "app/Context";
 import Router from "app/Router";
 import {
+  Container,
+  Flex,
+  Loader,
   ThemeProvider,
+  Toaster,
   ToasterComponent,
   ToasterProvider,
 } from "@gravity-ui/uikit";
@@ -32,7 +36,9 @@ export const ThemeContext = createContext({
 const App = () => {
   const [theme, setTheme] = useState<"light" | "dark">("light");
   // @ts-ignore
-  const { setIsLoggined } = useContext(Context);
+  const { setIsLoggined, isLoggined } = useContext(Context);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const toaster = new Toaster();
 
   useEffect(() => {
     try {
@@ -60,16 +66,14 @@ const App = () => {
     const tokenFromLocalStorage = localStorage.getItem("token");
     let token = null;
 
-    if (!tokenFromCookie || !tokenFromLocalStorage) {
-      deleteToken();
-    }
-
     if (tokenFromCookie && tokenFromLocalStorage) {
       const tokenFromCookiePayload = getPayload(tokenFromCookie);
       const tokenFromLocalStoragePayload = getPayload(tokenFromLocalStorage);
 
       if (!tokenFromCookiePayload || !tokenFromLocalStoragePayload) {
         deleteToken();
+        setIsAuthChecked(true);
+        return;
       }
 
       // @ts-ignore
@@ -84,6 +88,7 @@ const App = () => {
       token = tokenFromLocalStorage;
     } else {
       deleteToken();
+      setIsAuthChecked(true);
       return;
     }
 
@@ -91,12 +96,14 @@ const App = () => {
       try {
         if (isExpired(token)) {
           deleteToken();
+          setIsAuthChecked(true);
           return;
         }
         setToken(token);
       } catch {
         console.log("can't set token");
         deleteToken();
+        setIsAuthChecked(true);
         return;
       }
     }
@@ -104,36 +111,67 @@ const App = () => {
     updateToken(token).then((res) => {
       if (res) {
         setIsLoggined(true);
+        setIsAuthChecked(true);
       } else {
         setIsLoggined(false);
+        setIsAuthChecked(true);
       }
     });
   }, []);
 
   return (
-    <ErrorBoundary
-      fallbackRender={({ error }) => (
-        <div role="alert">
-          <p>Произошла ошибка:</p>
-          <pre style={{ color: "red" }}>{error.message}</pre>
-        </div>
-      )}
-    >
-      <ThemeContext.Provider value={{ theme, toggleTheme }}>
-        <ThemeProvider theme={theme}>
-          <PageConstructorProvider
-            theme={theme === "light" ? Theme.Light : Theme.Dark}
-          >
-            <ToasterProvider>
+    <>
+      {isAuthChecked ? (
+        <ErrorBoundary
+          fallbackRender={({ error }) => (
+            <div role="alert">
+              <p>Произошла ошибка:</p>
+              <pre style={{ color: "red" }}>{error.message}</pre>
+            </div>
+          )}
+        >
+          <ThemeContext.Provider value={{ theme, toggleTheme }}>
+            <ThemeProvider theme={theme}>
+              <PageConstructorProvider
+                theme={theme === "light" ? Theme.Light : Theme.Dark}
+              >
+                <ToasterProvider toaster={toaster}>
+                  <AppContextProvider>
+                    <ToasterComponent />
+                    <Router theme={theme} setTheme={toggleTheme} />
+                  </AppContextProvider>
+                </ToasterProvider>
+              </PageConstructorProvider>
+            </ThemeProvider>
+          </ThemeContext.Provider>
+        </ErrorBoundary>
+      ) : (
+        <ErrorBoundary
+          fallbackRender={({ error }) => (
+            <div role="alert">
+              <p>Произошла ошибка:</p>
+              <pre style={{ color: "red" }}>{error.message}</pre>
+            </div>
+          )}
+        >
+          <ThemeContext.Provider value={{ theme, toggleTheme }}>
+            <ThemeProvider theme={theme}>
               <AppContextProvider>
-                <ToasterComponent />
-                <Router theme={theme} setTheme={toggleTheme} />
+                <Container style={{ height: "100vh" }}>
+                  <Flex
+                    alignItems={"center"}
+                    height={"100%"}
+                    justifyContent={"center"}
+                  >
+                    <Loader size="l" />
+                  </Flex>
+                </Container>
               </AppContextProvider>
-            </ToasterProvider>
-          </PageConstructorProvider>
-        </ThemeProvider>
-      </ThemeContext.Provider>
-    </ErrorBoundary>
+            </ThemeProvider>
+          </ThemeContext.Provider>
+        </ErrorBoundary>
+      )}
+    </>
   );
 };
 

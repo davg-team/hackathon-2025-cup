@@ -268,6 +268,7 @@ const LoginCallback = () => {
                     content: "Руководитель регионального отделения ФСП",
                     value: "fsp_region_head",
                   },
+                  { content: "Спортсмен", value: "sportsman" },
                 ]}
               />
               {state.role_request !== "fsp_staff" && (

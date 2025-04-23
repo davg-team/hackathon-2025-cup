@@ -17,9 +17,9 @@ function UserProfileMainContent() {
       roles.includes("root") ||
       roles.includes("fsp_region_head")
     ) {
-      return <>fsp staff lk</>;
-    } else if (roles.includes("fsp_region_head")) {
-      return;
+      return <>fsp or root lk</>;
+    } else if (roles.includes("sportsman")) {
+      return <>sportsman lk</>;
     }
   } else navigate("/");
 }
