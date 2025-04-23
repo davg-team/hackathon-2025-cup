@@ -53,6 +53,34 @@ paths:
             enum:
               - upcoming
           description: Date filter
+        - name: max_age_filter
+          in: query
+          schema:
+            type: integer
+          description: Max age filter
+        - name: min_age_filter
+          in: query
+          schema:
+            type: integer
+          description: Min age filter
+        - name: discipline_filter
+          in: query
+          schema:
+            type: string
+          description: Discipline filter
+        - name: type_filter
+          in: query
+          schema:
+            type: string
+            enum:
+              - school
+              - city
+              - regional
+              - interregional
+              - russian
+              - international
+          description: Type filter
+
       responses:
         '200':
           description: List of events
