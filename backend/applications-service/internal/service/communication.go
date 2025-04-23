@@ -66,3 +66,31 @@ func GetTeamData(ctx context.Context, teamID string) (responses.Team, error) {
 
 	return team, nil
 }
+
+func GetEventData(ctx context.Context, eventID string) (responses.Event, error) {
+	cfg := config.Config().EventsService
+
+	req, err := http.NewRequestWithContext(ctx, "GET", cfg.URL+"/"+eventID, nil)
+	if err != nil {
+		return responses.Event{}, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return responses.Event{}, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return responses.Event{}, fmt.Errorf("failed to get event data, status code: %d", resp.StatusCode)
+	}
+
+	var event responses.Event
+	err = json.NewDecoder(resp.Body).Decode(&event)
+	if err != nil {
+		return responses.Event{}, err
+	}
+
+	return event, nil
+}

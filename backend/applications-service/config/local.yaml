@@ -12,3 +12,6 @@ users_service:
 
 teams_service:
   url: https://fsp-platform.ru/api/teams
+
+events_service:
+  url: https://fsp-platform.ru/api/events

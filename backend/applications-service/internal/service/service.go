@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log/slog"
+	"slices"
 	"time"
 
 	"github.com/davg/applications-service/internal/customerrors"
@@ -38,11 +39,24 @@ func New(storage ApplicationStorage, log *slog.Logger) *ApplicationService {
 }
 
 // TODO: check if user from region where event is held
-func (s *ApplicationService) CreateApplication(ctx context.Context, application requests.CreateApplicationRequest, captainID string) (string, error) {
+func (s *ApplicationService) CreateApplication(ctx context.Context, application requests.CreateApplicationRequest, captainID string, captainRegion string) (string, error) {
 	const op = "ApplicationService.CreateApplication"
 	log := s.log.With("op", op)
 
 	log.Info("creating application")
+
+	// Event Check Logic
+	event, err := GetEventData(ctx, application.EventID)
+	if err != nil {
+		return "", fmt.Errorf("failed to get event: %w", err)
+	}
+
+	if event.Type == "school" || event.Type == "city" || event.Type == "regional" {
+		// && captainRegion != "0"
+		if !slices.Contains(event.Regions, captainRegion) {
+			return "", fmt.Errorf("captain is not from event region")
+		}
+	}
 
 	// Preload Team Data logic
 	if application.TeamType == "permanent" {
