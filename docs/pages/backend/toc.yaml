@@ -76,7 +76,7 @@ items:
         href: applications/description.md
       - name: openapi
         include:
-          path: openapi_teams
+          path: openapi_applications
           includers:
             - name: openapi
               input: openapi_applications.yaml
