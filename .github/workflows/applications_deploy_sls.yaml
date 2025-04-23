@@ -1,11 +1,11 @@
-name: Deploy Serverless Service - applications
+name: Deploy Serverless Service - applications-service
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'backend/applications/**'
+      - 'backend/applications-service/**'
   workflow_dispatch:
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Write credentials
-      working-directory: ./backend/applications
+      working-directory: ./backend/applications-service
       run: |
         # Записываем данные в файл, используя printf для сохранения пустых строк
         printf "%s" '${{ secrets.SA_JSON_CREDENTIALS }}' > keys/authorized_key.json
@@ -26,11 +26,11 @@ jobs:
       run: |
         mkdir -p ./build
         # Копируем файлы и папки из текущего сервиса
-        cp -r ./backend/applications/ ./build
+        cp -r ./backend/applications-service/ ./build
         # Удаляем все файлы и папки, кроме ./build
         find . -mindepth 1 -not -path "./build*" -exec rm -rf {} +
         # Копируем всё из ./build в корень
-        cp -r ./build/applications/* ./
+        cp -r ./build/applications-service/* ./
         rm -rf ./build
         ls
         ls -la
@@ -40,7 +40,7 @@ jobs:
       with:
         yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
         folder-id: ${{ secrets.YC_FOLDER_ID }}
-        function-name: 'fsp-applications'
+        function-name: 'fsp-applications-service'
         runtime: 'golang121'
         memory: '128Mb'
         entrypoint: 'main.Handler'
