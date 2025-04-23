@@ -10,6 +10,11 @@ on:
         - "Deploy Serverless Service - organizations"
         - "Deploy Serverless Service - files"
         - "Deploy Serverless Service - notifications"
+        - "Deploy Serverless Service - events"
+        - "Deploy Serverless Service - applications"
+        - "Deploy Serverless Service - teams"
+        - "Deploy Serverless Service - reports"
+        - "Deploy Serverless Service - analytics"
     types:
       - completed
 
