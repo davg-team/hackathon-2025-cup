@@ -20,6 +20,8 @@ jobs:
       run: |
         # Записываем данные в файл, используя printf для сохранения пустых строк
         printf "%s" '${{ secrets.ENV }}' > ".ENV"
+        ls
+        cat .ENV
     - name: Prepare deployment package in root
       run: |
         mkdir -p ./build
