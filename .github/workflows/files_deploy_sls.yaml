@@ -35,7 +35,7 @@ jobs:
         ls -la
         ls keys
         # Переименовываем файл keys/authorized_key.json в .ENV и кладём в корень
-        mv ./keys/authorized_key.json .ENV
+        mv ./keys/authorized_key.json .env
         ls keys
         ls -la
         ls
