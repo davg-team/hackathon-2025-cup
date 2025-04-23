@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/datatypes"
+)
 
 // Statuses
 const (
@@ -22,21 +26,21 @@ const (
 )
 
 type Event struct {
-	ID              string    `gorm:"primaryKey" json:"id"`
-	OrganizationID  string    `json:"organization_id"`
-	Title           string    `json:"title"`
-	Description     string    `json:"description"`
-	Type            string    `json:"type"`
-	Discipline      string    `json:"discipline"`
-	StartDate       time.Time `json:"start_date"`
-	EndDate         time.Time `json:"end_date"`
-	IsOpen          bool      `json:"is_open"`
-	Status          string    `json:"status"`
-	Regions         []string  `json:"regions"`
-	MinAge          int       `json:"min_age"`
-	MaxAge          int       `json:"max_age"`
-	MaxPeople       int       `json:"max_people"`
-	MinPeople       int       `json:"min_people"`
-	ProtocolS3Key   string    `json:"protocol_s3_key"`
-	EventImageS3Key string    `json:"event_image_s3_key"`
+	ID              string         `gorm:"primaryKey" json:"id"`
+	OrganizationID  string         `json:"organization_id"`
+	Title           string         `json:"title"`
+	Description     string         `json:"description"`
+	Type            string         `json:"type"`
+	Discipline      string         `json:"discipline"`
+	StartDate       time.Time      `json:"start_date"`
+	EndDate         time.Time      `json:"end_date"`
+	IsOpen          bool           `json:"is_open"`
+	Status          string         `json:"status"`
+	Regions         datatypes.JSON `json:"regions"`
+	MinAge          int            `json:"min_age"`
+	MaxAge          int            `json:"max_age"`
+	MaxPeople       int            `json:"max_people"`
+	MinPeople       int            `json:"min_people"`
+	ProtocolS3Key   string         `json:"protocol_s3_key"`
+	EventImageS3Key string         `json:"event_image_s3_key"`
 }
