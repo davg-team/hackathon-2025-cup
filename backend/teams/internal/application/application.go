@@ -5,7 +5,7 @@ import (
 
 	"github.com/davg/teams/internal/server"
 	"github.com/davg/teams/internal/service/teams"
-	"github.com/davg/teams/internal/service/teams_events"
+	teamsevents "github.com/davg/teams/internal/service/teams_events"
 	"github.com/gin-gonic/gin"
 
 	"github.com/davg/teams/internal/storage"

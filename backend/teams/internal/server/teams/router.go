@@ -14,7 +14,7 @@ import (
 )
 
 type TeamsService interface {
-	Teams(ctx context.Context, fspID, user_id string) ([]models.Team, error)
+	Teams(ctx context.Context, fspID, user_id string) ([]schemas.TeamsAnswer, error)
 	Team(ctx context.Context, id string) (models.Team, error)
 	CreateTeam(ctx context.Context, id string, fspID string, team schemas.TeamPOSTSchema) error
 	UpdateTeam(ctx context.Context, id string, team schemas.TeamPUTSchema) error
