@@ -82,7 +82,7 @@ func (r *ApplicationRouter) UpdateApplicationStatus(ctx *gin.Context) {
 		return
 	}
 
-	if !slices.Contains(payload.Roles, "fsp_staff") {
+	if !slices.Contains(payload.Roles, "fsp_staff") && !slices.Contains(payload.Roles, "fsp_region_staff") && !slices.Contains(payload.Roles, "fsp_region_head") {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
