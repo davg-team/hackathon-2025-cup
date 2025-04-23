@@ -11,19 +11,16 @@ analytics:
 
 navigation:
   logo:
-    url: "https://github.ru/"
+    url: "https://fsp-platform.ru/"
     dark:
-      icon: "https://storage.yandexcloud.net/diplodoc-www-assets/logo/ddos-logo-dark.svg"
+      icon: "https://fsp-platform.ru/svg/logo_01.svg"
     light:
-      icon: "https://storage.yandexcloud.net/diplodoc-www-assets/navigation/diplodoc-logo.svg"
+      icon: "https://fsp-platform.ru/svg/fsp_full_ru-black.svg"
   header:
-    # leftItems:
-    #   - text: "Оглавление"
-    #     type: "link"
-    #     url: "../ru"
-    #   - text: "Помощь"
-    #     type: "link"
-    #     url: "./help"
+    leftItems:
+      - text: "Главная"
+        type: "link"
+        url: "/docs"
     rightItems:
       - type: "controls"
 
@@ -44,5 +41,5 @@ items:
     expanded: false
     href: pages/backend/backend_index_.md
     include:
-      mode: link
+      mode: root_merge
       path: pages/backend/toc.yaml
