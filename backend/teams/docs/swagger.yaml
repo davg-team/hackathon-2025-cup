@@ -63,7 +63,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Team"
+                $ref: "#/components/schemas/TeamDetail"
         "404":
           description: Team not found
     put:
@@ -153,6 +153,48 @@ components:
           type: array
           items:
             type: string
+          description: List of team member IDs
+    TeamDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the team
+        name:
+          type: string
+          description: Name of the team
+        description:
+          type: string
+          description: Description of the team
+        fsp_id:
+          type: string
+          description: FSP ID of the team
+        captain:
+          type: string
+          description: Captain of the team
+        participants:
+          type: array
+          items:
+            type: string
+          description: List of team member IDs
+        participants_metainfo:
+          type: array
+          items:
+            type: object
+            properties:
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  first_name:
+                    type: string
+                  last_name:
+                    type: string
+                  email:
+                    type: string
+                  avatar:
+                    type: string
           description: List of team member IDs
 
     TeamPOSTSchema:
