@@ -36,6 +36,6 @@ func HandleError(ctx *gin.Context, err error) {
 	} else if errors.Is(err, customerrors.ErrInternal) {
 		ctx.JSON(500, gin.H{"status": "error", "message": err.Error()})
 	} else {
-		ctx.JSON(500, gin.H{"status": "error", "message": err.Error()})
+		ctx.JSON(500, gin.H{"status": "undocumented error", "message": err.Error()})
 	}
 }

@@ -18,9 +18,14 @@ const (
 var cfg config
 
 type config struct {
-	EnvType string        `yaml:"env_type"`
-	Server  serverConfig  `yaml:"server"`
-	Storage storageConfig `yaml:"storage"`
+	EnvType      string             `yaml:"env_type"`
+	Server       serverConfig       `yaml:"server"`
+	Storage      storageConfig      `yaml:"storage"`
+	UsersService usersServiceConfig `yaml:"users_service"`
+}
+
+type usersServiceConfig struct {
+	URL string `yaml:"url"`
 }
 
 type serverConfig struct {

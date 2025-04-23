@@ -1,7 +1,11 @@
 package server
 
 import (
+	"net/http"
+	"slices"
+
 	"github.com/davg/applications-service/internal/domain/requests"
+	"github.com/davg/applications-service/pkg/middlewares/authorization"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,7 +35,7 @@ func (r *ApplicationRouter) GetApplication(ctx *gin.Context) {
 }
 
 func (r *ApplicationRouter) GetApplications(ctx *gin.Context) {
-	applicationStatus := ctx.Query("application_status")
+	applicationStatus := ctx.Query("status")
 	teamID := ctx.Query("team_id")
 
 	applications, err := r.service.Applications(ctx, applicationStatus, teamID)
@@ -49,6 +53,12 @@ func (r *ApplicationRouter) GetApplications(ctx *gin.Context) {
 }
 
 func (r *ApplicationRouter) CreateApplication(ctx *gin.Context) {
+	payload, err := authorization.FromContext(ctx)
+	if err != nil {
+		HandleError(ctx, err)
+		return
+	}
+
 	var application requests.CreateApplicationRequest
 
 	if err := ctx.ShouldBindJSON(&application); err != nil {
@@ -56,7 +66,7 @@ func (r *ApplicationRouter) CreateApplication(ctx *gin.Context) {
 		return
 	}
 
-	applicationID, err := r.service.CreateApplication(ctx, application)
+	applicationID, err := r.service.CreateApplication(ctx, application, payload.ID)
 	if err != nil {
 		HandleError(ctx, err)
 		return
@@ -65,10 +75,110 @@ func (r *ApplicationRouter) CreateApplication(ctx *gin.Context) {
 	ctx.JSON(201, gin.H{"id": applicationID})
 }
 
+func (r *ApplicationRouter) UpdateApplicationStatus(ctx *gin.Context) {
+	payload, err := authorization.FromContext(ctx)
+	if err != nil {
+		HandleError(ctx, err)
+		return
+	}
+
+	if !slices.Contains(payload.Roles, "fsp_staff") {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	applicationID := ctx.Param("id")
+	applicationStatus := ctx.Query("status")
+
+	err = r.service.UpdateApplicationStatus(ctx, applicationID, applicationStatus)
+	if err != nil {
+		HandleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(200, gin.H{"status": "success"})
+}
+
+// TODO: think about JWT
+func (r *ApplicationRouter) CreateTeamApplication(ctx *gin.Context) {
+	payload, err := authorization.FromContext(ctx)
+	if err != nil {
+		HandleError(ctx, err)
+		return
+	}
+
+	var application requests.CreateTeamApplicationRequest
+
+	if err := ctx.ShouldBindJSON(&application); err != nil {
+		HandleError(ctx, err)
+		return
+	}
+
+	err = r.service.CreateTeamApplication(ctx, application, payload.ID)
+	if err != nil {
+		HandleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(201, gin.H{"status": "success"})
+}
+
+func (r *ApplicationRouter) GetTeamApplication(ctx *gin.Context) {
+	id := ctx.Param("id")
+
+	application, err := r.service.TeamApplication(ctx, id)
+	if err != nil {
+		HandleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(200, application)
+}
+
+func (r *ApplicationRouter) GetTeamApplications(ctx *gin.Context) {
+	teamID := ctx.Query("team_id")
+	applicantID := ctx.Query("user_id")
+
+	applications, err := r.service.TeamApplications(ctx, teamID, applicantID)
+	if err != nil {
+		HandleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(200, applications)
+}
+
+func (r *ApplicationRouter) UpdateTeamApplication(ctx *gin.Context) {
+	payload, err := authorization.FromContext(ctx)
+	if err != nil {
+		HandleError(ctx, err)
+		return
+	}
+
+	applicationID := ctx.Param("id")
+	applicationStatus := ctx.Query("status")
+
+	err = r.service.UpdateTeamApplication(ctx, applicationID, applicationStatus, payload.ID)
+	if err != nil {
+		HandleError(ctx, err)
+		return
+	}
+
+	ctx.JSON(200, gin.H{"status": "success"})
+}
+
 func (r *ApplicationRouter) init() {
+	key := GetKey()
 	router := r.router.Group("/applications")
 
 	router.GET("/:id", r.GetApplication)
 	router.GET("/", r.GetApplications)
-	router.POST("/", r.CreateApplication)
+	router.POST("/", authorization.MiddlwareJWT(key), r.CreateApplication)
+	router.PATCH("/:id/status", authorization.MiddlwareJWT(key), r.UpdateApplicationStatus)
+
+	teamRouter := router.Group("/team")
+	teamRouter.POST("/", authorization.MiddlwareJWT(key), r.CreateTeamApplication)
+	teamRouter.GET("/:id", r.GetTeamApplication)
+	teamRouter.GET("/", r.GetTeamApplications)
+	teamRouter.PATCH("/:id/status", authorization.MiddlwareJWT(key), r.UpdateTeamApplication)
 }

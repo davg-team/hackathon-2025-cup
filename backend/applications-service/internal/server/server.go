@@ -13,9 +13,15 @@ import (
 )
 
 type ApplicationService interface {
-	CreateApplication(ctx context.Context, application requests.CreateApplicationRequest) (string, error)
+	CreateApplication(ctx context.Context, application requests.CreateApplicationRequest, captainID string) (string, error)
 	Application(ctx context.Context, id string) (responses.GetApplicationResponse, error)
 	Applications(ctx context.Context, applicationStatus string, teamID string) ([]responses.GetApplicationResponse, error)
+	UpdateApplicationStatus(ctx context.Context, applicationID string, applicationStatus string) error
+
+	CreateTeamApplication(ctx context.Context, application requests.CreateTeamApplicationRequest, aplicantID string) error
+	TeamApplication(ctx context.Context, id string) (responses.GetTeamApplicationResponse, error)
+	TeamApplications(ctx context.Context, teamID string, applicantID string) ([]responses.GetTeamApplicationResponse, error)
+	UpdateTeamApplication(ctx context.Context, applicationID string, applicationStatus string, captainID string) error
 }
 
 type Server struct {
