@@ -142,7 +142,7 @@ func (s *ApplicationService) Application(ctx context.Context, id string) (respon
 	return responseApplication, nil
 }
 
-func (s *ApplicationService) Applications(ctx context.Context, applicationStatus string, teamID string, eventID string) ([]responses.GetApplicationResponse, error) {
+func (s *ApplicationService) Applications(ctx context.Context, applicationStatus string, teamID string, eventID string, userID string) ([]responses.GetApplicationResponse, error) {
 	const op = "ApplicationService.Applications"
 	log := s.log.With("op", op)
 
@@ -156,20 +156,43 @@ func (s *ApplicationService) Applications(ctx context.Context, applicationStatus
 
 	var responseApplications []responses.GetApplicationResponse
 
-	for _, application := range applications {
-		responseApplication := responses.GetApplicationResponse{
-			ApplicationID:     application.ID,
-			EventID:           application.EventID,
-			ApplicationStatus: application.ApplicationStatus,
-			TeamID:            application.TeamID,
-			TeamType:          application.TeamType,
-			TeamName:          application.TeamName,
-			CaptainID:         application.CaptainID,
-			CreatedAt:         application.CreatedAt.Format(time.RFC3339),
-			Members:           application.Members,
-		}
+	if userID != "" {
+		for _, application := range applications {
+			var membersList []string
+			json.Unmarshal(application.Members, &membersList)
 
-		responseApplications = append(responseApplications, responseApplication)
+			if slices.Contains(membersList, userID) {
+				responseApplication := responses.GetApplicationResponse{
+					ApplicationID:     application.ID,
+					EventID:           application.EventID,
+					ApplicationStatus: application.ApplicationStatus,
+					TeamID:            application.TeamID,
+					TeamType:          application.TeamType,
+					TeamName:          application.TeamName,
+					CaptainID:         application.CaptainID,
+					CreatedAt:         application.CreatedAt.Format(time.RFC3339),
+					Members:           application.Members,
+				}
+
+				responseApplications = append(responseApplications, responseApplication)
+			}
+		}
+	} else {
+		for _, application := range applications {
+			responseApplication := responses.GetApplicationResponse{
+				ApplicationID:     application.ID,
+				EventID:           application.EventID,
+				ApplicationStatus: application.ApplicationStatus,
+				TeamID:            application.TeamID,
+				TeamType:          application.TeamType,
+				TeamName:          application.TeamName,
+				CaptainID:         application.CaptainID,
+				CreatedAt:         application.CreatedAt.Format(time.RFC3339),
+				Members:           application.Members,
+			}
+
+			responseApplications = append(responseApplications, responseApplication)
+		}
 	}
 
 	return responseApplications, nil
