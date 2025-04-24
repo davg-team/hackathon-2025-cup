@@ -52,11 +52,13 @@ function EventMainContent() {
           <Skeleton />
         ) : (
           <>
-            <Link to={"/competitions"}>
-              <Button view="flat" size="m">
+            <Button
+              view="flat"
+              size="m"
+              onClick={() => navigate(-1)}
+            >
                 <Icon data={ArrowLeft} />
-              </Button>
-            </Link>
+            </Button>
             <Text variant={"display-2"}>Кубок России</Text>
           </>
         )}
