@@ -362,9 +362,7 @@ const BlockForm = {
   direction: "center",
   textContent: {
     title: "Подпишитесь на обновления",
-    text: "Будьте в курсе новых функций и релизов платформы.",
-    buttons: [{ text: "Подписаться", theme: "action" }],
-  },
+    text: "Будьте в курсе новых функций и релизов платформы.",  },
   formData: {
     yandex: { id: "6751d31784227cbe6664e00f", customFormSection: "cloud" },
   },

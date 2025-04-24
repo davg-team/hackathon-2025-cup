@@ -196,11 +196,16 @@ function CompetitionsMainContent() {
                       height={"100%"}
                       justifyContent={"space-between"}
                     >
-                      <Flex direction={"column"}>
+                        <Flex direction={"column"}>
                         <img
                           src={item.event_image_s3_key}
+                          alt={item.title}
                           height="196"
-                          width={"320"}
+                          width="320"
+                          style={{
+                          borderRadius: "8px",
+                          objectFit: "cover",
+                          }}
                         />
                         <br />
                         <Text variant="display-2" style={{ width: "250px" }}>
@@ -209,16 +214,16 @@ function CompetitionsMainContent() {
                         <br />
                         <Flex gap={"2"} wrap="wrap" alignItems={"center"}>
                           <Label size="xs" theme="warning">
-                            {disciplines[item.discipline]}
+                          {disciplines[item.discipline]}
                           </Label>
                           <Label size="xs" theme="info">
-                            {types[item.type]}
+                          {types[item.type]}
                           </Label>
                           <Label size="xs" theme="success">
-                            {item.age_group}
+                          {item.age_group}
                           </Label>
                         </Flex>
-                      </Flex>
+                        </Flex>
                       <br />
                       <Flex gap={"2"} wrap="wrap" justifyContent={"initial"}>
                         <Flex alignItems={"center"} gap={"2"}>
