@@ -72,6 +72,10 @@ func (s *EventsService) CreateEvent(ctx context.Context, event schemas.EventPOST
 	startTime := convertTime(event.StartDate)
 	endTime := convertTime(event.EndDate)
 
+	if event.Type == "city" || event.Type == "school" {
+		event.Status = "verified"
+	}
+
 	eventModel := schemas.EventPreCreateSchema{
 		ID:              uuid.New().String(),
 		OrganizationID:  organizationID,
