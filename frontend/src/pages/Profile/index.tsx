@@ -7,7 +7,6 @@ import {
   Container,
   Flex,
   Icon,
-  Label,
   Loader,
   Text,
   UserLabel,
@@ -85,36 +84,7 @@ function ProfileMainContent() {
         width={"100%"}
         direction={{ s: "column", l: "row-reverse" }}
       >
-        <Col s={"12"} l={"4"}>
-          <Card width={"100%"} spacing={{ p: "5" }} view="raised">
-            <Flex gap={"4"} direction={"column"}>
-              <Text variant="subheader-3">Результаты</Text>
-              <Flex
-                wrap={"wrap"}
-                direction={{ s: "row", l: "column" }}
-                gap={"4"}
-              >
-                <Flex alignItems={"center"} gap={"4"}>
-                  <img width={50} height={50} src="/svg/gold_medal.svg" />
-                  <Text variant="header-2">1</Text>
-                </Flex>
-                <Flex alignItems={"center"} gap={"4"}>
-                  <img width={50} height={50} src="/svg/silver_medal.svg" />
-                  <Text variant="header-2">1</Text>
-                </Flex>
-                <Flex alignItems={"center"} gap={"4"}>
-                  <img width={50} height={50} src="/svg/bronze_medal.svg" />
-                  <Text variant="header-2">1</Text>
-                </Flex>
-                <Flex alignItems={"center"} gap={"4"}>
-                  <img width={50} height={50} src="/svg/certificate.svg" />
-                  <Text variant="header-2">1</Text>
-                </Flex>
-              </Flex>
-            </Flex>
-          </Card>
-        </Col>
-        <Col s={"12"} l={"8"}>
+        <Col s={"12"}>
           <Flex direction={"column"}>
             <Text variant="display-2">Мои команды</Text>
             <Flex direction={"column"} gap={"4"}>
@@ -133,46 +103,6 @@ function ProfileMainContent() {
                         <Flex alignItems={"center"} wrap={"wrap"}>
                           {/*@ts-ignore*/}
                           <Text variant="display-1">{item.name}</Text>
-                        </Flex>
-                        <Flex wrap="wrap" gap={"6"}>
-                          <Flex alignItems={"center"} gap={"2"}>
-                            <img
-                              width={20}
-                              height={20}
-                              src="/svg/gold_medal.svg"
-                            />
-                            <Text variant="header-2">1</Text>
-                          </Flex>
-                          <Flex alignItems={"center"} gap={"2"}>
-                            <img
-                              width={20}
-                              height={20}
-                              src="/svg/silver_medal.svg"
-                            />
-                            <Text variant="header-2">1</Text>
-                          </Flex>
-                          <Flex alignItems={"center"} gap={"2"}>
-                            <img
-                              width={20}
-                              height={20}
-                              src="/svg/bronze_medal.svg"
-                            />
-                            <Text variant="header-2">1</Text>
-                          </Flex>
-                          <Flex alignItems={"center"} gap={"2"}>
-                            <img
-                              width={20}
-                              height={20}
-                              src="/svg/certificate.svg"
-                            />
-                            <Text variant="header-2">1</Text>
-                          </Flex>
-                          <Flex>
-                            <Flex alignItems={"center"} gap={"2"}>
-                              <Text variant="header-1">Рейтинг</Text>
-                              <Label theme="warning">5.0</Label>
-                            </Flex>
-                          </Flex>
                         </Flex>
                       </Flex>
                     </Card>
