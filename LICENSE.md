@@ -4,7 +4,7 @@
 
 ## Terms and Conditions
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to use, view, and run the Software for the limited purposes of **evaluation and demonstration within the "_____" competition in the discipline “Программирование продуктовое” held on _____, 2025** (the “Event”), subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to use, view, and run the Software for the limited purposes of **evaluation and demonstration within the "Кубок России по продуктовому программированию" competition in the discipline “Программирование продуктовое” held on 21.04—28.04, 2025** (the “Event”), subject to the following conditions:
 
 1. **Restricted Use**:  
    - Participants, organizers, and judges of the Event may use the Software solely for evaluation, demonstration, and testing related to the Event.  
@@ -52,7 +52,7 @@ By using this project within the scope of the Event, you agree to adhere to thes
 
 ## Условия и положения
 
-Настоящим предоставляется бесплатное разрешение любому лицу, получившему копию этого программного обеспечения и сопутствующих файлов документации ("Программное обеспечение"), использовать, просматривать и запускать Программное обеспечение исключительно в рамках **оценки и демонстрации на "_____" в дисциплине "Программирование продуктовое", проводимом с ___ по ___ 2025 года** ("Соревнование"), при соблюдении следующих условий:
+Настоящим предоставляется бесплатное разрешение любому лицу, получившему копию этого программного обеспечения и сопутствующих файлов документации ("Программное обеспечение"), использовать, просматривать и запускать Программное обеспечение исключительно в рамках **оценки и демонстрации на "Кубок России по продуктовому программированию" в дисциплине "Программирование продуктовое", проводимом с 21.04 по 28.04, 2025 года** ("Соревнование"), при соблюдении следующих условий:
 
 1. **Ограниченное использование**:  
    - Участники, организаторы и судьи Соревнования могут использовать Программное обеспечение только для целей оценки, демонстрации и тестирования в рамках Соревнования.  

@@ -178,3 +178,26 @@ https://fsp-platform.ru/api/get/sportsman
 ## **Лицензия**
 
 Этот проект лицензирован на условиях [лицензии](LICENSE.md).
+
+---
+
+## **Немного скринов интерфеса**
+
+![alt text](docs/fsp-platform.ru_.png)
+![alt text](<docs/fsp-platform.ru_ (1).png>)
+![alt text](<docs/fsp-platform.ru_ (2).png>)
+![alt text](<docs/fsp-platform.ru_ (3).png>)
+![alt text](<docs/fsp-platform.ru_ (4).png>)
+![alt text](<docs/fsp-platform.ru_ (5).png>)
+![alt text](<docs/fsp-platform.ru_ (6).png>)
+![alt text](<docs/fsp-platform.ru_ (7).png>)
+![alt text](<docs/fsp-platform.ru_ (8).png>)
+
+
+## **Немного скринов мобильного интерфеса**
+
+![alt text](docs/1.jpg)
+![alt text](docs/2.jpg)
+![alt text](docs/3.jpg)
+![alt text](docs/4.jpg)
+![alt text](docs/5.jpg)
