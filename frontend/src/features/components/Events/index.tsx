@@ -19,7 +19,7 @@ interface Event {
   id: string;
   title: string;
   description: string;
-  image: string;
+  event_image_s3_key: string;
   type:
     | "school"
     | "city"
@@ -32,23 +32,6 @@ interface Event {
   start_date: string;
   end_date: string;
   age_group: string;
-}
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  type:
-    | "school"
-    | "city"
-    | "regional"
-    | "interregional"
-    | "russian"
-    | "international";
-  status: "on_verification" | "verified" | "declined" | "published" | "draft";
-  discipline: "algorithms" | "hackathon" | "cybersecurity";
-  start_date: string;
-  end_date: string;
 }
 
 const types = {
@@ -108,7 +91,11 @@ const Events = ({
                 justifyContent={"space-between"}
               >
                 <Flex direction={"column"}>
-                  <img src={event.image} height="196" width={"320"} />
+                  <img
+                    src={event.event_image_s3_key}
+                    height="196"
+                    width={"320"}
+                  />
                   <br />
                   <Text variant="display-2" style={{ width: "250px" }}>
                     {event.title}

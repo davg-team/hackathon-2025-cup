@@ -65,16 +65,23 @@ const App = () => {
     const tokenFromCookie = getCookie("token");
     const tokenFromLocalStorage = localStorage.getItem("token");
     let token = null;
+    console.log(tokenFromCookie, tokenFromLocalStorage);
+
+    if (!tokenFromCookie && !tokenFromLocalStorage) {
+      setIsLoggined(false);
+      setIsAuthChecked(true);
+      return;
+    }
 
     if (tokenFromCookie && tokenFromLocalStorage) {
       const tokenFromCookiePayload = getPayload(tokenFromCookie);
       const tokenFromLocalStoragePayload = getPayload(tokenFromLocalStorage);
 
-      if (!tokenFromCookiePayload || !tokenFromLocalStoragePayload) {
-        deleteToken();
-        setIsAuthChecked(true);
-        return;
-      }
+      // if (!tokenFromCookiePayload || !tokenFromLocalStoragePayload) {
+      //   deleteToken();
+      //   setIsAuthChecked(true);
+      //   return;
+      // }
 
       // @ts-ignore
       if (tokenFromCookiePayload.iat > tokenFromLocalStoragePayload.iat) {
@@ -110,7 +117,8 @@ const App = () => {
 
     updateToken(token).then((res) => {
       if (res) {
-        setIsLoggined(true);
+        console.log(res, 1234, token);
+        // setIsLoggined(true);
         setIsAuthChecked(true);
       } else {
         setIsLoggined(false);

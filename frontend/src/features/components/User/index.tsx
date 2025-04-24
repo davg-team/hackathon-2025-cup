@@ -13,7 +13,7 @@ import {
 import { Context } from "app/Context";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { getPayload } from "shared/jwt-tools";
+import { getPayload, isExpired } from "shared/jwt-tools";
 
 type PayloadType = {
   sub?: string;
@@ -47,7 +47,7 @@ const User = () => {
     tg_id: payload?.tg_id || "",
   });
   const [open, setOpen] = useState<boolean>(false);
-  const { isLoggined, isSnow, setIsSnow } = useContext(Context);
+  const {  isSnow, setIsSnow } = useContext(Context);
   const snowInstance = useRef(null);
 
   const toggleSnow = (enable: boolean) => {
@@ -107,7 +107,7 @@ const User = () => {
     }
   }
 
-  if (isLoggined) {
+  if (token && !isExpired(token)) {
     return (
       <>
         <Flex

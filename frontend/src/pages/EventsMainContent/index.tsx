@@ -19,7 +19,7 @@ interface Event {
   id: string;
   title: string;
   description: string;
-  image: string;
+  event_image_s3_key: string;
   type:
     | "school"
     | "city"
