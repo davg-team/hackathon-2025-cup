@@ -223,13 +223,23 @@ export const AddEventMainContent = () => {
 
               const protocolId = await uploadFileToS3(files.protocol);
               const imageId = await uploadFileToS3(files.image);
+              // "regional"
+              //    | "interregional"
+              //    | "russian"
+              //    | "international";
 
               if (protocolId && imageId) {
                 const fullData = {
                   ...state,
                   protocol_s3_key: protocolId,
                   event_image_s3_key: imageId,
-                  status: "on_verification",
+                  status:
+                    state.type === "regional" ||
+                    state.type === "interregional" ||
+                    state.type === "international" ||
+                    state.type === "russian"
+                      ? "on_verification"
+                      : "verified",
                 };
 
                 const response = await fetch("/api/events", {

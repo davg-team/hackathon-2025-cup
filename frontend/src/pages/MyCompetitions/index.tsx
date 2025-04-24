@@ -66,14 +66,13 @@ export function MyCompetitionsMainContent() {
       navigate("/");
     }
   }, []);
-  function getStatus(app: any): "upcoming" | "active" | "ended" {
+
+  function getStatus(app: any) {
     const now = new Date();
-    const eventDate = new Date(app.event_date);
-
-    const isSameDay = now.toDateString() === eventDate.toDateString();
-
-    if (now < eventDate) return "upcoming";
-    if (isSameDay) return "active";
+    const start = new Date(app.start_date);
+    const end = new Date(app.end_date);
+    if (now < start) return "upcoming";
+    if (now >= start && now <= end) return "active";
     return "ended";
   }
 
