@@ -1,18 +1,18 @@
 title: Фронтенд
-description: Davg-team
+description: Документация по клиентской части
 meta:
   title: Метаданные
   noIndex: true
 links:
   - title: Описание
-    description: Описание фронтенда
+    description: Краткое описание фронтенда
     href: description.md
   - title: Структура
-    description: Описание структуры
+    description: Описание структуры проекта
     href: structure.md
   - title: Стили
-    description: Описание стилей
+    description: Подключение стилей
     href: styles.md
   - title: Компоненты
-    description: Описание компонентов
+    description: Базовые компоненты
     href: components.md
