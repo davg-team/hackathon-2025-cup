@@ -73,4 +73,3 @@ use_cases = UseCasesFactory(get_uow())
 
 def get_use_cases_factory():
     return use_cases
-    return use_cases

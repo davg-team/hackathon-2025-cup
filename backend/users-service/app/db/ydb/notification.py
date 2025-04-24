@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from app.db.ydb.repository import BaseRepository
@@ -108,7 +109,7 @@ class NotificationRepository(BaseRepository):
             )
 
         notification = await self.get_by_id(notification_id)
-        print("Notification", notification)
+        logging.info(f"Notification {notification}")
         return notification
 
     async def get_by_id(self, notification_id: str) -> Notification:

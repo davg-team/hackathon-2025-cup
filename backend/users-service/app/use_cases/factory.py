@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 import requests
@@ -13,6 +14,7 @@ from app.models.user import Role, Status, User
 
 
 def role_to_str(role: Role):
+    logging.debug("Role: %s", role)
     print("role", role)
     if type(role) != str:
         role = role.value
@@ -43,9 +45,9 @@ class UseCasesFactory:
 
         # TODO: Проверить логику создания пользователя и связи с провайдером
 
-        from rich import print
-
-        print(provider_slug, provider_user_id, provider_data)
+        logging.debug(provider_slug)
+        logging.debug(provider_user_id)
+        logging.debug(provider_data)
 
         async with await self.uow() as u:
             user = User()
