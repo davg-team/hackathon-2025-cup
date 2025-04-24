@@ -13,6 +13,10 @@ import PageConstr from "features/components/PageConstr";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getTimeAsDayMonthYear } from "shared/tools";
+import {
+  disciplinesObject as disciplines,
+  typesObject as types,
+} from "shared/data";
 
 interface Event {
   id: string;
@@ -26,21 +30,6 @@ interface Event {
   end_date: string;
   loading: boolean;
 }
-
-const disciplines = {
-  algorithms: "Алгоритмическое программирование",
-  hackathon: "Продуктовое программирование",
-  cybersecurity: "Программирование систем информационной безопасности",
-};
-
-const types = {
-  school: "Школьное мероприятие",
-  city: "Городское мероприятие",
-  regional: "Региональное мероприятие",
-  interregional: "Межрегиональное мероприятие",
-  russian: "Российское мероприятие",
-  international: "Международное мероприятие",
-};
 
 const stasuses = {
   on_verification: "На проверке",

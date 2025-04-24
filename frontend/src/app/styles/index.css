@@ -3,3 +3,7 @@
 .active {
   text-decoration: underline;
 }
+
+img {
+  object-fit: cover;
+}

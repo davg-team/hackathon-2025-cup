@@ -38,7 +38,19 @@ type ContextType = {
   setIsLoggined: React.Dispatch<React.SetStateAction<boolean>>;
   isSnow: boolean;
   setIsSnow: React.Dispatch<React.SetStateAction<boolean>>;
+  isOpenLogin: boolean;
+  setIsOpenLogin: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const Context = createContext<ContextType>({providers: [], setProviders: () => {}, isLoggined: false, setIsLoggined: () => {}, isSnow: false, setIsSnow: () => {}});
+export const Context = createContext<ContextType>({
+  providers: [],
+  setProviders: () => {},
+  isLoggined: false,
+  setIsLoggined: () => {},
+  isSnow: false,
+  setIsSnow: () => {},
+  isOpenLogin: false,
+  setIsOpenLogin: () => {},
+});
 export type { DataType };
+

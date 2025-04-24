@@ -15,21 +15,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Calendar } from "@gravity-ui/icons";
 import { getRoleFromToken, getTimeAsDayMonthYear } from "shared/tools";
-
-const types = {
-  school: "Школьное мероприятие",
-  city: "Городское мероприятие",
-  regional: "Региональное мероприятие",
-  interregional: "Межрегиональное мероприятие",
-  russian: "Российское мероприятие",
-  international: "Международное мероприятие",
-};
-
-const disciplines = {
-  algorithms: "Алгоритмическое программирование",
-  hackathon: "Продуктовое программирование",
-  cybersecurity: "Программирование систем информацио...",
-};
+import {
+  disciplinesObject as disciplines,
+  typesObject as types,
+} from "shared/data";
 
 export function MyCompetitionsMainContent() {
   const token = localStorage.getItem("token");

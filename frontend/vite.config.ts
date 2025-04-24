@@ -30,6 +30,13 @@ export default defineConfig({
         secure: false,
         changeOrigin: true,
       },
+      "/api/applications": {
+        // target: "https://fsp-platform.online/",
+        target: "https://fsp-platform.ru/",
+        secure: false,
+        changeOrigin: true,
+      },
+
       "/api/auth": {
         // target: "https://fsp-platform.online/",
         target: "https://fsp-platform.ru/",

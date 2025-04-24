@@ -15,6 +15,15 @@ export type JWTPayload = {
   roles: Role[];
   sub?: string;
   required: Required[];
+  avatar: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  second_name: string;
+  phone: string;
+  snils: string;
+  tg_id: string;
+  status: string;
 };
 
 function isTemproary(token: string) {
