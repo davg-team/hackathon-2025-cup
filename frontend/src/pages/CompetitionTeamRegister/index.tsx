@@ -19,9 +19,7 @@ import { v7 } from "uuid";
 
 function CompetitionTeamReginster() {
   const [isLoadingTeams, setIsLoadingTeams] = useState<boolean>(false);
-  // const [isLoadingSend, setIsLoadingSend] = useState<boolean>(false);
   const [errorOptions, setErrorOptions] = useState<string>("");
-  // const [errorSend, setErrorSend] = useState<string>("");
   const [teams, setTeams] = useState<[]>([]);
   const [type, setType] = useState<string>("old");
   const token = localStorage.getItem("token");
@@ -163,15 +161,15 @@ function CompetitionTeamReginster() {
               <br />
               <br />
               <TextInput
-                placeholder="Название команды"
+                label="Название команды"
                 value={teamName}
                 onUpdate={(value) => setTeamName(value)}
               />
               <br />
               <br />
               <TextInput
+                label="Количество участников"
                 type="number"
-                placeholder="Количество участников"
                 value={memberCount.toString()}
                 onUpdate={handleMemberCountChange}
               />
@@ -181,7 +179,7 @@ function CompetitionTeamReginster() {
                 <>
                   <TextInput
                     key={index}
-                    placeholder={`ID участника ${index + 1}`}
+                    label={`ID участника ${index + 1}`}
                     value={id}
                     onUpdate={(value) => handleMemberIDChange(index, value)}
                   />

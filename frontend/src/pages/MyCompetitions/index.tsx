@@ -25,13 +25,14 @@ export function MyCompetitionsMainContent() {
   const payload = getPayload(token as string);
   const roles = getRoleFromToken();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [typeOfContent, setTypeOfContent] = useState<string>("");
+  const [typeOfContent, setTypeOfContent] = useState<string>("all");
   const navigate = useNavigate();
   const [apps, setApps] = useState<any[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [_, setError] = useState("");
 
   async function fetchApplications() {
+    setTypeOfContent("all");
     setLoading(true);
     const url = "/api/applications?user_id=" + payload?.sub;
     const response = await fetch(url, {
@@ -54,6 +55,7 @@ export function MyCompetitionsMainContent() {
 
   useEffect(() => {
     if (searchParams.get("type-of-content") === null) {
+      setTypeOfContent("all");
       setSearchParams({ "type-of-content": "all" });
       return;
     }
@@ -61,7 +63,6 @@ export function MyCompetitionsMainContent() {
   }, [location]);
 
   useEffect(() => {
-    setTypeOfContent(searchParams.get("type-of-content") || "roles");
     if (!roles?.includes("sportsman")) {
       navigate("/");
     }
