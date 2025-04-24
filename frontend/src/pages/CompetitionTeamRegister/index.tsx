@@ -9,6 +9,7 @@ import {
   Select,
   Text,
   TextInput,
+  useToaster,
 } from "@gravity-ui/uikit";
 import PageConstr from "features/components/PageConstr";
 import { useEffect, useState } from "react";
@@ -32,6 +33,7 @@ function CompetitionTeamReginster() {
   const [isFinally, setIsFinally] = useState<boolean>(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { add } = useToaster();
 
   useEffect(() => {
     if (!token || isExpired(token)) navigate("/logout");
@@ -93,7 +95,19 @@ function CompetitionTeamReginster() {
     });
     if (response.ok) {
       navigate("/competitions/" + searchParams.get("event_id"));
+      add({
+        name: "success",
+        theme: "success",
+        title: "Заявка успешно создана",
+        autoHiding: 5000,
+      });
     } else {
+      add({
+        name: "success",
+        theme: "danger",
+        title: "Не удалось подать заявку, попробуйте позже.",
+        autoHiding: 5000,
+      });
     }
   }
 

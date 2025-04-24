@@ -42,6 +42,8 @@ export function MyCompetitionsMainContent() {
     }
   }, []);
 
+  useEffect(() => {}, []);
+
   return (
     <Container style={{ width: "100%", height: "90%" }}>
       <Text variant="display-2">Мои соревнования</Text>
