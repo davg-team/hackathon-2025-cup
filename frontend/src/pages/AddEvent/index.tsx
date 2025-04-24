@@ -6,14 +6,14 @@ import {
   Select,
   Text,
   TextInput,
+  Switch,
+  NumberInput,
+  TextArea,
 } from "@gravity-ui/uikit";
 import { RangeDatePicker } from "@gravity-ui/date-components";
 import { useState } from "react";
 import { useToaster } from "@gravity-ui/uikit";
-import { getFileBase64 } from "shared/tools";
-import PageConstr from "features/components/PageConstr";
-import { CustomItems, NavigationData } from "@gravity-ui/page-constructor";
-import { disciplines, types } from "shared/data";
+import { data, disciplines, types } from "shared/data";
 
 interface FormData {
   title: string;
@@ -24,6 +24,15 @@ interface FormData {
   description: string;
   age_group: string;
   protocol_s3_key: string;
+  event_image_s3_key: string;
+  is_open: boolean;
+  status: string;
+  regions: string[];
+  stages: string[];
+  min_age: number;
+  max_age: number;
+  min_people: number;
+  max_people: number;
 }
 
 export const AddEventMainContent = () => {
@@ -31,9 +40,12 @@ export const AddEventMainContent = () => {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState<{
     protocol: File | null;
+    image: File | null;
   }>({
     protocol: null,
+    image: null,
   });
+
   const [state, setState] = useState<FormData>({
     title: "",
     type: "",
@@ -43,6 +55,15 @@ export const AddEventMainContent = () => {
     description: "",
     age_group: "",
     protocol_s3_key: "",
+    event_image_s3_key: "",
+    is_open: false,
+    status: "",
+    regions: [],
+    stages: [],
+    min_age: 0,
+    max_age: 0,
+    min_people: 0,
+    max_people: 0,
   });
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,22 +74,16 @@ export const AddEventMainContent = () => {
   };
 
   const uploadFileToS3 = async (file: File) => {
-    const reportResponse = await fetch("/api/aws_sign_s3", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        file_name: file.name,
-        file_content: await getFileBase64(file),
-      }),
+    const formData = new FormData();
+    formData.append("file", file);
+    const reportResponse = await fetch("/api/files/upload", {
+      method: "PUT",
+      body: formData,
     });
 
-    if (!reportResponse.ok) {
-      return false;
-    } else {
-      return true;
-    }
+    if (!reportResponse.ok) return null;
+    const data = await reportResponse.json();
+    return data.id;
   };
 
   return (
@@ -85,27 +100,33 @@ export const AddEventMainContent = () => {
           />
           <Select
             value={[state.type]}
-            onUpdate={(value) => {
-              setState((prev) => {
-                return { ...prev, type: value[0] };
-              });
-            }}
+            onUpdate={(value) => setState({ ...state, type: value[0] })}
             label="Тип"
             options={types}
           />
           <Select
             value={[state.discipline]}
-            onUpdate={(value) => {
-              setState((prev) => {
-                return { ...prev, discipline: value[0] };
-              });
-            }}
+            onUpdate={(value) => setState({ ...state, discipline: value[0] })}
             label="Дисциплина"
             options={disciplines}
           />
           <Select
+            value={state.regions}
+            multiple
+            label="Регионы"
+            options={data}
+            onUpdate={(value) => setState({ ...state, regions: value })}
+          />
+          <TextArea
+            placeholder="Этапы (по одному на строку, формат: 13.04-14.04 - Название)"
+            value={state.stages.join("\n")}
+            onChange={(e) =>
+              setState({ ...state, stages: e.target.value.split("\n") })
+            }
+          />
+          <Select
             value={[state.age_group]}
-            label="Возрастныея группы"
+            label="Возрастные группы"
             multiple={false}
             options={[
               {
@@ -124,86 +145,134 @@ export const AddEventMainContent = () => {
               { value: "21-22", content: "юниоры и юниорки - 21-22 года" },
               { value: "18+", content: "мужчины и женщины - 18 лет и старше" },
             ]}
-            onUpdate={(value) => {
-              setState((prev) => {
-                return { ...prev, age_group: value[0] };
-              });
-            }}
+            onUpdate={(value) => setState({ ...state, age_group: value[0] })}
           />
           <RangeDatePicker
             onUpdate={(value) => {
-              const start = value?.start.toISOString().split("T")[0] as string;
-              const end = value?.end.toISOString().split("T")[0] as string;
-              console.log(start, end);
-              setState({
-                ...state,
-                start_date: start,
-                end_date: end,
-              });
+              const start = value?.start.toISOString().split("T")[0] ?? "";
+              const end = value?.end.toISOString().split("T")[0] ?? "";
+              setState({ ...state, start_date: start, end_date: end });
             }}
             label="Даты проведения"
           />
-          <label>
-            Регламент мероприятия:{" "}
-            <input name="protocol" onChange={handleFileChange} type="file" />
-          </label>
+          <Switch
+            checked={state.is_open}
+            onUpdate={(value) => setState({ ...state, is_open: value })}
+          >
+            Открытое мероприятие
+          </Switch>
           <TextInput
             value={state.description}
+            onChange={(e) =>
+              setState({ ...state, description: e.target.value })
+            }
             label="Описание"
-            onChange={(event) => {
-              setState({ ...state, description: event.target.value });
-            }}
           />
+          <label>
+            Регламент мероприятия:
+            <input name="protocol" onChange={handleFileChange} type="file" />
+          </label>
+          <label>
+            Изображение мероприятия:
+            <input name="image" onChange={handleFileChange} type="file" />
+          </label>
+          <Flex gap="2">
+            <NumberInput
+              value={state.min_age}
+              // @ts-ignore
+              onUpdate={(val) => setState({ ...state, min_age: val })}
+              label="Минимальный возраст"
+            />
+            <NumberInput
+              value={state.max_age}
+              // @ts-ignore
+              onUpdate={(val) => setState({ ...state, max_age: val })}
+              label="Максимальный возраст"
+            />
+          </Flex>
+          <Flex gap="2">
+            <NumberInput
+              value={state.min_people}
+              // @ts-ignore
+              onUpdate={(val) => setState({ ...state, min_people: val })}
+              label="Мин. участников"
+            />
+            <NumberInput
+              value={state.max_people}
+              // @ts-ignore
+              onUpdate={(val) => setState({ ...state, max_people: val })}
+              label="Макс. участников"
+            />
+          </Flex>
+
           <Button
             view="action"
             loading={loading}
             onClick={async () => {
               setLoading(true);
-              if (!files.protocol) {
+              if (!files.protocol || !files.image) {
                 add({
                   theme: "danger",
                   name: "error",
-                  title: "Файл не был загружен",
+                  title: "Загрузите оба файла",
                   autoHiding: 5000,
                 });
+                setLoading(false);
                 return;
               }
 
-              await uploadFileToS3(files.protocol);
+              const protocolId = await uploadFileToS3(files.protocol);
+              const imageId = await uploadFileToS3(files.image);
 
-              const url = "/api/events";
-              const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                  Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
-                body: JSON.stringify(state),
-              });
+              if (protocolId && imageId) {
+                const fullData = {
+                  ...state,
+                  protocol_s3_key: protocolId,
+                  event_image_s3_key: imageId,
+                };
 
-              if (response.ok) {
-                add({
-                  name: "success",
-                  theme: "success",
-                  title: "Мероприятие успешно создано",
-                  autoHiding: 5000,
+                const response = await fetch("/api/events", {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  },
+                  body: JSON.stringify(fullData),
                 });
-                setState({
-                  title: "",
-                  type: "",
-                  discipline: "",
-                  start_date: "",
-                  end_date: "",
-                  description: "",
-                  age_group: "",
-                  protocol_s3_key: "",
-                });
-              } else {
-                add({
-                  theme: "danger",
-                  name: "error",
-                  title: "Мероприятие не создано",
-                  autoHiding: 5000,
-                });
+
+                if (response.ok) {
+                  add({
+                    name: "success",
+                    theme: "success",
+                    title: "Мероприятие успешно создано",
+                    autoHiding: 5000,
+                  });
+                  setState({
+                    title: "",
+                    type: "",
+                    discipline: "",
+                    start_date: "",
+                    end_date: "",
+                    description: "",
+                    age_group: "",
+                    protocol_s3_key: "",
+                    event_image_s3_key: "",
+                    is_open: false,
+                    status: "",
+                    regions: [],
+                    stages: [],
+                    min_age: 0,
+                    max_age: 0,
+                    min_people: 0,
+                    max_people: 0,
+                  });
+                } else {
+                  add({
+                    theme: "danger",
+                    name: "error",
+                    title: "Мероприятие не создано",
+                    autoHiding: 5000,
+                  });
+                }
               }
               setLoading(false);
             }}
@@ -215,19 +284,3 @@ export const AddEventMainContent = () => {
     </Container>
   );
 };
-
-interface RegionalProps {
-  navigation: NavigationData;
-  navigation_custom: CustomItems;
-}
-const AddEventPage = ({ navigation, navigation_custom }: RegionalProps) => {
-  return (
-    <PageConstr
-      Component={AddEventMainContent}
-      navigation={navigation}
-      navigation_custom={navigation_custom}
-    />
-  );
-};
-
-export default AddEventPage;

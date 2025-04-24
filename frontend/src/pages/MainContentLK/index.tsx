@@ -25,16 +25,15 @@ import { getById, getRegionId } from "shared/data";
 import { getPayload } from "shared/jwt-tools";
 
 import { EventsMainContent } from "pages/EventsMainContent";
-import { AcceptEventsMainContent } from "pages/AcceptEvents";
+// import { AcceptEventsMainContent } from "pages/AcceptEvents";
 import { AddEventMainContent } from "pages/AddEvent";
-import { AddReportMainContent } from "pages/AddReport";
+// import { AddReportMainContent } from "pages/AddReport";
 import { AnalitycsMainContent } from "pages/Analitycs";
-import { PeopleMainContent } from "pages/People";
-import { TrackEventsMainContent } from "pages/TrackEventsMainContent";
 import { TeamsMainContent } from "pages/Teams";
 import { Person } from "@gravity-ui/icons";
 import { CustomItems, NavigationData } from "@gravity-ui/page-constructor";
 import PageConstr from "features/components/PageConstr";
+// import { getRoleFromToken } from "shared/tools";
 
 interface Presenter {
   managers: string[];
@@ -59,6 +58,7 @@ const MainContent = () => {
   const token = localStorage.getItem("token") as string;
   const payload = getPayload(token);
   const regionId = getRegionId(params.id);
+  // const roles = getRoleFromToken();
   const { add } = useToaster();
   const navigate = useNavigate();
 
@@ -310,114 +310,44 @@ const MainContent = () => {
               >
                 Команды
               </Button>
-              {regionId !== "0" && payload?.region_id === regionId ? (
-                <>
-                  {/*
-              <Button
-                view={typeOfContent === "track" ? "action" : "normal"}
-                size="l"
-                onClick={() => {
-                  setSearchParams({ "type-of-content": "track" });
-                  setTypeOfContent("track");
-                }}
-              >
-                Отслеживание мероприятий
-              </Button>
-              <Button
-                view={typeOfContent === "add_event" ? "action" : "normal"}
-                size="l"
-                onClick={() => {
-                  setSearchParams({ "type-of-content": "add_event" });
-                  setTypeOfContent("add_event");
-                }}
-              >
-                Добавить мероприятие
-              </Button>
-              <Button
-                view={typeOfContent === "add_report" ? "action" : "normal"}
-                size="l"
-                onClick={() => {
-                  setSearchParams({ "type-of-content": "add_report" });
-                  setTypeOfContent("add_report");
-                }}
-              >
-                Добавить отчет
-              </Button> */}
-                </>
-              ) : // @ts-ignore
-              payload &&
+              {payload?.region_id === regionId &&
                 payload.roles?.length !== 0 &&
                 (payload?.roles?.includes("fsp_staff") ||
-                  payload?.roles?.includes("root")) &&
-                regionId === "0" ? (
-                <>
-                  {/*<Button
-                view={typeOfContent === "accept_events" ? "action" : "normal"}
-                size="l"
-                onClick={() => {
-                  setSearchParams({ "type-of-content": "accept_events" });
-                  setTypeOfContent("accept_events");
-                }}
-              >
-                Мероприятия
-              </Button>
-              <Button
-                view={typeOfContent === "people" ? "action" : "normal"}
-                size="l"
-                onClick={() => {
-                  setSearchParams({ "type-of-content": "people" });
-                  setTypeOfContent("people");
-                }}
-              >
-                Представители
-              </Button>
-
-								*/}
-
-                  <Button
-                    view={typeOfContent === "analytics" ? "action" : "normal"}
-                    size="l"
-                    onClick={() => {
-                      setSearchParams({ "type-of-content": "analytics" });
-                      setTypeOfContent("analytics");
-                    }}
-                  >
-                    Аналитика
-                  </Button>
-                </>
-              ) : null}
-              {/* @ts-ignore */}
-              {/* regionId !== "0" &&
-            payload?.roles?.includes("fsp_region_head") &&
-            payload?.region_id === regionId && (
-              <Button
-                className={spacing({ ml: 1 })}
-                view={typeOfContent === "people" ? "action" : "normal"}
-                size="l"
-                onClick={() => {
-                  setTypeOfContent("people");
-                }}
-              >
-                Представители
-              </Button>
-            )*/}
+                  payload?.roles?.includes("root") ||
+                  payload?.roles?.includes("fsp_region_head") ||
+                  payload?.roles?.includes("fsp_region_staff")) && (
+                  <>
+                    <Button
+                      view={typeOfContent === "analytics" ? "action" : "normal"}
+                      size="l"
+                      onClick={() => {
+                        setSearchParams({ "type-of-content": "analytics" });
+                        setTypeOfContent("analytics");
+                      }}
+                    >
+                      Аналитика
+                    </Button>
+                    <Button
+                      view={typeOfContent === "add-event" ? "action" : "normal"}
+                      size="l"
+                      onClick={() => {
+                        setSearchParams({ "type-of-content": "add-event" });
+                        setTypeOfContent("add-event");
+                      }}
+                    >
+                      Добавить соревнование
+                    </Button>
+                  </>
+                )}
             </Flex>
             {typeOfContent === "events" ? (
               <EventsMainContent />
-            ) : typeOfContent === "add_event" ? (
-              <AddEventMainContent />
-            ) : typeOfContent === "add_report" ? (
-              <AddReportMainContent />
-            ) : typeOfContent === "people" ? (
-              <PeopleMainContent />
-            ) : typeOfContent === "accept_events" ? (
-              <AcceptEventsMainContent />
-            ) : typeOfContent === "track" ? (
-              <TrackEventsMainContent />
             ) : typeOfContent === "analytics" ? (
               <AnalitycsMainContent />
+            ) : typeOfContent === "teams" ? (
+              <TeamsMainContent />
             ) : (
-              typeOfContent === "teams" && <TeamsMainContent />
+              typeOfContent === "add-event" && <AddEventMainContent />
             )}
           </Flex>
         </Col>

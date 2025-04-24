@@ -406,6 +406,7 @@ export const TeamsMainContent = () => {
               {/* @ts-ignore */}
               {!payload?.roles ? null : payload?.roles.includes("fsp_staff") || // @ts-ignore
                 // @ts-ignore
+                payload?.roles.includes("root") ||
                 payload?.roles.includes("fsp_region_staff") ||
                 // @ts-ignore
                 payload?.roles.includes("fsp_region_head") ? (

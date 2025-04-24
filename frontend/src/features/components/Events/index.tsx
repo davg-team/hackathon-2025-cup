@@ -9,15 +9,11 @@ import {
   Icon,
   Button,
 } from "@gravity-ui/uikit";
-import { Calendar, PencilToLine } from "@gravity-ui/icons";
+import { Calendar, ChevronRight, PencilToLine } from "@gravity-ui/icons";
 import { getRoleFromToken, getTimeAsDayMonthYear } from "shared/tools";
 import { getPayload } from "shared/jwt-tools";
-import { getRegionId } from "shared/data";
-import { useParams } from "react-router-dom";
-import {
-  disciplinesObject as disciplines,
-  typesObject as types,
-} from "shared/data";
+import { disciplinesObject, getRegionId, typesObject } from "shared/data";
+import { useParams, Link } from "react-router-dom";
 
 export interface Event {
   id: string;
@@ -74,62 +70,57 @@ const Events = ({
       ) : events.length === 0 ? (
         <Text variant="body-3">Нет мероприятий</Text>
       ) : (
-        events.map((event: Event, index: number) => (
-          <Flex
-            key={index}
-            direction="row"
-            gap="1"
-            className={spacing({ mr: 3 })}
+        events.map((item: Event, id: number) => (
+          <Card
+            key={id}
+            view="filled"
             maxWidth={"340px"}
+            width={"max"}
+            className={spacing({ p: 3 })}
           >
-            <Card
-              view="filled"
-              maxWidth={"340px"}
-              width={"max"}
-              className={spacing({ p: 3 })}
+            <Flex
+              direction={"column"}
+              height={"100%"}
+              justifyContent={"space-between"}
             >
-              <Flex
-                direction={"column"}
-                height={"100%"}
-                justifyContent={"space-between"}
-              >
-                <Flex direction={"column"}>
+              <Flex direction={"column"}>
                 <img
-                          src={event.event_image_s3_key}
-                          alt={event.title}
-                          height="196"
-                          width="320"
-                          style={{
-                          borderRadius: "8px",
-                          objectFit: "cover",
-                          }}
-                  />
-                  <br />
-                  <Text variant="display-2" style={{ width: "250px" }}>
-                    {event.title}
-                  </Text>
-                  <br />
-                  <Flex gap={"2"} wrap="wrap" alignItems={"center"}>
-                    <Label size="xs" theme="warning">
-                      {disciplines[event.discipline]}
-                    </Label>
-                    <Label size="xs" theme="info">
-                      {types[event.type]}
-                    </Label>
-                    <Label size="xs" theme="success">
-                      {event.age_group}
-                    </Label>
-                  </Flex>
-                </Flex>
+                  src={item.event_image_s3_key}
+                  alt={item.title}
+                  height="196"
+                  width="320"
+                  style={{
+                    borderRadius: "8px",
+                    objectFit: "cover",
+                  }}
+                />
                 <br />
-                <Flex gap={"2"} wrap="wrap" justifyContent={"initial"}>
-                  <Flex alignItems={"center"} gap={"2"}>
-                    <Icon data={Calendar} />
-                    <Text variant="body-2">
-                      {getTimeAsDayMonthYear(event.start_date)} -{" "}
-                      {getTimeAsDayMonthYear(event.end_date)}
-                    </Text>
-                  </Flex>
+                <Text variant="display-2" style={{ width: "250px" }}>
+                  {item.title}
+                </Text>
+                <br />
+                <Flex gap={"2"} wrap="wrap" alignItems={"center"}>
+                  <Label size="xs" theme="warning">
+                    {disciplinesObject[item.discipline]}
+                  </Label>
+                  <Label size="xs" theme="info">
+                    {typesObject[item.type]}
+                  </Label>
+                  <Label size="xs" theme="success">
+                    {item.age_group}
+                  </Label>
+                </Flex>
+              </Flex>
+              <br />
+              <Flex gap={"2"} wrap="wrap" justifyContent={"initial"}>
+                <Flex alignItems={"center"} gap={"2"}>
+                  <Icon data={Calendar} />
+                  <Text variant="body-2">
+                    {getTimeAsDayMonthYear(item.start_date)} -{" "}
+                    {getTimeAsDayMonthYear(item.end_date)}
+                  </Text>
+                </Flex>
+                <Link to={`/competitions/${item.id}`}>
                   {(roles?.includes("fsp_staff") ||
                     roles?.includes("fsp_region_head") ||
                     roles?.includes("fsp_region_staff") ||
@@ -141,10 +132,16 @@ const Events = ({
                       Редактировать
                     </Button>
                   ) : null}
-                </Flex>
+                  <Button view="outlined-info">
+                    {new Date(item.end_date) > new Date()
+                      ? "Участвовать"
+                      : "Результаты"}
+                    <Icon data={ChevronRight} />
+                  </Button>
+                </Link>
               </Flex>
-            </Card>
-          </Flex>
+            </Flex>
+          </Card>
         ))
       )}
     </Flex>

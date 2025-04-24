@@ -41,7 +41,7 @@ export const EventsMainContent = () => {
     });
     const data = await response.json();
     if (response.ok) {
-      // event.status === "verified" || event.status === "published"
+      console.log(data);
       setEvents(
         data.filter((event: Event) => {
           return params?.id !== "0"
@@ -68,7 +68,7 @@ export const EventsMainContent = () => {
           <Flex alignItems={"center"} gap={"2"}>
             <Flex justifyContent="space-between" alignItems="center" gap="3">
               <Text variant="display-1" style={{ marginRight: "1rem" }}>
-                Мероприятия
+                Соревнования
               </Text>
               <Select
                 onUpdate={(value) => {
@@ -84,7 +84,7 @@ export const EventsMainContent = () => {
             <Button
               onClick={() => setTypeOfView("список")}
               size="l"
-              view={typeOfView == "список" ? "action" : "outlined"}
+              view={typeOfView === "список" ? "action" : "outlined"}
             >
               список
             </Button>
@@ -92,7 +92,7 @@ export const EventsMainContent = () => {
             <Button
               onClick={() => setTypeOfView("календарь")}
               size="l"
-              view={typeOfView == "календарь" ? "action" : "outlined"}
+              view={typeOfView === "календарь" ? "action" : "outlined"}
             >
               календарь
             </Button>

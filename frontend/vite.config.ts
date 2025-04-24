@@ -61,7 +61,7 @@ export default defineConfig({
         secure: false,
         changeOrigin: true,
       },
-      "/api/aws_sign_s3": {
+      "/api/files/": {
         // target: "https://fsp-platform.online/",
         target: "https://fsp-platform.ru/",
         changeOrigin: true,

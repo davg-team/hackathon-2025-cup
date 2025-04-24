@@ -26,6 +26,22 @@ export function MyCompetitionsMainContent() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [typeOfContent, setTypeOfContent] = useState<string>("");
   const navigate = useNavigate();
+  // const [apps, setApps] = useState([]);
+  // const [isLoading, setLoading] = useState(false);
+  // const [error, setError] = useState("");
+  //
+  // async function fetchApplications() {
+  //   const url = "/api/applications/team";
+  // const response = await fetch(url, {
+  //   headers: {
+  //   Authorization: `Bearer ${token}`,
+  // },
+  //   });
+  // }
+
+  // useEffect(() => {
+  //   fetchApplications();
+  // }, []);
 
   useEffect(() => {
     if (searchParams.get("type-of-content") === null) {
