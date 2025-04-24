@@ -6,6 +6,8 @@
 > [Архитектура и функционал](https://fsp-platform.ru/docs/backend_index_.html)
 >
 > [Структура данных](https://fsp-platform.ru/docs/data.html)
+>
+> [Наш сайт](https://fsp-platform.ru)
 
 ## Описание проекта
 
