@@ -6,3 +6,12 @@ server:
 storage:
   dsn: grpcs://ydb.serverless.yandexcloud.net:2135/ru-central1/b1gpldpf3veopdl8oo4c/etn2h1b8dp465keqs07u
   path_to_key: ./keys/authorized_key.json
+
+users_service:
+  url: https://fsp-platform.ru/api/auth/accounts/download
+
+events_service:
+  url: https://fsp-platform.ru/api/events
+
+application_service:
+  url: https://fsp-platform.ru/api/teams
