@@ -26,7 +26,7 @@ export const AcceptEventsMainContent = () => {
   useEffect(() => {
     async function request() {
       setIsLoading(true);
-      const url = "/api/events";
+      const url = "/api/events?status=on_verification";
       const response = await fetch(url, {
         headers: {
           "Content-Type": "application/json",
@@ -39,9 +39,7 @@ export const AcceptEventsMainContent = () => {
           loadingAccept: false,
           loadingReject: false,
         }));
-        setEvents(
-          data.filter((event: Event) => event.status === "on_verification"),
-        );
+        setEvents(data);
         setIsLoading(false);
         setError("");
       } else {
