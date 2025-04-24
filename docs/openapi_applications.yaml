@@ -58,6 +58,22 @@ paths:
           required: false
           description: Сортировка всех заявок по статусу
           example: team
+        - in: query
+          name: user_id
+          schema:
+            type: string
+            format: uuid
+          required: false
+          description: Сортировка всех заявок по id человека, состоящего в заявке
+          example: cd9018b7-d916-4721-a772-69299b0a4004
+        - in: query
+          name: event_id
+          schema:
+            type: string
+            format: uuid
+          required: false
+          description: Сортировка всех заявок по id соревнования
+          example: cd9018b7-d916-4721-a772-69299b0a4004
       responses:
         '200':
           description: Успешное получение списка заявок
