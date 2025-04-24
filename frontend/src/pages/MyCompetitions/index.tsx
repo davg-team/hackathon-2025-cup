@@ -4,8 +4,8 @@ import {
   Card,
   Container,
   Flex,
-  Icon,
   Label,
+  Loader,
   spacing,
   Text,
 } from "@gravity-ui/uikit";
@@ -13,35 +13,44 @@ import {
 import PageConstr from "features/components/PageConstr";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Calendar } from "@gravity-ui/icons";
-import { getRoleFromToken, getTimeAsDayMonthYear } from "shared/tools";
+import { getRoleFromToken /*getTimeAsDayMonthYear*/ } from "shared/tools";
 import {
   disciplinesObject as disciplines,
   typesObject as types,
 } from "shared/data";
+import { getPayload } from "shared/jwt-tools";
 
 export function MyCompetitionsMainContent() {
   const token = localStorage.getItem("token");
+  const payload = getPayload(token as string);
   const roles = getRoleFromToken();
   const [searchParams, setSearchParams] = useSearchParams();
   const [typeOfContent, setTypeOfContent] = useState<string>("");
   const navigate = useNavigate();
-  // const [apps, setApps] = useState([]);
-  // const [isLoading, setLoading] = useState(false);
-  // const [error, setError] = useState("");
-  //
-  // async function fetchApplications() {
-  //   const url = "/api/applications/team";
-  // const response = await fetch(url, {
-  //   headers: {
-  //   Authorization: `Bearer ${token}`,
-  // },
-  //   });
-  // }
+  const [apps, setApps] = useState<any[]>([]);
+  const [isLoading, setLoading] = useState(false);
+  const [_, setError] = useState("");
 
-  // useEffect(() => {
-  //   fetchApplications();
-  // }, []);
+  async function fetchApplications() {
+    setLoading(true);
+    const url = "/api/applications?user_id=" + payload?.sub;
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (response.ok) {
+      const data = await response.json();
+      setApps(data);
+    } else {
+      setError("При загрузке данных произошла ошибка");
+    }
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    fetchApplications();
+  }, []);
 
   useEffect(() => {
     if (searchParams.get("type-of-content") === null) {
@@ -57,8 +66,25 @@ export function MyCompetitionsMainContent() {
       navigate("/");
     }
   }, []);
+  function getStatus(app: any): "upcoming" | "active" | "ended" {
+    const now = new Date();
+    const eventDate = new Date(app.event_date);
 
-  useEffect(() => {}, []);
+    const isSameDay = now.toDateString() === eventDate.toDateString();
+
+    if (now < eventDate) return "upcoming";
+    if (isSameDay) return "active";
+    return "ended";
+  }
+
+  const filteredApps = apps.filter((app) => {
+    const status = getStatus(app);
+    return (
+      typeOfContent === "all" ||
+      (typeOfContent === "active" && status === "active") ||
+      (typeOfContent === "ended" && status === "ended")
+    );
+  });
 
   return (
     <Container style={{ width: "100%", height: "90%" }}>
@@ -92,41 +118,42 @@ export function MyCompetitionsMainContent() {
               <Button
                 size="l"
                 onClick={() => {
-                  setSearchParams({
-                    "type-of-content": "ended",
-                  });
+                  setSearchParams({ "type-of-content": "ended" });
                   setTypeOfContent("ended");
                 }}
                 view={typeOfContent === "ended" ? "action" : "normal"}
               >
-                Завершенный
+                Завершенные
               </Button>
             </>
           )}
         </Flex>
         <br />
-        <Flex width={"100%"}>
-          {typeOfContent === "all" ? (
-            <Flex direction={"column"} gap={"2"} wrap={"wrap"} width={"100%"}>
+        <Flex width="100%" wrap="wrap" gap="4">
+          {isLoading ? (
+            <Loader />
+          ) : filteredApps.length > 0 ? (
+            filteredApps.map((app) => (
               <Card
+                key={app.application_id}
                 view="filled"
                 maxWidth={"340px"}
                 width={"max"}
                 className={spacing({ p: 3 })}
               >
                 <Flex
-                  direction={"column"}
-                  height={"100%"}
-                  justifyContent={"space-between"}
+                  direction="column"
+                  height="100%"
+                  justifyContent="space-between"
                 >
-                  <Flex direction={"column"}>
-                    <img src="" height="196" width={"320"} />
+                  <Flex direction="column">
+                    <img src="" height="196" width="320" />
                     <br />
                     <Text variant="display-2" style={{ width: "250px" }}>
-                      title
+                      {app.team_name}
                     </Text>
                     <br />
-                    <Flex gap={"2"} wrap="wrap" alignItems={"center"}>
+                    <Flex gap="2" wrap="wrap" alignItems="center">
                       <Label size="xs" theme="warning">
                         {disciplines["algorithms"]}
                       </Label>
@@ -134,123 +161,38 @@ export function MyCompetitionsMainContent() {
                         {types["interregional"]}
                       </Label>
                       <Label size="xs" theme="success">
-                        12-14
+                        {app.members.length}
                       </Label>
                     </Flex>
                   </Flex>
                   <br />
-                  <Flex gap={"2"} wrap="wrap" justifyContent={"initial"}>
-                    <Flex alignItems={"center"} gap={"2"}>
-                      <Icon data={Calendar} />
+                  <Flex gap="2" wrap="wrap" justifyContent="initial">
+                    <Flex alignItems="center" gap="2">
+                      {/*<Icon data={Calendar} />
                       <Text variant="body-2">
-                        {getTimeAsDayMonthYear("2024-12-18")} -{" "}
-                        {getTimeAsDayMonthYear("2024-12-21")}
-                      </Text>
+                        {getTimeAsDayMonthYear(app.start_date)} -{" "}
+                        {getTimeAsDayMonthYear(app.end_date)}
+                      </Text>*/}
                     </Flex>
-                    <Button>Одобрено</Button>
+                    <Button>
+                      {app.application_status === "pending"
+                        ? "На модерации"
+                        : getStatus(app) === "active"
+                          ? "Одобрено"
+                          : "Завершился"}
+                    </Button>
                   </Flex>
                 </Flex>
               </Card>
-            </Flex>
-          ) : typeOfContent === "active" ? (
-            <Flex direction={"column"} wrap={"wrap"} gap={"2"} width={"100%"}>
-              <Card
-                view="filled"
-                maxWidth={"340px"}
-                width={"max"}
-                className={spacing({ p: 3 })}
-              >
-                <Flex
-                  direction={"column"}
-                  height={"100%"}
-                  justifyContent={"space-between"}
-                >
-                  <Flex direction={"column"}>
-                    <img src="" height="196" width={"320"} />
-                    <br />
-                    <Text variant="display-2" style={{ width: "250px" }}>
-                      title
-                    </Text>
-                    <br />
-                    <Flex gap={"2"} wrap="wrap" alignItems={"center"}>
-                      <Label size="xs" theme="warning">
-                        {disciplines["algorithms"]}
-                      </Label>
-                      <Label size="xs" theme="info">
-                        {types["interregional"]}
-                      </Label>
-                      <Label size="xs" theme="success">
-                        12-14
-                      </Label>
-                    </Flex>
-                  </Flex>
-                  <br />
-                  <Flex gap={"2"} wrap="wrap" justifyContent={"initial"}>
-                    <Flex alignItems={"center"} gap={"2"}>
-                      <Icon data={Calendar} />
-                      <Text variant="body-2">
-                        {getTimeAsDayMonthYear("2024-12-18")} -{" "}
-                        {getTimeAsDayMonthYear("2024-12-21")}
-                      </Text>
-                    </Flex>
-                    <Button>На модерации</Button>
-                  </Flex>
-                </Flex>
-              </Card>
-            </Flex>
-          ) : typeOfContent === "ended" ? (
-            <Flex direction={"column"} wrap={"wrap"} gap={"2"} width={"100%"}>
-              <Card
-                view="filled"
-                maxWidth={"340px"}
-                width={"max"}
-                className={spacing({ p: 3 })}
-              >
-                <Flex
-                  direction={"column"}
-                  height={"100%"}
-                  justifyContent={"space-between"}
-                >
-                  <Flex direction={"column"}>
-                    <img src="" height="196" width={"320"} />
-                    <br />
-                    <Text variant="display-2" style={{ width: "250px" }}>
-                      title
-                    </Text>
-                    <br />
-                    <Flex gap={"2"} wrap="wrap" alignItems={"center"}>
-                      <Label size="xs" theme="warning">
-                        {disciplines["algorithms"]}
-                      </Label>
-                      <Label size="xs" theme="info">
-                        {types["interregional"]}
-                      </Label>
-                      <Label size="xs" theme="success">
-                        12-14
-                      </Label>
-                    </Flex>
-                  </Flex>
-                  <br />
-                  <Flex gap={"2"} wrap="wrap" justifyContent={"initial"}>
-                    <Flex alignItems={"center"} gap={"2"}>
-                      <Icon data={Calendar} />
-                      <Text variant="body-2">
-                        {getTimeAsDayMonthYear("2024-12-18")} -{" "}
-                        {getTimeAsDayMonthYear("2024-12-21")}
-                      </Text>
-                    </Flex>
-                    <Button>Завершился</Button>
-                  </Flex>
-                </Flex>
-              </Card>
-            </Flex>
-          ) : null}
+            ))
+          ) : (
+            <>В этой категории нет заявок</>
+          )}
         </Flex>
       </Flex>
     </Container>
   );
 }
-
 export interface RegionalProps {
   navigation: NavigationData;
   navigation_custom: CustomItems;
