@@ -94,10 +94,15 @@ const Events = ({
                 justifyContent={"space-between"}
               >
                 <Flex direction={"column"}>
-                  <img
-                    src={event.event_image_s3_key}
-                    height="196"
-                    width={"320"}
+                <img
+                          src={event.event_image_s3_key}
+                          alt={event.title}
+                          height="196"
+                          width="320"
+                          style={{
+                          borderRadius: "8px",
+                          objectFit: "cover",
+                          }}
                   />
                   <br />
                   <Text variant="display-2" style={{ width: "250px" }}>
