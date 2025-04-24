@@ -57,8 +57,10 @@ func (s *Storage) GetEventsWithFilters(
 
 func (s *Storage) GetEventByID(ctx context.Context, id string) (models.Event, error) {
 	var event models.Event
-	err := s.db.Table(dbName).Where("id = ?", id).Find(&event).Error
-	return event, err
+	if err := s.db.Table(dbName).Where("id = ?", id).First(&event).Error; err != nil {
+		return models.Event{}, err
+	}
+	return event, nil
 }
 
 func (s *Storage) UpdateEventStatus(ctx context.Context, id string, status string) error {

@@ -18,6 +18,7 @@ type EventPOSTSchema struct {
 	MinPeople       int      `json:"min_people"`
 	ProtocolS3Key   string   `json:"protocol_s3_key"`
 	EventImageS3Key string   `json:"event_image_s3_key"`
+	Stages          []string `json:"stages"`
 }
 
 type UpdateEventStatus struct {
@@ -43,4 +44,5 @@ type EventPreCreateSchema struct {
 	MinPeople       uint32    `json:"min_people"`
 	ProtocolS3Key   string    `json:"protocol_s3_key"`
 	EventImageS3Key string    `json:"event_image_s3_key"`
+	Stages          string    `json:"stages"`
 }

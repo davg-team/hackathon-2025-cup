@@ -62,6 +62,13 @@ func (s *EventsService) CreateEvent(ctx context.Context, event schemas.EventPOST
 	}
 	regions := string(regionsSeting)
 
+	stagesSeting, err := json.Marshal(event.Stages)
+	if err != nil {
+		log.Error("failed to marshal stages", "error", err)
+		return fmt.Errorf("%w: %s", ErrInternalServer, "failed to marshal stages")
+	}
+	stages := string(stagesSeting)
+
 	startTime := convertTime(event.StartDate)
 	endTime := convertTime(event.EndDate)
 
@@ -77,6 +84,7 @@ func (s *EventsService) CreateEvent(ctx context.Context, event schemas.EventPOST
 		IsOpen:          event.IsOpen,
 		Status:          event.Status,
 		Regions:         regions,
+		Stages:          stages,
 		MinAge:          uint32(event.MinAge),
 		MaxAge:          uint32(event.MaxAge),
 		MaxPeople:       uint32(event.MaxPeople),
@@ -191,6 +199,14 @@ func (s *EventsService) UpdateEventStatus(ctx context.Context, id string, status
 			return fmt.Errorf("%w: %s", ErrInternalServer, "failed to marshal regions")
 		}
 		regions := string(regionsSeting)
+
+		stagesSeting, err := json.Marshal(event.Stages)
+		if err != nil {
+			log.Error("failed to marshal stages", "error", err)
+			return fmt.Errorf("%w: %s", ErrInternalServer, "failed to marshal stages")
+		}
+		stages := string(stagesSeting)
+
 		s.storage.CreateEvent(ctx, schemas.EventPreCreateSchema{
 
 			OrganizationID:  "0",
@@ -203,6 +219,7 @@ func (s *EventsService) UpdateEventStatus(ctx context.Context, id string, status
 			ProtocolS3Key:   event.ProtocolS3Key,
 			EventImageS3Key: event.EventImageS3Key,
 			Regions:         regions,
+			Stages:          stages,
 			MinAge:          uint32(event.MinAge),
 			MaxAge:          uint32(event.MaxAge),
 			MaxPeople:       uint32(event.MaxPeople),
