@@ -181,6 +181,7 @@ const Router = ({ theme, setTheme }: RouterProps) => {
             />
           }
         />
+        <Route path="*" element={<Page404 />} />
       </Routes>
     </BrowserRouter>
   );

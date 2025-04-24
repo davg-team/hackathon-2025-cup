@@ -25,8 +25,8 @@ const BlockHeader = {
   description:
     "<p>Полностью микросервисная платформа для управления соревнованиями, заявками и аналитикой ФСП и её регионов.</p>\n\n<p>Команда Davg-team.</p>\n<p>Разработанно в рамках кубка России по спортивному программированию 2025.</p>",
   buttons: [
-    { text: "Перейти к событиям", theme: "action", url: "/events" },
-    { text: "Документация", theme: "outlined", url: "/docs/" },
+    { text: "Перейти к событиям", theme: "action", url: "/competitions" },
+    { text: "Документация", theme: "outlined", url: "/docs" },
   ],
 };
 

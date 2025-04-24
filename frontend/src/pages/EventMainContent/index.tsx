@@ -124,7 +124,17 @@ function EventMainContent() {
               direction={"column"}
               justifyContent={"space-between"}
             >
-              <img src={event.event_image_s3_key} style={{ width: "100%" }} />
+              <img
+              src={event.event_image_s3_key}
+              style={{
+                width: "100%",
+                maxWidth: "600px",
+                maxHeight: "400px",
+                borderRadius: "8px",
+                objectFit: "cover",
+              }}
+              alt="Event"
+              />
               {new Date(event.end_date) > new Date() ? (
                 <>
                   {token && !isExpired(token) ? (
