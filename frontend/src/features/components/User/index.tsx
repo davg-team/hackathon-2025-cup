@@ -10,6 +10,7 @@ import {
   UserLabel,
   useToaster,
 } from "@gravity-ui/uikit";
+import { updateToken } from "api/auth";
 import { Context } from "app/Context";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
@@ -105,6 +106,8 @@ const User = () => {
         title: "Произошла ошибка при обновлении данных",
       });
     }
+
+    updateToken(token)
   }
 
   if (token && !isExpired(token)) {

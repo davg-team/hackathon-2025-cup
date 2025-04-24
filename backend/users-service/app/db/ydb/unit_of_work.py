@@ -63,8 +63,13 @@ class UnitTransaction(AbstractUnitTransaction):
     async def commit(self):
         # try:
         if self.transaction is not None:
+            # from rich import inspect
+
+            # inspect(self.transaction)
             await self.transaction.commit()
+            # inspect(self.transaction)
             self.transaction = None
+            print("### Committed ###")
 
     # except:
     #     print("Всё плохо")
