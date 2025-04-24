@@ -149,8 +149,8 @@ const MainContent = () => {
           </Flex>
         </Col>
       </Row>
-      <Flex gap={"4"} direction={{ xl: "row-reverse", s: "column" }}>
-        <Col s="12" l={"6"}>
+      <Flex gap={"4"} direction={{ l: "row-reverse", s: "column" }}>
+        <Col s="12" l={"4"} className={spacing({ ml: "5" })}>
           {regionId === "0" ? null : (
             <>
               <Card
@@ -287,32 +287,32 @@ const MainContent = () => {
             </Flex>
           </Flex>
         </Col>
-        <Flex direction={"column"} gap={"4"}>
-          {/* @ts-ignore */}
-          <Flex gap="1">
-            <Button
-              view={typeOfContent === "events" ? "action" : "normal"}
-              size="l"
-              onClick={() => {
-                setSearchParams({ "type-of-content": "events" });
-                setTypeOfContent("events");
-              }}
-            >
-              Соревнования
-            </Button>
-            <Button
-              view={typeOfContent === "teams" ? "action" : "normal"}
-              size="l"
-              onClick={() => {
-                setSearchParams({ "type-of-content": "teams" });
-                setTypeOfContent("teams");
-              }}
-            >
-              Команды
-            </Button>
-            {regionId !== "0" && payload?.region_id === regionId ? (
-              <>
-                {/*
+        <Col s={"12"} l={"8"}>
+          <Flex direction={"column"} gap={"4"}>
+            <Flex gap="1">
+              <Button
+                view={typeOfContent === "events" ? "action" : "normal"}
+                size="l"
+                onClick={() => {
+                  setSearchParams({ "type-of-content": "events" });
+                  setTypeOfContent("events");
+                }}
+              >
+                Соревнования
+              </Button>
+              <Button
+                view={typeOfContent === "teams" ? "action" : "normal"}
+                size="l"
+                onClick={() => {
+                  setSearchParams({ "type-of-content": "teams" });
+                  setTypeOfContent("teams");
+                }}
+              >
+                Команды
+              </Button>
+              {regionId !== "0" && payload?.region_id === regionId ? (
+                <>
+                  {/*
               <Button
                 view={typeOfContent === "track" ? "action" : "normal"}
                 size="l"
@@ -343,15 +343,15 @@ const MainContent = () => {
               >
                 Добавить отчет
               </Button> */}
-              </>
-            ) : // @ts-ignore
-            payload &&
-              payload.roles?.length !== 0 &&
-              (payload?.roles?.includes("fsp_staff") ||
-                payload?.roles?.includes("root")) &&
-              regionId === "0" ? (
-              <>
-                {/*<Button
+                </>
+              ) : // @ts-ignore
+              payload &&
+                payload.roles?.length !== 0 &&
+                (payload?.roles?.includes("fsp_staff") ||
+                  payload?.roles?.includes("root")) &&
+                regionId === "0" ? (
+                <>
+                  {/*<Button
                 view={typeOfContent === "accept_events" ? "action" : "normal"}
                 size="l"
                 onClick={() => {
@@ -374,20 +374,20 @@ const MainContent = () => {
 
 								*/}
 
-                <Button
-                  view={typeOfContent === "analytics" ? "action" : "normal"}
-                  size="l"
-                  onClick={() => {
-                    setSearchParams({ "type-of-content": "analytics" });
-                    setTypeOfContent("analytics");
-                  }}
-                >
-                  Аналитика
-                </Button>
-              </>
-            ) : null}
-            {/* @ts-ignore */}
-            {/* regionId !== "0" &&
+                  <Button
+                    view={typeOfContent === "analytics" ? "action" : "normal"}
+                    size="l"
+                    onClick={() => {
+                      setSearchParams({ "type-of-content": "analytics" });
+                      setTypeOfContent("analytics");
+                    }}
+                  >
+                    Аналитика
+                  </Button>
+                </>
+              ) : null}
+              {/* @ts-ignore */}
+              {/* regionId !== "0" &&
             payload?.roles?.includes("fsp_region_head") &&
             payload?.region_id === regionId && (
               <Button
@@ -401,45 +401,26 @@ const MainContent = () => {
                 Представители
               </Button>
             )*/}
-          </Flex>
-          <Flex width={"100%"} direction={{ l: "row", s: "column-reverse" }}>
+            </Flex>
             {typeOfContent === "events" ? (
-              <Col s="12" style={{ paddingRight: "1rem" }}>
-                <EventsMainContent />
-              </Col>
+              <EventsMainContent />
             ) : typeOfContent === "add_event" ? (
-              <Col s="12">
-                <AddEventMainContent />
-              </Col>
+              <AddEventMainContent />
             ) : typeOfContent === "add_report" ? (
-              <Col s="12">
-                <AddReportMainContent />
-              </Col>
+              <AddReportMainContent />
             ) : typeOfContent === "people" ? (
-              <Col s="12">
-                <PeopleMainContent />
-              </Col>
+              <PeopleMainContent />
             ) : typeOfContent === "accept_events" ? (
-              <Col s="12">
-                <AcceptEventsMainContent />
-              </Col>
+              <AcceptEventsMainContent />
             ) : typeOfContent === "track" ? (
-              <Col s="12">
-                <TrackEventsMainContent />
-              </Col>
+              <TrackEventsMainContent />
             ) : typeOfContent === "analytics" ? (
-              <Col s="12" style={{ paddingRight: "1rem" }}>
-                <AnalitycsMainContent />
-              </Col>
+              <AnalitycsMainContent />
             ) : (
-              typeOfContent === "teams" && (
-                <Col s="12">
-                  <TeamsMainContent />
-                </Col>
-              )
+              typeOfContent === "teams" && <TeamsMainContent />
             )}
           </Flex>
-        </Flex>
+        </Col>
       </Flex>
     </Container>
   );

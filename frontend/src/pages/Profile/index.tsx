@@ -37,7 +37,11 @@ function ProfileMainContent() {
           </Flex>
         </Flex>
       </Flex>
-      <Flex width={"100%"} direction={{ s: "column", l: "row-reverse" }}>
+      <Flex
+        gap={"4"}
+        width={"100%"}
+        direction={{ s: "column", l: "row-reverse" }}
+      >
         <Col s={"12"} l={"4"}>
           <Card width={"100%"} spacing={{ p: "5" }} view="raised">
             <Flex gap={"4"} direction={"column"}>
