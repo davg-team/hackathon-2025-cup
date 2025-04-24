@@ -1,6 +1,6 @@
 import { deleteToken, getPayload, setToken } from "shared/jwt-tools";
 
-export async function updateToken(token: string) {
+export async function updateToken(token: string|null) {
   const url = "/api/auth/account/token";
   const response = await fetch(url, {
     headers: {
