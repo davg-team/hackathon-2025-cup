@@ -47,6 +47,14 @@ paths:
           description: Сортировка всех заявок по id команды
           example: cd9018b7-d916-4721-a772-69299b0a4004
         - in: query
+          name: fsp_id
+          schema:
+            type: string
+            format: uuid
+          required: false
+          description: Сортировка всех заявок по id fsp
+          example: 56
+        - in: query
           name: status
           schema:
             type: string

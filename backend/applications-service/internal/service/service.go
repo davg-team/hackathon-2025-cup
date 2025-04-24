@@ -38,7 +38,6 @@ func New(storage ApplicationStorage, log *slog.Logger) *ApplicationService {
 	return &ApplicationService{storage: storage, log: log}
 }
 
-// TODO: check if user from region where event is held
 func (s *ApplicationService) CreateApplication(ctx context.Context, application requests.CreateApplicationRequest, captainID string, captainRegion string) (string, error) {
 	const op = "ApplicationService.CreateApplication"
 	log := s.log.With("op", op)
@@ -82,6 +81,19 @@ func (s *ApplicationService) CreateApplication(ctx context.Context, application 
 		return "", customerrors.ErrInternal
 	}
 
+	var regions datatypes.JSON
+
+	regionsString, err := json.Marshal(event.Regions)
+	if err != nil {
+		log.Error("failed to marshal regions", "error", err.Error())
+		return "", customerrors.ErrInternal
+	}
+
+	if err := json.Unmarshal(regionsString, &regions); err != nil {
+		log.Error("failed to unmarshal regions", "error", err.Error())
+		return "", customerrors.ErrInternal
+	}
+
 	applicationID := uuid.New().String()
 
 	applicationModel := models.ApplicationModel{
@@ -93,6 +105,7 @@ func (s *ApplicationService) CreateApplication(ctx context.Context, application 
 		CaptainID:         captainID,
 		TeamName:          application.TeamName,
 		Members:           members,
+		Regions:           regions,
 	}
 
 	if err := s.storage.CreateApplication(ctx, applicationModel); err != nil {
@@ -142,7 +155,7 @@ func (s *ApplicationService) Application(ctx context.Context, id string) (respon
 	return responseApplication, nil
 }
 
-func (s *ApplicationService) Applications(ctx context.Context, applicationStatus string, teamID string, eventID string, userID string, dateFilter string) ([]responses.GetApplicationResponse, error) {
+func (s *ApplicationService) Applications(ctx context.Context, applicationStatus string, teamID string, eventID string, userID string, dateFilter string, fspID string) ([]responses.GetApplicationResponse, error) {
 	const op = "ApplicationService.Applications"
 	log := s.log.With("op", op)
 
@@ -178,20 +191,43 @@ func (s *ApplicationService) Applications(ctx context.Context, applicationStatus
 			}
 		}
 	} else {
-		for _, application := range applications {
-			responseApplication := responses.GetApplicationResponse{
-				ApplicationID:     application.ID,
-				EventID:           application.EventID,
-				ApplicationStatus: application.ApplicationStatus,
-				TeamID:            application.TeamID,
-				TeamType:          application.TeamType,
-				TeamName:          application.TeamName,
-				CaptainID:         application.CaptainID,
-				CreatedAt:         application.CreatedAt.Format(time.RFC3339),
-				Members:           application.Members,
-			}
+		if fspID != "" {
+			for _, application := range applications {
+				var regionsList []string
+				json.Unmarshal(application.Regions, &regionsList)
 
-			responseApplications = append(responseApplications, responseApplication)
+				if slices.Contains(regionsList, fspID) {
+					responseApplication := responses.GetApplicationResponse{
+						ApplicationID:     application.ID,
+						EventID:           application.EventID,
+						ApplicationStatus: application.ApplicationStatus,
+						TeamID:            application.TeamID,
+						TeamType:          application.TeamType,
+						TeamName:          application.TeamName,
+						CaptainID:         application.CaptainID,
+						CreatedAt:         application.CreatedAt.Format(time.RFC3339),
+						Members:           application.Members,
+					}
+
+					responseApplications = append(responseApplications, responseApplication)
+				}
+			}
+		} else {
+			for _, application := range applications {
+				responseApplication := responses.GetApplicationResponse{
+					ApplicationID:     application.ID,
+					EventID:           application.EventID,
+					ApplicationStatus: application.ApplicationStatus,
+					TeamID:            application.TeamID,
+					TeamType:          application.TeamType,
+					TeamName:          application.TeamName,
+					CaptainID:         application.CaptainID,
+					CreatedAt:         application.CreatedAt.Format(time.RFC3339),
+					Members:           application.Members,
+				}
+
+				responseApplications = append(responseApplications, responseApplication)
+			}
 		}
 	}
 

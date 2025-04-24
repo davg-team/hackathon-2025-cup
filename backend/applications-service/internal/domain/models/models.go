@@ -22,6 +22,7 @@ const (
 type ApplicationModel struct {
 	ID                string         `gorm:"primaryKey" json:"id"`
 	EventID           string         `json:"event_id"`
+	Regions           datatypes.JSON `json:"regions"`
 	ApplicationStatus string         `json:"application_status"`
 	TeamID            string         `json:"team_id"`
 	CaptainID         string         `json:"captain_id"`
