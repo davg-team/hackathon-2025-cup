@@ -3,10 +3,18 @@ name: Notify Telegram
 on:
   workflow_run:
     workflows:
-        # - "Build and Deploy Frontend"
-        # - "Build and Deploy docs"
+        - "Build and Deploy Frontend"
+        - "Build and Deploy docs"
         - "Sync Repository Content"
         - "Deploy Serverless Service - users"
+        - "Deploy Serverless Service - organizations"
+        - "Deploy Serverless Service - files"
+        - "Deploy Serverless Service - notifications"
+        - "Deploy Serverless Service - events"
+        - "Deploy Serverless Service - applications"
+        - "Deploy Serverless Service - teams"
+        - "Deploy Serverless Service - reports"
+        - "Deploy Serverless Service - analytics"
     types:
       - completed
 

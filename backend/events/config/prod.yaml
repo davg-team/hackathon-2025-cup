@@ -1,0 +1,14 @@
+env_type: prod
+
+server:
+  port: 8080
+
+storage:
+  dsn: grpcs://ydb.serverless.yandexcloud.net:2135/ru-central1/b1gpldpf3veopdl8oo4c/etn2h1b8dp465keqs07u
+  path_to_key: ./keys/authorized_key.json
+
+bot:
+  token: 7914268622:AAE486JeqIHu0PJ6TeQ75PNub-rZ5hSTFtQ
+
+bucket:
+  name: davg-storage

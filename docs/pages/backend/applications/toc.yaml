@@ -1,0 +1,8 @@
+title: Заявки
+href: applications_index.yaml
+
+items:
+  - name: Введение
+    href: index.md
+  - name: Описание
+    href: description.md

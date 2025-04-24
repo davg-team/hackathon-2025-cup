@@ -124,6 +124,8 @@ class UseCasesFactory:
                 requested_id = "0"
             case "fsp_region_staff":
                 requested_id = region_id
+            case "sportsman":
+                requested_id = region_id
             case "fsp_region_head":
                 requested_id = "0"
 
@@ -198,7 +200,7 @@ class UseCasesFactory:
             elif action == "reject":
                 request.status = RequestStatus.rejected
 
-                notification.text = f"Ваш запрос на изменение роли отклонён. Пожалуйста, обратитесь к администратору."
+                notification.text = f"Ваш запрос на изменение роли отклонён. Пожалуйста, обратитесь в Федерацию."
 
             await u.notification_repo.insert(notification)
 

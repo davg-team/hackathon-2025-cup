@@ -122,3 +122,23 @@ async def update_token(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Failed to update token",
         )
+
+
+@api_router.post("/accounts/get")
+async def accounts(
+    request: Request,
+    ids: list[str],
+    user_service: UserService = Depends(get_user_service),
+):
+    try:
+        # jwt = request.state.jwt
+        # user_id = jwt["sub"]
+        users = await user_service.get_users_by_ids(ids)
+
+        return users
+    except Exception as e:
+        logging.error(e)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Failed",
+        )

@@ -1,0 +1,248 @@
+swagger: "2.0"
+info:
+  title: Results Service API
+  description: API for managing results in a competitive environment
+  version: 1.0.0
+host: example.com
+basePath: /api
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  /results:
+    get:
+      summary: Retrieve all results
+      responses:
+        200:
+          description: List of results
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Result"
+        500:
+          description: Internal Server Error
+
+    post:
+      summary: Create a new result
+      parameters:
+        - in: body
+          name: body
+          description: Result to create
+          required: true
+          schema:
+            $ref: "#/definitions/ResultPost"
+      responses:
+        201:
+          description: Result created
+        400:
+          description: Invalid request
+
+  /results/banch:
+    post:
+      summary: Create multiple team results for an event
+      description: Submit results for multiple teams participating in an event
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Team results data
+          required: true
+          schema:
+            $ref: "#/definitions/ComplexResultPost"
+      responses:
+        201:
+          description: Team results successfully created
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+              count:
+                type: integer
+        400:
+          description: Invalid input data
+        500:
+          description: Internal server error
+
+  /results/users/{id}:
+    get:
+      summary: Retrieve results by user ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: List of results
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Result"
+        404:
+          description: User not found
+
+  /results/teams/{id}:
+    get:
+      summary: Retrieve results by team ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: List of results
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Result"
+        404:
+          description: Team not found
+
+  /results/events/{id}:
+    get:
+      summary: Retrieve results by event ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: List of results
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Result"
+        404:
+          description: Event not found
+
+  /results/{id}:
+    get:
+      summary: Retrieve a single result by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Result
+          schema:
+            $ref: "#/definitions/Result"
+        404:
+          description: Result not found
+
+    put:
+      summary: Update a result
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Result to update
+          required: true
+          schema:
+            $ref: "#/definitions/ResultPost"
+      responses:
+        200:
+          description: Result updated
+        400:
+          description: Invalid request
+
+    delete:
+      summary: Delete a result
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        204:
+          description: Result deleted
+        404:
+          description: Result not found
+
+definitions:
+  Result:
+    type: object
+    properties:
+      id:
+        type: string
+      event_id:
+        type: string
+      user_id:
+        type: string
+      team_id:
+        type: string
+      place:
+        type: string
+
+    required:
+      - id
+      - event_id
+      - user_id
+      - place
+  ResultPost:
+    type: object
+    properties:
+      event_id:
+        type: string
+      user_id:
+        type: string
+      team_id:
+        type: string
+      place:
+        type: string
+    required:
+      - event_id
+      - user_id
+      - place
+
+  ComplexResultPost:
+    type: object
+    properties:
+      event_id:
+        type: string
+        example: "event_12345"
+        description: ID of the event
+      teams:
+        type: array
+        items:
+          $ref: "#/definitions/TeamResult"
+    required:
+      - event_id
+      - teams
+
+  TeamResult:
+    type: object
+    properties:
+      team_id:
+        type: string
+        example: "team_001"
+        description: ID of the team
+      members_ids:
+        type: array
+        items:
+          type: string
+          example: "user_101"
+        description: Array of team member IDs
+      place:
+        type: string
+        example: "1"
+        description: Team placement in the event
+    required:
+      - team_id
+      - members_ids
+      - place

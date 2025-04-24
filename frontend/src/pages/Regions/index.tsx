@@ -13,7 +13,10 @@ interface RegionalProps {
 const MainContent = () => {
   return (
     <Container>
+      <Link className="pc-link-block__link pc-link-block__link_theme_light pc-link-block__link_has-arrow" to="/region/0"><Text variant="subheader-2">Федерация Спортивного Программирования России</Text></Link>
+      <br />
       <Text variant="display-2">Региональные представительства ФСП</Text>
+      <br /><br />
       <Flex direction='column'>
         {
           Object.keys(federalDistricts).map((key) => {
@@ -31,6 +34,7 @@ const MainContent = () => {
                     })
                   }
                 </Flex>
+                <br />
               </Flex>
             )
           })

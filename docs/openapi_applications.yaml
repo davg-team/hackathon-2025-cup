@@ -1,0 +1,391 @@
+openapi: 3.0.0
+info:
+  title: Applications API
+  description: API для заявок на участие в соревнованиях.
+  version: 1.0.0
+  contact:
+    name: DAVG
+
+servers:
+  - url: http://localhost:8080/api/applications
+
+paths:
+  /:
+    post:
+      summary: Отправка заявки на участие в соревновании (Если команда уже зарегестрирована в системе (permanent), то поля captain_id, team_name и participants сами заполняются)
+      tags: [Applications]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationPostRequest'
+      responses:
+        '200':
+          description: Успешная отправка заявки
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    example: 01965c82-77fb-722f-b18a-30302e77cb3b
+    get:
+      summary: Получение списка заявок
+      tags: [Applications]
+      parameters:
+        - in: query
+          name: team_id
+          schema:
+            type: string
+            format: uuid
+          required: false
+          description: Сортировка всех заявок по id команды
+          example: cd9018b7-d916-4721-a772-69299b0a4004
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum:
+              - team
+              - approved
+              - pending
+              - denied
+          required: false
+          description: Сортировка всех заявок по статусу
+          example: team
+      responses:
+        '200':
+          description: Успешное получение списка заявок
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationResponse'
+  /{id}:
+    get:
+      summary: Получение заявки по id
+      tags: [Applications]
+      responses:
+        '200':
+          description: Успешное получение заявки
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDetailResponse'
+  /{id}/status:
+    patch:
+      summary: Изменение статуса заявки
+      tags: [Applications]
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum:
+              - team
+              - approved
+              - pending
+              - denied
+          required: true
+          description: Статус заявки
+          example: team
+      responses:
+        '200':
+          description: Успешное изменение статуса заявки
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+    
+  /team:
+    get:
+      summary: Получение списка заявок в команды
+      tags: [TeamApplications]
+      parameters:
+        - in: query
+          name: team_id
+          schema:
+            type: string
+            format: uuid
+          required: false
+          description: Сортировка по id команды
+          example: cd9018b7-d916-4721-a772-69299b0a4004
+        - in: query
+          name: user_id
+          schema:
+            type: string
+            format: uuid
+          required: false
+          description: Сортировка по id человека, отправившего заявку
+          example: cd9018b7-d916-4721-a772-69299b0a4004
+      responses:
+        '200':
+          description: Успешное получение списка заявок в команды
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationResponse'
+    post:
+      summary: Отправка заявки в команду
+      tags: [TeamApplications]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_id:
+                  type: string
+                  format: uuid
+                  example: cd9018b7-d916-4721-a772-69299b0a4004
+      responses:
+        '200':
+          description: Успешная отправка заявки в команду
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+    
+  /team/{id}:
+    get:
+      summary: Получение заявки в команду по id
+      tags: [TeamApplications]
+      responses:
+        '200':
+          description: Успешное получение заявки в команду
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamApplicationResponse'
+
+  /team/{id}/status:
+    patch:
+      summary: Изменение статуса заявки в команду
+      tags: [TeamApplications]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum:
+              - team
+              - approved
+              - pending
+              - denied
+          required: true
+          description: Статус заявки
+          example: team
+      responses:
+        '200':
+          description: Успешное изменение статуса заявки в команду
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  
+  schemas:
+    ApplicationResponse:
+      properties:
+        application_id:
+          type: string
+          format: uuid
+          example: cd9018b7-d916-4721-a772-69299b0a4004
+        event_id:
+          type: string
+          example: test_id
+        application_status:
+          type: string
+          enum:
+            - team
+            - approved
+            - pending
+            - denied
+          example: team
+        team_id:
+          type: string
+          format: uuid
+          example: new_team_id
+        team_name:
+          type: string
+          example: Dream Team
+        captain_id:
+          type: string
+          format: uuid
+          example: root
+        team_type:
+          type: string
+          enum:
+            - temporary
+            - permanent
+            - solo
+          example: temporary
+        created_at:
+          type: string
+          format: date-time
+          example: 2025-04-23T09:20:45+05:00
+        members:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+            - user_id_1
+            - user_id_2
+            - user_id_3
+
+    ApplicationDetailResponse:
+      properties:
+        application_id:
+          type: string
+          format: uuid
+          example: cd9018b7-d916-4721-a772-69299b0a4004
+        event_id:
+          type: string
+          example: test_id
+        application_status:
+          type: string
+          enum:
+            - team
+            - approved
+            - pending
+            - denied
+          example: team
+        team_id:
+          type: string
+          format: uuid
+          example: new_team_id
+        team_name:
+          type: string
+          example: Dream Team
+        captain_id:
+          type: string
+          format: uuid
+          example: root
+        team_type:
+          type: string
+          enum:
+            - temporary
+            - permanent
+            - solo
+          example: temporary
+        created_at:
+          type: string
+          format: date-time
+          example: 2025-04-23T09:20:45+05:00
+        members:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                example: 01965c82-77fb-722f-b18a-30302e77cb3b
+              first_name:
+                type: string
+                example: Alexey
+              last_name:
+                type: string
+                example: Ivanov
+              email:
+                type: string
+                example: oHn7o@example.com
+              avatar:
+                type: string
+                format: url
+                example: https://example.com/avatar.jpg
+    
+    ApplicationPostRequest:
+      properties:
+        event_id:
+          type: string
+          example: test_id
+        application_status:
+          type: string
+          enum:
+            - team
+            - approved
+            - pending
+            - denied
+          example: pending
+        team_id:
+          type: string
+          format: uuid
+          example: new_team_id
+        team_name:
+          type: string
+          example: Dream Team
+        team_type:
+          type: string
+          enum:
+            - temporary
+            - permanent
+            - solo
+          example: permanent
+        captain_id:
+          type: string
+          format: uuid
+          example: 01965c82-77fb-722f-b18a-30302e77cb3b
+        members:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example:
+            - 01965c82-77fb-722f-b18a-30302e77cb3b
+            - 01965c86-7531-7333-a7b3-754286b1f1da
+    
+    TeamApplicationResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 6a4dbefd-22d5-4b7b-bbb8-c5572b6248db
+        team_id:
+          type: string
+          format: uuid
+          example: new_team_id
+        applicant_id:
+          type: string
+          format: uuid
+          example: test_user
+        application_state:
+          type: string
+          enum:
+            - approved
+            - pending
+            - rejected
+          example: pending
+        created_at:
+          type: string
+          format: date-time
+          example: 2025-04-23T01:59:19+05:00

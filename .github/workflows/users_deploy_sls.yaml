@@ -24,7 +24,7 @@ jobs:
         printf "%s" '${{ secrets.YC_SA_JSON_CREDENTIALS }}' > .yc
         printf "%s" '${{ secrets.SA_JSON_CREDENTIALS }}' > authorized_key.json
         printf "%s" '${{ secrets.USERS_CONFIG }}' > config.yaml
-        printf "%s" '${{ secrets.USERS_CONFIG }}' > app/notifications/conf.py
+        printf "%s" '${{ secrets.NOTIF_CONFIG }}' > app/notifications/conf.py
 
     - name: Set up Python
       uses: actions/setup-python@v4

@@ -26,9 +26,7 @@ def generate_certificate(
     event: str = None,
 ):
     # Регистрируем шрифт с футуристичным стилем, поддерживающий кириллицу
-    font_path = os.path.join(
-        "", "JetBrainsMono-VariableFont_wght.ttf"
-    )  # Замените на путь к вашему TTF шрифту
+    font_path = os.path.join("", "JetBrainsMono-VariableFont_wght.ttf")
     if os.path.exists(font_path):
         pdfmetrics.registerFont(TTFont("FuturisticFont", font_path))
     else:
@@ -192,7 +190,7 @@ def generate_protocol(output_file: str, title: str, data: list[dict]):
         team_cell = table.cell(row_index - num_judges, 1)
         for merge_row in range(row_index - num_judges, row_index + 1):
             team_cell.merge(table.cell(merge_row, 1))
-        team_cell.text = f'{team["team"]}\n({participants})'
+        team_cell.text = f"{team['team']}\n({participants})"
         team_cell.paragraphs[0].alignment = 1
 
         total_team_score = [0] * 5

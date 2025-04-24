@@ -1,0 +1,330 @@
+openapi: 3.0.0
+info:
+  title: Events API
+  description: API for managing events
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api
+paths:
+  /events:
+    post:
+      summary: Create a new event
+      description: Create a new event with the provided data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventPOSTSchema'
+      responses:
+        '200':
+          description: Event created successfully
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+      security:
+        - Bearer: []
+    get:
+      summary: Get events with filters
+      description: Retrieve a list of events based on filters
+      parameters:
+        - name: organization_id
+          in: query
+          schema:
+            type: string
+          description: ID of the organization
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - draft
+              - published
+              - on_verification
+              - verified
+              - declined
+              - region
+          description: Status of the events
+        - name: date_filter
+          in: query
+          schema:
+            type: string
+            enum:
+              - upcoming
+          description: Date filter
+        - name: max_age_filter
+          in: query
+          schema:
+            type: integer
+          description: Max age filter
+        - name: min_age_filter
+          in: query
+          schema:
+            type: integer
+          description: Min age filter
+        - name: discipline_filter
+          in: query
+          schema:
+            type: string
+          description: Discipline filter
+        - name: type_filter
+          in: query
+          schema:
+            type: string
+            enum:
+              - school
+              - city
+              - regional
+              - interregional
+              - russian
+              - international
+          description: Type filter
+
+      responses:
+        '200':
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '500':
+          description: Internal server error
+  /events/{id}:
+    get:
+      summary: Get event by ID
+      description: Retrieve an event by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the event
+      responses:
+        '200':
+          description: Event details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update event status
+      description: Update the status of an event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEventStatus'
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the event
+      responses:
+        '200':
+          description: Status updated successfully
+        '400':
+          description: Invalid status
+        '500':
+          description: Internal server error
+      security:
+        - Bearer: []
+    delete:
+      summary: Delete an event
+      description: Delete an event by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the event
+      responses:
+        '200':
+          description: Event deleted successfully
+        '404':
+          description: Event not found
+        '500':
+          description: Internal server error
+      security:
+        - Bearer: []
+components:
+  schemas:
+    EventPOSTSchema:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title
+        description:
+          type: string
+          description: Description
+        type:
+          type: string
+          description: Type
+          enum:
+            - school
+            - city
+            - regional
+            - interregional
+            - russian
+            - international
+        discipline:
+          type: string
+          description: Discipline
+        start_date:
+          type: string
+          format: date
+          description: Start date
+        end_date:
+          type: string
+          format: date
+          description: End date
+        is_open:
+          type: boolean
+          description: Is open
+        status:
+          type: string
+          description: Status
+        regions:
+          type: array
+          items:
+            type: string
+          description: Regions
+        stages:
+          type: array
+          items:
+            type: string
+          description: Stages
+          example:
+            - <начало>-<конец> - <название этапа>
+            - 13.04-14.04 - Первый этап
+        min_age:
+          type: integer
+          description: Min age
+        max_age:
+          type: integer
+          description: Max age
+        max_people:
+          type: integer
+          description: Max people
+        min_people:
+          type: integer
+          description: Min people
+        protocol_s3_key:
+          type: string
+          description: Protocol S3 key
+        event_image_s3_key:
+          type: string
+          description: Event image S3 key
+        
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the event
+        organization_id:
+          type: string
+          description: ID of the organization
+        title:
+          type: string
+          description: Title
+        description:
+          type: string
+          description: Description
+        type:
+          type: string
+          description: Type
+          enum:
+            - school
+            - city
+            - regional
+            - interregional
+            - russian
+            - international
+        discipline:
+          type: string
+          description: Discipline
+        start_date:
+          type: string
+          format: date-time
+          description: Start date
+        end_date:
+          type: string
+          format: date-time
+          description: End date
+        is_open:
+          type: boolean
+          description: Is open
+        status:
+          type: string
+          description: Status
+          enum:
+            - draft
+            - published
+            - on_verification
+            - verified
+            - declined
+        regions:
+          type: array
+          items:
+            type: string
+          description: Regions
+        stages:
+          type: array
+          items:
+            type: string
+          description: Stages
+          example:
+            - <начало>-<конец> - <название этапа>
+            - 13.04-14.04 - Первый этап
+        min_age:
+          type: integer
+          description: Min age
+        max_age:
+          type: integer
+          description: Max age
+        max_people:
+          type: integer
+          description: Max people
+        min_people:
+          type: integer
+          description: Min people
+        protocol_s3_key:
+          type: string
+          description: Protocol S3 key
+        event_image_s3_key:
+          type: string
+          description: Event image S3 key
+
+    UpdateEventStatus:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - draft
+            - published
+            - on_verification
+            - verified
+            - declined
+        message:
+          type: string
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

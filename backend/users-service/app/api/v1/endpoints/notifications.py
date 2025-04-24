@@ -57,7 +57,12 @@ async def get_notifications(
         print("receiver_id", receiver_id)
         print("notifications", notifications)
         fsp_id = jwt.get("region_id")
-        if fsp_id:
+        if fsp_id and jwt.get("role") in [
+            "root",
+            "fsp_staff",
+            "fsp_region_staff",
+            "fsp_region_head",
+        ]:
             notifications += await notification_service.get_notifications(fsp_id)
         return [notification.dict() for notification in notifications]
     except Exception as e:
@@ -89,7 +94,12 @@ async def mark_notification_as_read(
         print("Notification reciver", notification.receiver_id)
         if not (
             notification.receiver_id == receiver_id
-            or (fsp_id and notification.receiver_id == fsp_id)
+            or (
+                fsp_id
+                and notification.receiver_id == fsp_id
+                and token.get("role")
+                in ["root", "fsp_staff", "fsp_region_staff", "fsp_region_head"]
+            )
         ):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

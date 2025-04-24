@@ -1,0 +1,55 @@
+name: Deploy Serverless Service - files
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/files-service/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Write credentials
+      working-directory: ./backend/files-service
+      run: |
+        # Записываем данные в файл, используя printf для сохранения пустых строк
+        printf "%s" '${{ secrets.ENV }}' > keys/authorized_key.json
+        ls keys
+    - name: Prepare deployment package in root
+      run: |
+        mkdir -p ./build
+        # Копируем файлы и папки из текущего сервиса
+        cp -r ./backend/files-service/ ./build
+        # Удаляем все файлы и папки, кроме ./build
+        find . -mindepth 1 -not -path "./build*" -exec rm -rf {} +
+        # Копируем всё из ./build в корень
+        cp -r ./build/files-service/* ./
+        rm -rf ./build
+        ls
+        ls -la
+        ls keys
+        # Переименовываем файл keys/authorized_key.json в .ENV и кладём в корень
+        mv ./keys/authorized_key.json .env
+        ls keys
+        ls -la
+        ls
+    - name: Deploy Function
+      uses: yc-actions/yc-sls-function@v2.12.0
+      with:
+        yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+        folder-id: ${{ secrets.YC_FOLDER_ID }}
+        function-name: 'fsp-files-service'
+        runtime: 'golang121'
+        memory: '128Mb'
+        entrypoint: 'main.Handler'
+        environment: |
+          ENV_TYPE=prod
+        include: |
+          ./
+          .ENV

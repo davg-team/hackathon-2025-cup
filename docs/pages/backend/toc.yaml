@@ -7,6 +7,7 @@ items:
   - name: Структура данных
     href: data.md
   - name: События
+    hiden: true
     href: events/index.md
     items:
       - name: Описание
@@ -31,6 +32,7 @@ items:
               input: openapi_organizations.yaml
           mode: link
   - name: Отчеты
+    hiden: true
     href: reports/index.md
     items:
       - name: Описание
@@ -55,6 +57,7 @@ items:
               input: openapi_teams.yaml
           mode: link
   - name: Аналитика
+    hiden: true
     href: analytics/index.md
     items:
       - name: Описание
@@ -66,6 +69,19 @@ items:
             - name: openapi
               input: openapi_analytics.yaml
           mode: link
+  - name: Сервис заявок
+    href: applications/index.md
+    items:
+      - name: Описание сервиса
+        href: applications/description.md
+      - name: openapi
+        include:
+          path: openapi_applications
+          includers:
+            - name: openapi
+              input: openapi_applications.yaml
+          mode: link
+
   - name: Сервис пользователей
     href: user-service/index.md
     # href: user-service/user-service_index.yaml

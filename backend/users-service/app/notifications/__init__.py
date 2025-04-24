@@ -6,7 +6,10 @@ import httpx
 
 from app.core.dependencies import get_user_service
 
-from .conf import token
+try:
+    from .conf import token
+except:
+    pass
 
 # sys.path.append("C:/dev/hackathon-2024/backend/users-service")
 from .email_sender import send_email

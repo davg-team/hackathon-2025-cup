@@ -25,4 +25,3 @@ environment: {}
 named_service_accounts: {}
 service_account_id: ajedf16kbgn8gt8f527f
 is_public: true
-bucket_name: users-service-33149c60
