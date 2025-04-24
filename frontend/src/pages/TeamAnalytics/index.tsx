@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Flex, Loader, Select, Text } from "@gravity-ui/uikit";
 import { useParams } from "react-router-dom";
+import { disciplines } from "shared/data";
 import Chart from "features/components/Chart";
 
 interface TeamAnalyticsProps {
@@ -35,7 +36,6 @@ const TeamAnalytics = () => {
     first_place_count: 0,
     second_place_count: 0,
     third_place_count: 0,
-
   });
   const [filters, setFilters] = useState<keyof typeof filtersTypes>("");
   const [currentFilter, setCurrentFilter] = useState("");
@@ -119,21 +119,14 @@ const TeamAnalytics = () => {
                       { value: "3", content: "3 место" },
                     ]
                   : filters === "event_discipline"
-                  ? [
-                      { value: "algorithms", content: "Алгоритмы" },
-                      {
-                        value: "hackathon",
-                        content: "Продуктовое программирование",
-                      },
-                      { value: "cybersecurity", content: "Кибербезопасность" },
-                    ]
-                  : filters === "event_type"
-                  ? [
-                      { value: "city", content: "Городское" },
-                      { value: "regional", content: "Региональное" },
-                      { value: "russian", content: "Всероссийское" },
-                    ]
-                  : []
+                    ? disciplines
+                    : filters === "event_type"
+                      ? [
+                          { value: "city", content: "Городское" },
+                          { value: "regional", content: "Региональное" },
+                          { value: "russian", content: "Всероссийское" },
+                        ]
+                      : []
               }
               onUpdate={(value) =>
                 setCurrentFilter(value[0] as keyof typeof filtersTypes)
@@ -144,21 +137,12 @@ const TeamAnalytics = () => {
             <Loader />
           ) : (
             <>
-            <Text variant="display-1">Дисциплина</Text>
-              <Chart
-                type="event_discipline"
-                data={data}
-              />
+              <Text variant="display-1">Дисциплина</Text>
+              <Chart type="event_discipline" data={data} />
               <Text variant="display-1">Тип мероприятия</Text>
-              <Chart
-                type="event_type"
-                data={data}
-              />
+              <Chart type="event_type" data={data} />
               <Text variant="display-1">Место</Text>
-              <Chart
-                type="placement"
-                data={data}
-              />
+              <Chart type="placement" data={data} />
             </>
           )}
         </Flex>

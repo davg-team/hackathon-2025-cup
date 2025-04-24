@@ -14,23 +14,7 @@ import PageConstr from "features/components/PageConstr";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getFileBase64 } from "shared/tools";
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  type:
-    | "school"
-    | "city"
-    | "regional"
-    | "interregional"
-    | "russian"
-    | "international";
-  status: "on_verification" | "verified" | "declined";
-  discipline: "algorithms" | "hackathon" | "cybersecurity";
-  start_date: string;
-  end_date: string;
-}
+import { Event } from "features/components/Events";
 
 interface FormData {
   competition_id: string;

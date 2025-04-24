@@ -4,7 +4,8 @@ import Calendar from "features/components/Calendar";
 import PageConstr from "features/components/PageConstr";
 import { useEffect, useState } from "react";
 import { data } from "shared/data";
-import { fetchEvents, Event } from "api/events";
+import { fetchEvents } from "api/events";
+import { Event } from "features/components/Events";
 
 interface RegionalProps {
   navigation: NavigationData;

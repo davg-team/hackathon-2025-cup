@@ -4,6 +4,7 @@ import { Fragment, ReactNode, useState } from "react";
 
 const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [providers, setProviders] = useState<DataType[]>([]);
+  const [isOpenLogin, setIsOpenLogin] = useState<boolean>(false);
   const [isLoggined, setIsLoggined] = useState<boolean>(
     localStorage.getItem("isLoggined") === "true" &&
       !isExpired(localStorage.getItem("token") as string)
@@ -13,8 +14,6 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [isSnow, setIsSnow] = useState<boolean>(
     localStorage.getItem("isSnow") === "0",
   );
-
-  console.log(isLoggined);
 
   return (
     <Fragment>
@@ -26,6 +25,8 @@ const AppContextProvider = ({ children }: { children: ReactNode }) => {
           setIsLoggined,
           isSnow,
           setIsSnow,
+          isOpenLogin,
+          setIsOpenLogin,
         }}
       >
         {children}

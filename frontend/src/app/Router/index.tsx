@@ -16,6 +16,8 @@ import Page404 from "pages/404";
 import MyCompetitionsPage from "pages/MyCompetitions";
 import ProfilePage from "pages/Profile";
 import CompetitionsPage from "pages/Competitions";
+import EventPage from "pages/EventMainContent";
+import CompetitionTeamReginsterPage from "pages/CompetitionTeamRegister";
 
 interface RouterProps {
   theme: string;
@@ -44,8 +46,10 @@ const Router = ({ theme, setTheme }: RouterProps) => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/403" element={<Page403 />} />
+        <Route path="/404" element={<Page404 />} />
         <Route
-          path="/404"
+          path="/calendar"
           element={
             <FederalCalendar
               navigation={navigation}
@@ -53,12 +57,10 @@ const Router = ({ theme, setTheme }: RouterProps) => {
             />
           }
         />
-        <Route path="/403" element={<Page403 />} />
-        <Route path="/404" element={<Page404 />} />
         <Route
-          path="/calendar"
+          path="/competitions/register"
           element={
-            <FederalCalendar
+            <CompetitionTeamReginsterPage
               navigation={navigation}
               navigation_custom={navigation_custom}
             />
@@ -77,6 +79,15 @@ const Router = ({ theme, setTheme }: RouterProps) => {
           path="/competitions"
           element={
             <CompetitionsPage
+              navigation={navigation}
+              navigation_custom={navigation_custom}
+            />
+          }
+        />
+        <Route
+          path="/competitions/:id"
+          element={
+            <EventPage
               navigation={navigation}
               navigation_custom={navigation_custom}
             />
@@ -170,6 +181,7 @@ const Router = ({ theme, setTheme }: RouterProps) => {
             />
           }
         />
+        <Route path="*" element={<Page404 />} />
       </Routes>
     </BrowserRouter>
   );

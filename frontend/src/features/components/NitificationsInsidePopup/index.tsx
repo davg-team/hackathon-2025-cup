@@ -24,7 +24,7 @@ export const notificationSideActions = {
     <NotificationAction
       action={{
         icon: unread ? CircleCheck : ArrowRotateLeft,
-        text: `Mark as ${unread ? "read" : "unread"}`,
+        text: `Отметить как ${unread ? "прочитанное" : "непрочитанное"}`,
         onClick,
       }}
     />
@@ -152,11 +152,18 @@ export const InsideAPopup = () => {
               }
             />
           </Button>
-          <Popup open={isOpen}>
+          <Popup
+            open={isOpen}
+            anchorRef={ref}
+            placement="bottom"
+          >
             <NotificationsPopupWrapper>
               <Notifications
                 isLoading={loading}
                 notifications={notifications}
+                title= "Уведомления"
+                errorTitle = "Ошибка"
+                emptyTitle = "Уведомлений нет"
                 actions={
                   <Button
                     onClick={async () => {

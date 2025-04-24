@@ -10,29 +10,10 @@ import {
   Loader,
 } from "@gravity-ui/uikit";
 import CalendarView from "features/components/CalendarView";
-import Events from "features/components/Events";
+import Events, { Event } from "features/components/Events";
 import PageConstr from "features/components/PageConstr";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  event_image_s3_key: string;
-  type:
-    | "school"
-    | "city"
-    | "regional"
-    | "interregional"
-    | "russian"
-    | "international";
-  status: "on_verification" | "verified" | "declined" | "published" | "draft";
-  discipline: "algorithms" | "hackathon" | "cybersecurity";
-  start_date: string;
-  end_date: string;
-  age_group: string;
-}
 
 export const EventsMainContent = () => {
   const params = useParams();

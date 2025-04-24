@@ -65,7 +65,6 @@ const App = () => {
     const tokenFromCookie = getCookie("token");
     const tokenFromLocalStorage = localStorage.getItem("token");
     let token = null;
-    console.log(tokenFromCookie, tokenFromLocalStorage);
 
     if (!tokenFromCookie && !tokenFromLocalStorage) {
       setIsLoggined(false);
@@ -117,8 +116,7 @@ const App = () => {
 
     updateToken(token).then((res) => {
       if (res) {
-        console.log(res, 1234, token);
-        // setIsLoggined(true);
+        setIsLoggined(true);
         setIsAuthChecked(true);
       } else {
         setIsLoggined(false);

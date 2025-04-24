@@ -12,34 +12,8 @@ import {
 } from "@gravity-ui/uikit";
 import { useEffect, useState } from "react";
 import { getTimeAsDayMonthYear } from "shared/tools";
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  type:
-    | "school"
-    | "city"
-    | "regional"
-    | "interregional"
-    | "russian"
-    | "international";
-  status: "on_verification" | "verified" | "declined";
-  discipline: "algorithms" | "hackathon" | "cybersecurity";
-  start_date: string;
-  end_date: string;
-  loadingAccept: boolean;
-  loadingReject: boolean;
-}
-
-const types = {
-  school: "Школьное мероприятие",
-  city: "Городское мероприятие",
-  regional: "Региональное мероприятие",
-  interregional: "Межрегиональное мероприятие",
-  russian: "Российское мероприятие",
-  international: "Международное мероприятие",
-};
+import { typesObject as types } from "shared/data";
+import { Event } from "features/components/Events";
 
 export const AcceptEventsMainContent = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -104,7 +78,9 @@ export const AcceptEventsMainContent = () => {
                   <Flex direction="column">
                     <Text variant="display-1">{event.title}</Text>
                     <Text variant="body-3">Описание: {event.description}</Text>
-                    <Text variant="body-3">Тип: {types[event.type]}</Text>
+                    <Text variant="body-3">
+                      Тип: {types[event.type] || event.type || "Не указано"}
+                    </Text>
                     <Text variant="body-3">Дисциплина: {event.discipline}</Text>
                     <Text variant="body-3">
                       Даты проведения: {getTimeAsDayMonthYear(event.start_date)}{" "}

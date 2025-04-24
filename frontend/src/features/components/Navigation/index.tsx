@@ -188,15 +188,13 @@ function useProps(theme: string, setTheme: () => void): NavigationData {
   const roles = getRoleFromToken();
   const { isLoggined } = useContext(Context);
 
-  console.log(isLoggined);
-
   return {
     header: {
       leftItems: [
-        {
-          //@ts-ignore
-          type: "general",
-        },
+        // {
+        //   //@ts-ignore
+        //   type: "general",
+        // },
         {
           //@ts-ignore
           type: "competitions",
@@ -205,10 +203,10 @@ function useProps(theme: string, setTheme: () => void): NavigationData {
           //@ts-ignore
           type: "regional",
         },
-        {
-          //@ts-ignore
-          type: "faq",
-        },
+        // {
+        //   //@ts-ignore
+        //   type: "faq",
+        // },
       ],
       //@ts-ignore
       rightItems:

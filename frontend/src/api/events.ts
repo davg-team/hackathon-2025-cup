@@ -1,21 +1,4 @@
-export interface Event {
-  id: string;
-  title: string;
-  description: string;
-  type:
-    | "school"
-    | "city"
-    | "regional"
-    | "interregional"
-    | "russian"
-    | "international";
-  status: "on_verification" | "verified" | "declined" | "published" | "draft";
-  discipline: "algorithms" | "hackathon" | "cybersecurity";
-  start_date: string;
-  end_date: string;
-  event_image_s3_key: string;
-  age_group: string;
-}
+import { Event } from "features/components/Events";
 
 export async function fetchEvents(region: string): Promise<Event[] | null> {
   const url = `/api/events?status=verified&${
