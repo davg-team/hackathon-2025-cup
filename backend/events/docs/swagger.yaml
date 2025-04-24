@@ -201,6 +201,14 @@ components:
           items:
             type: string
           description: Regions
+        stages:
+          type: array
+          items:
+            type: string
+          description: Stages
+          example:
+            - <начало>-<конец> - <название этапа>
+            - 13.04-14.04 - Первый этап
         min_age:
           type: integer
           description: Min age
@@ -273,6 +281,14 @@ components:
           items:
             type: string
           description: Regions
+        stages:
+          type: array
+          items:
+            type: string
+          description: Stages
+          example:
+            - <начало>-<конец> - <название этапа>
+            - 13.04-14.04 - Первый этап
         min_age:
           type: integer
           description: Min age
