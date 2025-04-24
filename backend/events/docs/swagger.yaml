@@ -52,6 +52,9 @@ paths:
             type: string
             enum:
               - upcoming
+              - past
+              - last30
+              - last7
           description: Date filter
         - name: max_age_filter
           in: query
