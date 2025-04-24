@@ -96,6 +96,13 @@ func (s *ApplicationService) CreateApplication(ctx context.Context, application 
 
 	applicationID := uuid.New().String()
 
+	eventTime, err := time.Parse(time.RFC3339, event.EndDate)
+
+	if err != nil {
+		log.Error("failed to parse event end date", "error", err.Error())
+		return "", customerrors.ErrInternal
+	}
+
 	applicationModel := models.ApplicationModel{
 		ID:                applicationID,
 		EventID:           application.EventID,
@@ -106,6 +113,7 @@ func (s *ApplicationService) CreateApplication(ctx context.Context, application 
 		TeamName:          application.TeamName,
 		Members:           members,
 		Regions:           regions,
+		EventDate:         eventTime,
 	}
 
 	if err := s.storage.CreateApplication(ctx, applicationModel); err != nil {
@@ -150,6 +158,7 @@ func (s *ApplicationService) Application(ctx context.Context, id string) (respon
 		CaptainID:         application.CaptainID,
 		CreatedAt:         application.CreatedAt.Format(time.RFC3339),
 		Members:           members,
+		EventDate:         application.EventDate.Format(time.RFC3339),
 	}
 
 	return responseApplication, nil
@@ -185,6 +194,7 @@ func (s *ApplicationService) Applications(ctx context.Context, applicationStatus
 					CaptainID:         application.CaptainID,
 					CreatedAt:         application.CreatedAt.Format(time.RFC3339),
 					Members:           application.Members,
+					EventDate:         application.EventDate.Format(time.RFC3339),
 				}
 
 				responseApplications = append(responseApplications, responseApplication)
@@ -207,6 +217,7 @@ func (s *ApplicationService) Applications(ctx context.Context, applicationStatus
 						CaptainID:         application.CaptainID,
 						CreatedAt:         application.CreatedAt.Format(time.RFC3339),
 						Members:           application.Members,
+						EventDate:         application.EventDate.Format(time.RFC3339),
 					}
 
 					responseApplications = append(responseApplications, responseApplication)
@@ -224,6 +235,7 @@ func (s *ApplicationService) Applications(ctx context.Context, applicationStatus
 					CaptainID:         application.CaptainID,
 					CreatedAt:         application.CreatedAt.Format(time.RFC3339),
 					Members:           application.Members,
+					EventDate:         application.EventDate.Format(time.RFC3339),
 				}
 
 				responseApplications = append(responseApplications, responseApplication)

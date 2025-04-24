@@ -11,6 +11,7 @@ type Member struct {
 type GetApplicationResponse struct {
 	ApplicationID     string `json:"application_id"`
 	EventID           string `json:"event_id"`
+	EventDate         string `json:"event_date"`
 	ApplicationStatus string `json:"application_status"`
 	TeamID            string `json:"team_id"`
 	TeamName          string `json:"team_name"`
@@ -40,4 +41,5 @@ type Event struct {
 	Title   string   `json:"title"`
 	Regions []string `json:"regions"`
 	Type    string   `json:"type"`
+	EndDate string   `json:"end_date"`
 }
