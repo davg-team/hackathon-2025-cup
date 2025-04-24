@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"time"
 
 	"github.com/davg/applications-service/internal/domain/models"
 	"gorm.io/datatypes"
@@ -17,7 +18,7 @@ func (s *Storage) Application(ctx context.Context, id string) (models.Applicatio
 	return application, nil
 }
 
-func (s *Storage) Applications(ctx context.Context, applicationStatus string, teamID string, eventID string) ([]models.ApplicationModel, error) {
+func (s *Storage) Applications(ctx context.Context, applicationStatus string, teamID string, eventID string, dateFilter string) ([]models.ApplicationModel, error) {
 	var applications []models.ApplicationModel
 
 	query := s.db.Table("applications")
@@ -32,6 +33,12 @@ func (s *Storage) Applications(ctx context.Context, applicationStatus string, te
 
 	if eventID != "" {
 		query = query.Where("event_id = ?", eventID)
+	}
+
+	if dateFilter == "last30" {
+		query = query.Where("created_at > ?", time.Now().AddDate(0, -1, 0))
+	} else if dateFilter == "last7" {
+		query = query.Where("created_at > ?", time.Now().AddDate(0, 0, -7))
 	}
 
 	if err := query.Find(&applications).Error; err != nil {
