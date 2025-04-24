@@ -33,6 +33,8 @@ func (s *Storage) GetEventsWithFilters(
 
 	if dateFilter == "upcoming" {
 		filter = filter.Where("start_date > ?", time.Now())
+	} else if dateFilter == "past" {
+		filter = filter.Where("start_date < ?", time.Now())
 	}
 
 	if disciplineFilter != "" {
