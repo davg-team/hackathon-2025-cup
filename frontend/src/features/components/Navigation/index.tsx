@@ -128,6 +128,17 @@ function Applications() {
   );
 }
 
+function Analytics() {
+  return (
+    <Link
+      className="pc-navigation-link pc-navigation-item__content pc-navigation-item__content_type_link"
+      to="/analytics"
+    >
+      Аналитика
+    </Link>
+  );
+}
+
 // const FSPRegion = () => {
 //   const token = localStorage.getItem("token");
 //   const payload: JWTPayload | null =
@@ -225,7 +236,11 @@ function useProps(theme: string, setTheme: () => void): NavigationData {
               roles?.includes("fsp_region_head") ||
               roles?.includes("fsp_region_staff") ||
               roles?.includes("root")
-                ? [{ type: "my-federation" }, { type: "applications" }]
+                ? [
+                    { type: "my-federation" }, 
+                    { type: "applications" },
+                    { type: "analytics" }
+                  ]
                 : roles?.includes("sportsman")
                   ? [{ type: "my-competitions" }, { type: "my-profile" }]
                   : []),
@@ -268,6 +283,7 @@ function getNavigationCustoms(): CustomItems {
     "my-competitions": MyCompetitions,
     "my-federation": Federation,
     applications: Applications,
+    analytics: Analytics,
   };
 }
 

@@ -18,6 +18,7 @@ import ProfilePage from "pages/Profile";
 import CompetitionsPage from "pages/Competitions";
 import EventPage from "pages/EventMainContent";
 import CompetitionTeamReginsterPage from "pages/CompetitionTeamRegister";
+import AnalyticsPage from "pages/Analytics";
 
 interface RouterProps {
   theme: string;
@@ -88,6 +89,15 @@ const Router = ({ theme, setTheme }: RouterProps) => {
           path="/competitions/:id"
           element={
             <EventPage
+              navigation={navigation}
+              navigation_custom={navigation_custom}
+            />
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <AnalyticsPage
               navigation={navigation}
               navigation_custom={navigation_custom}
             />
