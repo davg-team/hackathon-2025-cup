@@ -8,242 +8,256 @@ servers:
   - url: http://localhost:8080/api/analytics
 
 paths:
-  /regions:
-      get:
-        summary: Get all regions
-        parameters:
-          - in: query
-            name: filter
-            schema:
-              type: string
-              enum: [winners, events]
-            required: false
-            description: Filter (winners, events)
-
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/RegionGET'
-  /regions/{id}:
+  /summary:
     get:
-      summary: Get region by id
+      summary: Get team overall statistics
+      description: Retrieves team overall statistics for a given region
       parameters:
-        - in: path
-          name: id
-          required: true
+        - in: query
+          name: region
           schema:
             type: string
+          required: true
+          description: Region for which to retrieve statistics
       responses:
-        '200':
-          description: OK
+        "200":
+          description: Team overall statistics
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegionGET'
-        '404':
-          description: Not found
-    put:
-      summary: Update region by id
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RegionPUT'
-      responses:
-        '200':
-          description: OK
-    
-  /stats/{team_id}:
+                $ref: "#/components/schemas/GeneralStats"
+
+  /time-series:
     get:
-      summary: Get team statistics
-      description: Get team statistics (This route has different responses based on query (check models for them))
+      summary: Get time series data
+      description: Retrieves time series data for a given metric, region, and time range
       parameters:
-        - in: path
-          name: team_id
+        - in: query
+          name: metric
+          schema:
+            type: string
           required: true
-          schema:
-            type: string
+          description: Metric for which to retrieve time series data
         - in: query
-          name: event_discipline
-          required: false
+          name: region
           schema:
             type: string
+          required: true
+          description: Region for which to retrieve time series data
         - in: query
-          name: event_type
-          required: false
+          name: from
           schema:
             type: string
+          required: true
+          description: Start date for time series data
         - in: query
-          name: placement
-          required: false
+          name: to
           schema:
             type: string
+          required: true
+          description: End date for time series data
       responses:
-        '200':
-          description: OK
+        "200":
+          description: Time series data
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TeamStatistics'
+                $ref: "#/components/schemas/TimeSeriesData"
 
-    
+  /top:
+    get:
+      summary: Get top regions
+      description: Retrieves top regions for a given type, metric, and limit
+      parameters:
+        - in: query
+          name: type
+          schema:
+            type: string
+          required: true
+          description: Type of top regions to retrieve
+        - in: query
+          name: metric
+          schema:
+            type: string
+          required: true
+          description: Metric for which to retrieve top regions
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          required: true
+          description: Number of top regions to retrieve
+      responses:
+        "200":
+          description: Top regions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopRegions"
 
 components:
   schemas:
-    RegionGET:
+    GeneralStats:
+      type: object
+      properties:
+        total_users:
+          type: integer
+          format: int16
+        new_users:
+          type: integer
+          format: int16
+        total_events:
+          type: integer
+          format: int16
+        events_last_30d:
+          type: integer
+          format: int16
+        total_applications:
+          type: integer
+          format: int16
+        applications_last_30d:
+          type: integer
+          format: int16
+
+    TimeSeriesData:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeSeriesPoint"
+
+    TimeSeriesPoint:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        value:
+          type: integer
+          format: int16
+
+    TopRegions:
+      type: object
+      properties:
+        regions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Region"
+
+    Region:
+      type: object
+      properties:
+        name:
+          type: string
+        count:
+          type: integer
+          format: int16
+
+    RegionStats:
+      type: object
+      properties:
+        region:
+          type: string
+        count:
+          type: integer
+          format: int16
+
+    DisciplineStats:
+      type: object
+      properties:
+        discipline:
+          type: string
+        count:
+          type: integer
+          format: int16
+
+    EventTypeStats:
+      type: object
+      properties:
+        event_type:
+          type: string
+        count:
+          type: integer
+          format: int16
+
+    DistributionData:
+      type: object
+      properties:
+        buckets:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int16
+
+    User:
       type: object
       properties:
         id:
           type: string
-        name:
+        region_id:
           type: string
-        events_count: 
-          type: integer
-        algorithm_count: 
-          type: integer
-        hackathon_count: 
-          type: integer
-        cyber_security_count: 
-          type: integer
-        russian_events_count: 
-          type: integer
-        foreign_events_count: 
-          type: integer
-        winners_count: 
-          type: integer
-        algorithm_winners_count: 
-          type: integer
-        hackathon_winners_count: 
-          type: integer
-        cyber_security_winners_count: 
-          type: integer
-    RegionPUT:
-      type: object
-      properties:
-        event_type: 
+        role:
+          type: array
+          items:
+            type: string
+        status:
           type: string
-        event_discipline:
+        created:
           type: string
-        winners_count:
-          type: integer
-    
-    Metadata:
-      type: object
-      properties:
-        team_id:
-          type: string
-        event_discipline:
-          type: string
-        event_type:
-          type: string
-        placement:
-          type: integer
-    
-    TeamStatistics:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        
-        algorithm_count:
-          type: integer
-        hackathon_count:
-          type: integer
-        cyber_security_count:
-          type: integer
-        russian_events_count:
-          type: integer
-        regional_events_count:
-          type: integer
-        city_events_count:
-          type: integer
-        first_place_count:
-          type: integer
-        second_place_count:
-          type: integer
-        third_place_count:
-          type: integer
-        participants_count:
-          type: integer
-    
-    TeamStatisticsByDiscipline:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        
-        first_place_count:
-          type: integer
-        second_place_count:
-          type: integer
-        third_place_count:
-          type: integer
-        participants_count:
-          type: integer
-        russian_events_count:
-          type: integer
-        regional_events_count:
-          type: integer
-        city_events_count:
-          type: integer
-    
-    TeamStatisticsByType:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        
-        first_place_count:
-          type: integer
-        second_place_count:
-          type: integer
-        third_place_count:
-          type: integer
-        participants_count:
-          type: integer
-        algorithm_count:
-          type: integer
-        hackathon_count:
-          type: integer
-        cyber_security_count:
-          type: integer
-    
-    TeamStatisticsByPlacement:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-      
-        algorithm_count:
-          type: integer
-        hackathon_count:
-          type: integer
-        cyber_security_count:
-          type: integer
-        russian_events_count:
-          type: integer
-        regional_events_count:
-          type: integer
-        city_events_count:
-          type: integer
+          format: date-time
 
+    Application:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+        submitted:
+          type: integer
+          format: int16
+        approved:
+          type: integer
+          format: int16
 
-
-
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-  
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+        organization_id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        discipline:
+          type: string
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+        is_open:
+          type: boolean
+        status:
+          type: string
+        regions:
+          type: object
+          additionalProperties:
+            type: string
+        min_age:
+          type: integer
+        max_age:
+          type: integer
+        max_people:
+          type: integer
+        min_people:
+          type: integer
+        protocol_s3_key:
+          type: string
+        event_image_s3_key:
+          type: string
