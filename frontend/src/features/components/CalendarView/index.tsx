@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useEffect, useState } from "react";
 import Calendar from "features/components/Calendar";
+import { Event } from "../Events";
 import { useNavigate } from "react-router-dom";
+
 
 interface PreparedEvent {
   title: string;
@@ -9,23 +11,6 @@ interface PreparedEvent {
   end: string;
   allDay: true;
   id: string;
-}
-
-interface Event {
-  id: string;
-  title: string;
-  description: string;
-  type:
-    | "school"
-    | "city"
-    | "regional"
-    | "interregional"
-    | "russian"
-    | "international";
-  status: "on_verification" | "verified" | "declined" | "published" | "draft";
-  discipline: "algorithms" | "hackathon" | "cybersecurity";
-  start_date: string;
-  end_date: string;
 }
 
 const CalendarView = ({ events }: { events: Event[] }) => {
@@ -57,4 +42,3 @@ const CalendarView = ({ events }: { events: Event[] }) => {
 };
 
 export default CalendarView;
-

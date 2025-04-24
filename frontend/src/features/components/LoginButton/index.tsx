@@ -33,10 +33,10 @@ const Xmark = `
   </svg>`;
 
 const LoginButton = () => {
-  const [open, setOpen] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<unknown>("");
-  const { providers, setProviders } = useContext(Context);
+  const { providers, setProviders, setIsOpenLogin, isOpenLogin } =
+    useContext(Context);
   const token = localStorage.getItem("token");
 
   const subdomain = window.location.hostname.split(".")[0];
@@ -72,13 +72,13 @@ const LoginButton = () => {
         console.error("Ошибка при выполнении запроса:", error);
       }
     }
-    if (open && !providers.length) {
+    if (isOpenLogin && !providers.length) {
       request();
     }
-  }, [open]);
+  }, [isOpenLogin]);
 
   useEffect(() => {
-    if (open && !isLoading && providers.length !== 0) {
+    if (isOpenLogin && !isLoading && providers.length > 0) {
       providers.forEach((item, index) => {
         if (item.service === "yandex" && item.oauth2?.instant_authorization) {
           // @ts-ignore
@@ -108,11 +108,17 @@ const LoginButton = () => {
         }
       });
     }
-  }, [open, providers, isLoading]);
+  }, [isOpenLogin, providers, isLoading]);
 
   return (
     <>
-      <Modal open={open} onClose={() => setOpen(false)}>
+      <Modal
+        open={isOpenLogin}
+        onOpenChange={(event) => {
+          console.log(event);
+          setIsOpenLogin(false);
+        }}
+      >
         <Container className="modal-container">
           <Row space="0">
             <Col s={9}>
@@ -122,7 +128,7 @@ const LoginButton = () => {
               <Button
                 view="action"
                 className="close-button"
-                onClick={() => setOpen((prev) => !prev)}
+                onClick={() => setIsOpenLogin(false)}
               >
                 <Icon data={Xmark} />
               </Button>
@@ -242,7 +248,7 @@ const LoginButton = () => {
           view="action"
           size="l"
           onClick={() => {
-            setOpen((prev: boolean) => !prev);
+            setIsOpenLogin(true);
           }}
         >
           Войти

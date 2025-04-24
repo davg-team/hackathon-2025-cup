@@ -1,37 +1,11 @@
 import { Card, Flex, Loader, spacing, Text } from "@gravity-ui/uikit";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
-interface Event {
-  id: string;
-  team_id: string;
-  event_id: string;
-  event_title: string;
-  placement: number;
-  event_type:
-    | "school"
-    | "city"
-    | "regional"
-    | "interregional"
-    | "russian"
-    | "international";
-  event_discipline: "algorithms" | "hackathon" | "cybersecurity";
-}
-
-const types = {
-  school: "Школьное мероприятие",
-  city: "Городское мероприятие",
-  regional: "Региональное мероприятие",
-  interregional: "Межрегиональное мероприятие",
-  russian: "Всероссийское мероприятие",
-  international: "Международное мероприятие",
-};
-
-const disciplines = {
-  algorithms: "Алгоритмическое программирование",
-  hackathon: "Продуктовое программирование",
-  cybersecurity: "Программирование систем компьютерной безопасности",
-};
+import { Event } from "features/components/Events";
+import {
+  disciplinesObject as disciplines,
+  typesObject as types,
+} from "shared/data";
 
 const TeamEvents = () => {
   const params = useParams<{ id: string }>();
@@ -74,12 +48,12 @@ const TeamEvents = () => {
           >
             <Card view="filled" width={"max"} className={spacing({ p: 3 })}>
               <Flex direction="column">
-                <Text variant="display-2">{event.event_title}</Text>
+                <Text variant="display-2">{event.title}</Text>
                 <Text variant="body-2">
-                  Тип мероприятия: {types[event?.event_type]}
+                  Тип мероприятия: {types[event?.type]}
                 </Text>
                 <Text variant="body-2">
-                  Дисциплина: {disciplines[event?.event_discipline]}
+                  Дисциплина: {disciplines[event?.discipline]}
                 </Text>
                 <Text variant="body-2">Место: {event.placement}</Text>
               </Flex>

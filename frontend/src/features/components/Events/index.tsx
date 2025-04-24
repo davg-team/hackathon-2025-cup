@@ -14,12 +14,27 @@ import { getRoleFromToken, getTimeAsDayMonthYear } from "shared/tools";
 import { getPayload } from "shared/jwt-tools";
 import { getRegionId } from "shared/data";
 import { useParams } from "react-router-dom";
+import {
+  disciplinesObject as disciplines,
+  typesObject as types,
+} from "shared/data";
 
-interface Event {
+export interface Event {
   id: string;
+  placement: string;
+
   title: string;
   description: string;
   event_image_s3_key: string;
+  protocol_s3_key: string;
+  stages: string[];
+  organization_id: string;
+  regions: string[];
+  is_open: boolean;
+  max_age: number;
+  min_age: number;
+  max_people: number;
+  min_people: number;
   type:
     | "school"
     | "city"
@@ -28,26 +43,14 @@ interface Event {
     | "russian"
     | "international";
   status: "on_verification" | "verified" | "declined" | "published" | "draft";
-  discipline: "algorithms" | "hackathon" | "cybersecurity";
+  discipline: "algorithms" | "hackathon" | "cybersecurity" | "robots" | "bpla";
   start_date: string;
   end_date: string;
   age_group: string;
+  loadingAccept: boolean;
+  loadingReject: boolean;
 }
 
-const types = {
-  school: "Школьное мероприятие",
-  city: "Городское мероприятие",
-  regional: "Региональное мероприятие",
-  interregional: "Межрегиональное мероприятие",
-  russian: "Российское мероприятие",
-  international: "Международное мероприятие",
-};
-
-const disciplines = {
-  algorithms: "Алгоритмическое программирование",
-  hackathon: "Продуктовое программирование",
-  cybersecurity: "Программирование систем информацио...",
-};
 const Events = ({
   isLoading,
   error,

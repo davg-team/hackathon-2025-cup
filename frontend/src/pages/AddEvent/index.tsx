@@ -13,6 +13,7 @@ import { useToaster } from "@gravity-ui/uikit";
 import { getFileBase64 } from "shared/tools";
 import PageConstr from "features/components/PageConstr";
 import { CustomItems, NavigationData } from "@gravity-ui/page-constructor";
+import { disciplines, types } from "shared/data";
 
 interface FormData {
   title: string;
@@ -90,17 +91,7 @@ export const AddEventMainContent = () => {
               });
             }}
             label="Тип"
-            options={[
-              { value: "school", content: "Школьное мероприятие" },
-              { value: "city", content: "Городское мероприятие" },
-              { value: "regional", content: "Региональное мероприятие" },
-              {
-                value: "interregional",
-                content: "Межрегиональное мероприятие",
-              },
-              { value: "russian", content: "Всероссийское мероприятие" },
-              { value: "international", content: "Международное мероприятие" },
-            ]}
+            options={types}
           />
           <Select
             value={[state.discipline]}
@@ -110,17 +101,7 @@ export const AddEventMainContent = () => {
               });
             }}
             label="Дисциплина"
-            options={[
-              {
-                value: "algorithms",
-                content: "Алгоритмическое программирование",
-              },
-              { value: "hackathon", content: "Продуктовое программирование" },
-              {
-                value: "cybersecurity",
-                content: "Программирование систем компьютерной безопасности",
-              },
-            ]}
+            options={disciplines}
           />
           <Select
             value={[state.age_group]}
