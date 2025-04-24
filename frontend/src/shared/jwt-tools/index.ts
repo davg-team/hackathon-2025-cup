@@ -66,6 +66,10 @@ function getPayload(token: string) {
 
 function deleteToken() {
   localStorage.removeItem("token");
+  document.cookie = `token=; path=/; domain=${window.location.hostname
+    .split(".")
+    .slice(-2)
+    .join(".")}; max-age=-1; samesite=strict`;
   document.cookie = `token=; path=/; domain=.${window.location.hostname
     .split(".")
     .slice(-2)

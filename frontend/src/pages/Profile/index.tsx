@@ -7,18 +7,43 @@ import {
   Flex,
   Icon,
   Label,
+  Loader,
   Text,
   UserLabel,
 } from "@gravity-ui/uikit";
 import PageConstr from "features/components/PageConstr";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { getPayload } from "shared/jwt-tools";
 
 function ProfileMainContent() {
+  const [teams, setTeams] = useState([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const token = localStorage.getItem("token");
+  const payload = getPayload(token as string);
+
+  useEffect(() => {
+    fetchTeams();
+  }, []);
+
+  async function fetchTeams() {
+    setIsLoading(true);
+    const url = "/api/teams?user_id=" + payload?.sub;
+    const response = await fetch(url);
+    if (response.ok) {
+      const data = await response.json();
+      setTeams(data);
+    } else {
+    }
+    setIsLoading(false);
+  }
+
   return (
     <Container>
       <Flex alignItems={"center"} spacing={{ mb: "10" }} gap={"10"} wrap="wrap">
         <Flex>
           <img
-            src=""
+            src={payload?.avatar}
             width={"160"}
             style={{ borderRadius: "50%" }}
             height={"160"}
@@ -26,13 +51,19 @@ function ProfileMainContent() {
         </Flex>
         <Flex>
           <Flex direction="column" gap={"2"}>
-            <Text variant={"display-2"}>{"title"}</Text>
+            <Text variant={"display-2"}>
+              {payload?.last_name} {payload?.first_name}
+            </Text>
             <Flex gap={"4"} wrap="wrap">
-              <UserLabel type="email" text={"petyapuplin@post.ru"} />
-              <UserLabel
-                avatar={<Icon width={"28"} data={LogoTelegram} />}
-                text={"@pupkiiiin"}
-              />
+              {payload?.email && (
+                <UserLabel type="email" text={payload?.email} />
+              )}
+              {payload?.tg_id && (
+                <UserLabel
+                  avatar={<Icon width={"28"} data={LogoTelegram} />}
+                  text={payload.tg_id}
+                />
+              )}
             </Flex>
           </Flex>
         </Flex>
@@ -75,46 +106,71 @@ function ProfileMainContent() {
           <Flex direction={"column"}>
             <Text variant="display-2">Мои команды</Text>
             <Flex direction={"column"} gap={"4"}>
-              <Card view="raised" spacing={{ p: "6" }} width={"100%"}>
-                <Flex
-                  justifyContent={"space-between"}
-                  wrap="wrap"
-                  alignItems={"center"}
-                >
-                  <Flex wrap={"wrap"}>
-                    <img
-                      width={"72"}
-                      height={"72"}
-                      style={{ borderRadius: "50%" }}
-                    />
-                    <Flex direction={"column"}></Flex>
-                  </Flex>
-                  <Flex wrap="wrap" gap={"6"}>
-                    <Flex alignItems={"center"} gap={"2"}>
-                      <img width={20} height={20} src="/svg/gold_medal.svg" />
-                      <Text variant="header-2">1</Text>
-                    </Flex>
-                    <Flex alignItems={"center"} gap={"2"}>
-                      <img width={20} height={20} src="/svg/silver_medal.svg" />
-                      <Text variant="header-2">1</Text>
-                    </Flex>
-                    <Flex alignItems={"center"} gap={"2"}>
-                      <img width={20} height={20} src="/svg/bronze_medal.svg" />
-                      <Text variant="header-2">1</Text>
-                    </Flex>
-                    <Flex alignItems={"center"} gap={"2"}>
-                      <img width={20} height={20} src="/svg/certificate.svg" />
-                      <Text variant="header-2">1</Text>
-                    </Flex>
-                    <Flex>
-                      <Flex alignItems={"center"} gap={"2"}>
-                        <Text variant="header-1">Рейтинг</Text>
-                        <Label theme="warning">5.0</Label>
+              {isLoading ? (
+                <Loader />
+              ) : teams.length > 0 ? (
+                teams.map((item, id) => (
+                  //@ts-ignore
+                  <Link key={id} to={"/teams/" + item.id}>
+                    <Card view="raised" spacing={{ p: "6" }} width={"100%"}>
+                      <Flex
+                        justifyContent={"space-between"}
+                        wrap="wrap"
+                        alignItems={"center"}
+                      >
+                        <Flex alignItems={"center"} wrap={"wrap"}>
+                          {/*@ts-ignore*/}
+                          <Text variant="display-1">{item.name}</Text>
+                        </Flex>
+                        <Flex wrap="wrap" gap={"6"}>
+                          <Flex alignItems={"center"} gap={"2"}>
+                            <img
+                              width={20}
+                              height={20}
+                              src="/svg/gold_medal.svg"
+                            />
+                            <Text variant="header-2">1</Text>
+                          </Flex>
+                          <Flex alignItems={"center"} gap={"2"}>
+                            <img
+                              width={20}
+                              height={20}
+                              src="/svg/silver_medal.svg"
+                            />
+                            <Text variant="header-2">1</Text>
+                          </Flex>
+                          <Flex alignItems={"center"} gap={"2"}>
+                            <img
+                              width={20}
+                              height={20}
+                              src="/svg/bronze_medal.svg"
+                            />
+                            <Text variant="header-2">1</Text>
+                          </Flex>
+                          <Flex alignItems={"center"} gap={"2"}>
+                            <img
+                              width={20}
+                              height={20}
+                              src="/svg/certificate.svg"
+                            />
+                            <Text variant="header-2">1</Text>
+                          </Flex>
+                          <Flex>
+                            <Flex alignItems={"center"} gap={"2"}>
+                              <Text variant="header-1">Рейтинг</Text>
+                              <Label theme="warning">5.0</Label>
+                            </Flex>
+                          </Flex>
+                        </Flex>
                       </Flex>
-                    </Flex>
-                  </Flex>
-                </Flex>
-              </Card>
+                    </Card>
+                  </Link>
+                ))
+              ) : (
+                <Text variant="header-1">
+                  Этот спортсмен не состоит в командах
+                </Text>
+              )}
             </Flex>
           </Flex>
         </Col>
