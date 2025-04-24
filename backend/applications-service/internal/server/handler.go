@@ -38,8 +38,9 @@ func (r *ApplicationRouter) GetApplications(ctx *gin.Context) {
 	applicationStatus := ctx.Query("status")
 	teamID := ctx.Query("team_id")
 	eventID := ctx.Query("event_id")
+	userID := ctx.Query("user_id")
 
-	applications, err := r.service.Applications(ctx, applicationStatus, teamID, eventID)
+	applications, err := r.service.Applications(ctx, applicationStatus, teamID, eventID, userID)
 	if err != nil {
 		HandleError(ctx, err)
 		return
