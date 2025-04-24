@@ -178,7 +178,24 @@ export function MyCompetitionsMainContent() {
                         {getTimeAsDayMonthYear(app.end_date)}
                       </Text>*/}
                       </Flex>
-                      <Button>
+                      <Button
+                        onClick={() => {
+                          if (
+                            app.application_status === "team" &&
+                            app.captain_id === payload?.sub
+                          ) {
+                            fetch(
+                              "/api/applications/team/" +
+                                app.team_id +
+                                "/status?status=pending",
+                              {
+                                method: "patch",
+                              },
+                            );
+                            fetchApplications();
+                          }
+                        }}
+                      >
                         {app.application_status === "pending"
                           ? "На модерации"
                           : app.application_status === "team"
