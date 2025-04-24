@@ -1,7 +1,10 @@
+import logging
 from datetime import datetime
-from .repository import BaseRepository
-from ..base import RelationRepository as BaseRelationRepository
+
 from app.models.relation import Relation
+
+from ..base import RelationRepository as BaseRelationRepository
+from .repository import BaseRepository
 
 
 class RelationRepository(BaseRepository, BaseRelationRepository):
@@ -44,7 +47,7 @@ class RelationRepository(BaseRepository, BaseRelationRepository):
         if not relation.linked_at:
             relation.linked_at = datetime.now()
 
-        print(relation.__dict__)
+        logging.info(relation.__dict__)
 
         async with self:
             await self.execute(
@@ -85,15 +88,6 @@ class RelationRepository(BaseRepository, BaseRelationRepository):
             return None
 
         row = r.rows[0]
-
-        # relation = Relation(
-        #     provider_slug=row.provider_slug,
-        #     provider_service=row.provider_service,
-        #     provider_user_id=row.provider_user_id,
-        #     user_id=row.user_id,
-        #     linked_at=datetime.fromtimestamp(row.linked_at),
-        #     used_at=datetime.fromtimestamp(row.used_at) if row.used_at else None,
-        # )
 
         relation = Relation()
 

@@ -1,5 +1,6 @@
 import json
-from datetime import datetime
+import logging
+from datetime import datetime, timedelta
 from typing import Any
 
 from app.models.user import Role, Status, User
@@ -135,6 +136,30 @@ class UserRepository(BaseRepository, BaseUserRepository):
                     "$other_data": json.dumps(user.other_data),
                 },
             )
+
+        logging.info(
+            {
+                "$user_id": user.id,
+                "$first_name": user.first_name,
+                "$last_name": user.last_name,
+                "$second_name": user.second_name,
+                "$email": user.email,
+                "$phone": user.phone,
+                "$avatar": user.avatar,
+                "$region_id": user.region_id,
+                "$tg_id": str(user.tg_id),
+                "$snils": user.snils,
+                "$roles": json.dumps([role.value for role in user.roles]),
+                "$status": user.status.value if user.status else None,
+                "$required": json.dumps(user.required),
+                "$notification_ways": json.dumps(user.notification_ways),
+                "$created_at": int(user.created_at.timestamp()),
+                "$last_login_at": int(user.last_login_at.timestamp())
+                if user.last_login_at
+                else None,
+                "$other_data": json.dumps(user.other_data),
+            }
+        )
 
         return user
 
@@ -340,4 +365,73 @@ class UserRepository(BaseRepository, BaseUserRepository):
             # user.other_data = json.loads(row.other_data) if row.other_data else {}
             users.append(user)
 
+        return users
+
+    async def get_users_by_filters(
+        self,
+        date_filter: str = None,
+        created_after: datetime = None,
+        region_id: str = None,
+        role: str = None,
+        status_: str = None,
+    ) -> list:
+        where_clauses = []
+        query_params = {}
+        query = ""
+
+        if date_filter == "last_30":
+            where_clauses.append("created_at >= $date_limit")
+            query_params["$date_limit"] = int(
+                (datetime.now() - timedelta(days=30)).timestamp()
+            )
+            query += "DECLARE $date_limit AS Datetime?;\n"
+
+        if created_after:
+            where_clauses.append("created_at >= $created_after")
+            query_params["$created_after"] = int(created_after.timestamp())
+            query += "DECLARE $created_after AS Datetime?;\n"
+
+        if region_id:
+            where_clauses.append("region_id = $region_id")
+            query_params["$region_id"] = region_id
+            query += "DECLARE $region_id AS Utf8?;\n"
+
+        if role:
+            where_clauses.append(
+                "COALESCE(CAST(roles AS String), '') LIKE '%'||COALESCE($role, '')||'%'"
+            )
+            query_params["$role"] = role
+            query += "DECLARE $role AS Utf8?;\n"
+
+        if status_:
+            where_clauses.append("status = $status")
+            query_params["$status"] = status_
+            query += "DECLARE $status AS Utf8?;\n"
+
+        where_clause_str = ""
+        if where_clauses:
+            where_clause_str = "WHERE " + " AND ".join(where_clauses)
+
+        query += f"""
+            SELECT user_id, region_id, roles, status, created_at
+            FROM {self.users_table}
+            {where_clause_str};
+        """
+
+        async with self:
+            (r,) = await self.execute(query, query_params)
+
+        users = []
+        for row in r.rows:
+            users.append(
+                {
+                    "user_id": row.user_id,
+                    "region_id": row.region_id,
+                    "roles": json.loads(row.roles) if row.roles else [],
+                    "status": row.status,
+                    "created_at": datetime.fromtimestamp(row.created_at)
+                    if row.created_at
+                    else None,
+                }
+            )
         return users

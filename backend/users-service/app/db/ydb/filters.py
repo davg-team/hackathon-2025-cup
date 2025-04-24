@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime
 
 from app.models.user import Role, User
@@ -67,8 +68,7 @@ class FiltersRepository(BaseRepository):
 
         filters = []
         for f in r.rows:
-            print(f)
-
+            logging.debug(f)
             filters.append(f["filter"])
 
         return filters

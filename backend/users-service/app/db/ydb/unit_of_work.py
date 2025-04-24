@@ -1,3 +1,4 @@
+import logging
 from typing import List
 
 import ydb
@@ -46,7 +47,7 @@ class UnitTransaction(AbstractUnitTransaction):
         commit_tx=False,
         settings=None,
     ) -> List[ResultSet]:
-        print(query)
+        logging.info(query)
 
         if self.transaction is None:
             self.start_transaction()
@@ -61,30 +62,22 @@ class UnitTransaction(AbstractUnitTransaction):
         return await self.session.execute_scheme(query, settings=settings)
 
     async def commit(self):
-        # try:
         if self.transaction is not None:
-            # from rich import inspect
-
-            # inspect(self.transaction)
             await self.transaction.commit()
-            # inspect(self.transaction)
             self.transaction = None
-            print("### Committed ###")
-
-    # except:
-    #     print("Всё плохо")
+            logging.info("### Committed ###")
 
     async def rollback(self):
-        print("### Rolling back ###")
+        logging.info("### Rolling back ###")
         if self.transaction is not None:
             try:
                 await self.transaction.rollback()
             except Exception as e:
-                print(e)
+                logging.info(e)
             self.transaction = None
-            print("### Rolled back ###")
+            logging.info("### Rolled back ###")
         else:
-            print("### Nothing to rollback ###")
+            logging.info("### Nothing to rollback ###")
 
     async def release(self):
         await self.session_pool.release(self.session)

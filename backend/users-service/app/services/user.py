@@ -27,3 +27,19 @@ class UserService:
 
     async def get_users_by_ids(self, ids):
         return await self.repository.get_users_by_ids(ids)
+
+    async def get_users_by_filters(
+        self,
+        date_filter: str = None,
+        created_after=None,
+        region_id: str = None,
+        role: str = None,
+        status_: str = None,
+    ):
+        return await self.repository.get_users_by_filters(
+            date_filter=date_filter,
+            created_after=created_after,
+            region_id=region_id,
+            role=role,
+            status_=status_,
+        )

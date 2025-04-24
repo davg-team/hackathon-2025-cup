@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime
 
 from app.models.request import Request, RequestedType, RequesterType, Status, Type
@@ -64,7 +65,7 @@ class RequestRepository(BaseRepository):
 
         request.updated_at = datetime.now()
 
-        print(
+        logging.info(
             {
                 "$id": request.request_id,
                 "$created_at": int(request.created_at.timestamp()),

@@ -35,6 +35,10 @@ func (s *Storage) GetEventsWithFilters(
 		filter = filter.Where("start_date > ?", time.Now())
 	} else if dateFilter == "past" {
 		filter = filter.Where("start_date < ?", time.Now())
+	} else if dateFilter == "last30" {
+		filter = filter.Where("start_date > ?", time.Now().AddDate(0, -1, 0))
+	} else if dateFilter == "last7" {
+		filter = filter.Where("start_date > ?", time.Now().AddDate(0, 0, -7))
 	}
 
 	if disciplineFilter != "" {

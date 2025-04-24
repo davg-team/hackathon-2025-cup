@@ -1,7 +1,9 @@
 import json
 import logging
+from datetime import datetime
+from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.security import HTTPBearer
 
 from app.api.tools import authorize
@@ -142,3 +144,22 @@ async def accounts(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Failed",
         )
+
+
+@api_router.get("/accounts/download")
+async def download_accounts(
+    date_filter: Optional[str] = Query(None, description="last_30"),
+    created_after: Optional[datetime] = None,
+    region_id: Optional[str] = None,
+    role: Optional[str] = None,
+    status: Optional[str] = None,
+    user_service: UserService = Depends(get_user_service),
+):
+    users = await user_service.get_users_by_filters(
+        date_filter=date_filter,
+        created_after=created_after,
+        region_id=region_id,
+        role=role,
+        status_=status,
+    )
+    return users

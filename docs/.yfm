@@ -1,5 +1,11 @@
 allowHTML: true
-lang: 'ru'
-langs: ['ru']
+apply-presets: true
+varsPreset: external
+lang: "ru"
+langs: ["ru"]
 search:
   provider: local
+
+docs-viewer:
+  metrika: 99190071
+  project-name: fsp

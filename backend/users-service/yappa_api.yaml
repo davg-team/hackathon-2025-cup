@@ -1,6 +1,6 @@
 project_name: fsp-users-service
 project_slug: fsp-users-service
-description: null
+description: "FSP Users Service"
 requirements_file: requirements.txt
 bucket: null
 application_type: asgi
