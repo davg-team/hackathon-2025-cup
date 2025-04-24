@@ -152,7 +152,11 @@ export const InsideAPopup = () => {
               }
             />
           </Button>
-          <Popup open={isOpen}>
+          <Popup
+            open={isOpen}
+            anchorRef={ref}
+            placement="bottom"
+          >
             <NotificationsPopupWrapper>
               <Notifications
                 isLoading={loading}
