@@ -229,6 +229,7 @@ export const AddEventMainContent = () => {
                   ...state,
                   protocol_s3_key: protocolId,
                   event_image_s3_key: imageId,
+                  status: "on_verification",
                 };
 
                 const response = await fetch("/api/events", {
