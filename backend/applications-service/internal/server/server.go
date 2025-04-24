@@ -15,7 +15,7 @@ import (
 type ApplicationService interface {
 	CreateApplication(ctx context.Context, application requests.CreateApplicationRequest, captainID string, captainRegion string) (string, error)
 	Application(ctx context.Context, id string) (responses.GetApplicationResponse, error)
-	Applications(ctx context.Context, applicationStatus string, teamID string) ([]responses.GetApplicationResponse, error)
+	Applications(ctx context.Context, applicationStatus string, teamID string, eventID string) ([]responses.GetApplicationResponse, error)
 	UpdateApplicationStatus(ctx context.Context, applicationID string, applicationStatus string) error
 
 	CreateTeamApplication(ctx context.Context, application requests.CreateTeamApplicationRequest, aplicantID string) error

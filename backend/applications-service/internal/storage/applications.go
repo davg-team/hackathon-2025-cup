@@ -17,7 +17,7 @@ func (s *Storage) Application(ctx context.Context, id string) (models.Applicatio
 	return application, nil
 }
 
-func (s *Storage) Applications(ctx context.Context, applicationStatus string, teamID string) ([]models.ApplicationModel, error) {
+func (s *Storage) Applications(ctx context.Context, applicationStatus string, teamID string, eventID string) ([]models.ApplicationModel, error) {
 	var applications []models.ApplicationModel
 
 	query := s.db.Table("applications")
@@ -28,6 +28,10 @@ func (s *Storage) Applications(ctx context.Context, applicationStatus string, te
 
 	if applicationStatus != "" {
 		query = query.Where("application_status = ?", applicationStatus)
+	}
+
+	if eventID != "" {
+		query = query.Where("event_id = ?", eventID)
 	}
 
 	if err := query.Find(&applications).Error; err != nil {

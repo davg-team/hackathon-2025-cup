@@ -19,7 +19,7 @@ import (
 type ApplicationStorage interface {
 	CreateApplication(ctx context.Context, application models.ApplicationModel) error
 	Application(ctx context.Context, id string) (models.ApplicationModel, error)
-	Applications(ctx context.Context, applicationStatus string, teamID string) ([]models.ApplicationModel, error)
+	Applications(ctx context.Context, applicationStatus string, teamID string, eventID string) ([]models.ApplicationModel, error)
 	UpdateApplication(ctx context.Context, applicationID string, applicationStatus string, members datatypes.JSON) error
 
 	CreateTeamApplication(ctx context.Context, application models.TeamApplicationModel) error
@@ -142,13 +142,13 @@ func (s *ApplicationService) Application(ctx context.Context, id string) (respon
 	return responseApplication, nil
 }
 
-func (s *ApplicationService) Applications(ctx context.Context, applicationStatus string, teamID string) ([]responses.GetApplicationResponse, error) {
+func (s *ApplicationService) Applications(ctx context.Context, applicationStatus string, teamID string, eventID string) ([]responses.GetApplicationResponse, error) {
 	const op = "ApplicationService.Applications"
 	log := s.log.With("op", op)
 
 	log.Info("getting applications")
 
-	applications, err := s.storage.Applications(ctx, applicationStatus, teamID)
+	applications, err := s.storage.Applications(ctx, applicationStatus, teamID, eventID)
 	if err != nil {
 		log.Error("failed to get applications", "error", err.Error())
 		return nil, customerrors.ErrInternal
@@ -199,7 +199,7 @@ func (s *ApplicationService) CreateTeamApplication(ctx context.Context, applicat
 
 	log.Info("creating team application")
 
-	eventApplication, err := s.storage.Applications(ctx, "", application.TeamID)
+	eventApplication, err := s.storage.Applications(ctx, "", application.TeamID, "")
 	if err != nil {
 		log.Error("failed to get applications", "error", err.Error())
 		return customerrors.ErrInternal
@@ -298,7 +298,7 @@ func (s *ApplicationService) UpdateTeamApplication(ctx context.Context, applicat
 			return fmt.Errorf("application is already approved")
 		}
 
-		eventApplication, err := s.storage.Applications(ctx, "", teamApplication.TeamID)
+		eventApplication, err := s.storage.Applications(ctx, "", teamApplication.TeamID, "")
 		if err != nil {
 			log.Error("failed to get applications", "error", err.Error())
 			return customerrors.ErrInternal
