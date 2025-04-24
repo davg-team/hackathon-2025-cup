@@ -1,6 +1,7 @@
 import { LogoTelegram } from "@gravity-ui/icons";
 import { CustomItems, NavigationData } from "@gravity-ui/page-constructor";
 import {
+  Button,
   Card,
   Col,
   Container,
@@ -64,6 +65,17 @@ function ProfileMainContent() {
                   text={payload.tg_id}
                 />
               )}
+            </Flex>
+            <Flex>
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    payload?.sub ? payload.sub : "",
+                  );
+                }}
+              >
+                Скопировать ID пользователя
+              </Button>
             </Flex>
           </Flex>
         </Flex>
