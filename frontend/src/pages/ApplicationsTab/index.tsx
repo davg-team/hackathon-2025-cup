@@ -38,7 +38,7 @@ function ApplicationCard({
   }
   async function decline() {
     const url =
-      "/api/applications/" + data.application_id + "/status?status=denied";
+      "/api/applications/" + data.application_id + "/status?status=rejected";
     const response = await fetch(url, {
       method: "PATCH",
       headers: {
@@ -94,7 +94,7 @@ function ApplicationsTab() {
 
   async function fetchTeams() {
     setIsLoadingTeams(true);
-    const url = "/api/applications?fsp_id=" + payload?.region_id;
+    const url = "/api/applications?status=pending&fsp_id=" + payload?.region_id;
     const response = await fetch(url);
     if (response.ok) {
       const data = await response.json();
