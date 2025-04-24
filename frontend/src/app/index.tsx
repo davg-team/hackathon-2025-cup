@@ -76,12 +76,6 @@ const App = () => {
       const tokenFromCookiePayload = getPayload(tokenFromCookie);
       const tokenFromLocalStoragePayload = getPayload(tokenFromLocalStorage);
 
-      // if (!tokenFromCookiePayload || !tokenFromLocalStoragePayload) {
-      //   deleteToken();
-      //   setIsAuthChecked(true);
-      //   return;
-      // }
-
       // @ts-ignore
       if (tokenFromCookiePayload.iat > tokenFromLocalStoragePayload.iat) {
         token = tokenFromCookie;

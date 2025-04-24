@@ -11,14 +11,37 @@ import {
   UserLabel,
 } from "@gravity-ui/uikit";
 import PageConstr from "features/components/PageConstr";
+import { useEffect } from "react";
+import { getPayload } from "shared/jwt-tools";
 
 function ProfileMainContent() {
+  // const [teams, setTeams] = useState<Event[]>([]);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
+  const token = localStorage.getItem("token");
+  const payload = getPayload(token as string);
+
+  useEffect(() => {
+    fetchTeams();
+  });
+
+  async function fetchTeams() {
+    // setIsLoading(true);
+    const url = "/api/teams?user_id" + payload?.sub;
+    const response = await fetch(url);
+    if (response.ok) {
+      // const data = await response.json();
+      // setTeams(data);
+    } else {
+    }
+    // setIsLoading(false);
+  }
+
   return (
     <Container>
       <Flex alignItems={"center"} spacing={{ mb: "10" }} gap={"10"} wrap="wrap">
         <Flex>
           <img
-            src=""
+            src={payload?.avatar}
             width={"160"}
             style={{ borderRadius: "50%" }}
             height={"160"}
@@ -26,13 +49,17 @@ function ProfileMainContent() {
         </Flex>
         <Flex>
           <Flex direction="column" gap={"2"}>
-            <Text variant={"display-2"}>{"title"}</Text>
+            <Text variant={"display-2"}>
+              {payload?.last_name} {payload?.first_name}
+            </Text>
             <Flex gap={"4"} wrap="wrap">
-              <UserLabel type="email" text={"petyapuplin@post.ru"} />
-              <UserLabel
-                avatar={<Icon width={"28"} data={LogoTelegram} />}
-                text={"@pupkiiiin"}
-              />
+              <UserLabel type="email" text={payload?.email} />
+              {payload?.tg_id && (
+                <UserLabel
+                  avatar={<Icon width={"28"} data={LogoTelegram} />}
+                  text={payload.tg_id}
+                />
+              )}
             </Flex>
           </Flex>
         </Flex>
