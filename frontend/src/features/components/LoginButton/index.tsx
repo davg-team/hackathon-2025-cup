@@ -35,10 +35,10 @@ const Xmark = `
 const LoginButton = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<unknown>("");
-  const { providers, setProviders /*setIsOpenLogin, isOpenLogin*/ } =
+  const { providers, setProviders, setIsOpenLogin, isOpenLogin } =
     useContext(Context);
   const token = localStorage.getItem("token");
-  const [isOpenLogin, setIsOpenLogin] = useState(false);
+  // const [isOpenLogin, setIsOpenLogin] = useState(false);
 
   const subdomain = window.location.hostname.split(".")[0];
   const isSubdomain =
