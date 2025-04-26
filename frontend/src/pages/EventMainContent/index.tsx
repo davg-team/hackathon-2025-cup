@@ -13,10 +13,9 @@ import {
 import { Event } from "features/components/Events";
 import PageConstr from "features/components/PageConstr";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { disciplinesObject, regionMap } from "shared/data";
 import { getRoleFromToken } from "shared/tools";
-import { Context } from "app/Context";
 import { getPayload, isExpired } from "shared/jwt-tools";
 
 function EventMainContent() {
@@ -28,7 +27,6 @@ function EventMainContent() {
   const roles = getRoleFromToken();
   const token = localStorage.getItem("token");
   const payload = getPayload(token as string);
-  const { setIsOpenLogin } = useContext(Context);
 
   useEffect(() => {
     (async function () {
