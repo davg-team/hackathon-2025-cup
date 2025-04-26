@@ -52,12 +52,8 @@ function EventMainContent() {
           <Skeleton />
         ) : (
           <>
-            <Button
-              view="flat"
-              size="m"
-              onClick={() => navigate(-1)}
-            >
-                <Icon data={ArrowLeft} />
+            <Button view="flat" size="m" onClick={() => navigate(-1)}>
+              <Icon data={ArrowLeft} />
             </Button>
             <Text variant={"display-2"}>Кубок России</Text>
           </>
@@ -127,15 +123,15 @@ function EventMainContent() {
               justifyContent={"space-between"}
             >
               <img
-              src={event.event_image_s3_key}
-              style={{
-                width: "100%",
-                maxWidth: "600px",
-                maxHeight: "400px",
-                borderRadius: "8px",
-                objectFit: "cover",
-              }}
-              alt="Event"
+                src={event.event_image_s3_key}
+                style={{
+                  width: "100%",
+                  maxWidth: "600px",
+                  maxHeight: "400px",
+                  borderRadius: "8px",
+                  objectFit: "cover",
+                }}
+                alt="Event"
               />
               {new Date(event.end_date) > new Date() ? (
                 <>
@@ -170,14 +166,13 @@ function EventMainContent() {
                       </Text>
                     )
                   ) : (
-                    <Button
-                      onClick={() => {
-                        setIsOpenLogin(true);
-                      }}
-                      view="action"
+                    <Text
+                      style={{ alignSelf: "end", maxWidth: "max-content" }}
+                      color="hint"
+                      variant="subheader-3"
                     >
-                      Войти/Регистрация
-                    </Button>
+                      Для регистрации вы должны быть авторизированы
+                    </Text>
                   )}
                 </>
               ) : (
